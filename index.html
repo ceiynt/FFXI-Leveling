@@ -225,18 +225,23 @@
       </div>
     </section>
 
-    <!-- ================= TAB 1B: 6-JOB & CRAFTING SELF-SUFFICIENCY GUIDE ================= -->
+    <!-- ================= TAB 1B: 22-JOB & CRAFTING SELF-SUFFICIENCY GUIDE ================= -->
     <section id="tab-panel-guide" class="hidden space-y-6">
 
-      <!-- Top Interactive Controls Banner -->
-      <div class="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-xl space-y-4 shadow-lg">
+      <!-- Ultimate Goal Banner & Controls -->
+      <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 border border-amber-500/40 p-4 sm:p-5 rounded-xl space-y-4 shadow-xl">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
-            <h2 class="text-base sm:text-xl font-serif font-bold text-amber-400 flex items-center gap-2">
-              ⚔️ CatsEyeXI 6-Job Self-Sufficiency & Crafting Supply Roadmap
+            <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 mb-1.5">
+              <span>🛡️ Ultimate Goal: Master Sword & Shield Paladin (PLD 75)</span>
+              <span>•</span>
+              <span>🗡️ Step 1: Thief (Lv. 30+ First for Treasure Hunter)</span>
+            </div>
+            <h2 class="text-base sm:text-xl font-serif font-bold text-amber-50 flex items-center gap-2">
+              ⚔️ Complete 22-Job CatsEyeXI Self-Sufficiency & Crafting Roadmap
             </h2>
-            <p class="text-xs text-slate-400 mt-1">
-              Master sequence: <strong class="text-amber-300">1. THF</strong> (TH Loot Engine) ➔ <strong class="text-amber-300">2. WAR</strong> (/WAR Sub) ➔ <strong class="text-amber-300">3. PLD</strong> (Tank) ➔ <strong class="text-amber-300">4. RDM</strong> (/RDM Fast Cast) ➔ <strong class="text-amber-300">5. SAM</strong> (/SAM Meditate) ➔ <strong class="text-amber-300">6. NIN</strong> (/NIN Utsusemi + Self-Crafted Tools).
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Level <strong class="text-amber-400">1. THF to Lv. 30+ first</strong> (Treasure Hunter I at Lv.15 + Gilfinder/Steal, then 45/75 for TH II) so every hide, shell, ore, and cloth drops 2x–3x faster. Then build your foundation subjobs, unlock and master <strong class="text-amber-300">Sword & Shield Paladin</strong> with its 5 core subjobs (<code class="text-indigo-300">/WAR</code>, <code class="text-indigo-300">/BLU</code>, <code class="text-indigo-300">/RDM</code>, <code class="text-indigo-300">/NIN</code>, <code class="text-indigo-300">/DNC</code>), and branch across all 22 CatsEyeXI jobs using shared self-crafted gear pipelines!
             </p>
           </div>
 
@@ -255,20 +260,42 @@
           </div>
         </div>
 
-        <!-- Job Sequence Selector Pills -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between text-xs text-slate-400">
-            <span class="font-bold uppercase tracking-wider text-[11px]">Select Active Job in Sequence (Adapts Trust Matrix & Gear Focus):</span>
-            <span id="guide-progress-summary" class="text-emerald-400 font-mono font-bold">0 / 0 Milestones Checked</span>
+        <!-- Sword & Shield Paladin Interactive Subjob Matrix -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 sm:p-4 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="text-xs sm:text-sm font-serif font-bold text-amber-400 flex items-center gap-2">
+                🛡️ Sword & Shield Paladin (PLD 75) — Interactive Subjob Selector & Breakdown
+              </h3>
+              <p class="text-[11px] text-slate-400">Tap any Paladin subjob below to inspect why you level it, its key abilities/spells, and when to equip it on CatsEyeXI:</p>
+            </div>
+            <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/80 border border-indigo-800 px-2.5 py-0.5 rounded self-start sm:self-center">Target Subjob Lv: 37</span>
           </div>
-          <div id="guide-job-pills" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2"></div>
+          <div id="guide-pld-subjob-tabs" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+          <div id="guide-pld-subjob-detail" class="bg-slate-900/90 border border-slate-800 rounded-lg p-3 text-xs space-y-2"></div>
+        </div>
+
+        <!-- Phase Filter & 22-Job Sequence Selector Pills -->
+        <div class="space-y-2.5 pt-1">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-bold uppercase tracking-wider text-[11px] mr-1">Filter Phase:</span>
+              <button type="button" data-phase-filter="ALL_PHASES" class="guide-phase-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">All 22 Jobs (4 Phases)</button>
+              <button type="button" data-phase-filter="1" class="guide-phase-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200">Phase 1: Loot & Foundation (1–6)</button>
+              <button type="button" data-phase-filter="2" class="guide-phase-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200">Phase 2: Sword & Shield PLD + Tank Subs (7–10)</button>
+              <button type="button" data-phase-filter="3" class="guide-phase-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200">Phase 3: Melee & Ranged DD (11–17)</button>
+              <button type="button" data-phase-filter="4" class="guide-phase-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200">Phase 4: Support, Pet & Custom 75 (18–22)</button>
+            </div>
+            <span id="guide-progress-summary" class="text-emerald-400 font-mono font-bold">0 Milestones Checked</span>
+          </div>
+          <div id="guide-job-pills" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1.5"></div>
         </div>
       </div>
 
-      <!-- Why This 6-Job & Crafting Synergy Order Works (Selected Job Spotlight) -->
+      <!-- Selected Job Spotlight (Role, Unlock, Crafting Synergy & Key Milestones) -->
       <div id="guide-job-spotlight" class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 sm:p-5"></div>
 
-      <!-- Dynamic Trust Setup Matrix (Adapts to 3, 4, or 5 Trusts & Selected Job) -->
+      <!-- Dynamic Trust Setup Matrix (Adapts to 3, 4, or 5 Trusts & Selected Job's Role) -->
       <div id="guide-trust-matrix" class="bg-slate-900/70 border border-indigo-900/50 rounded-xl p-4 sm:p-5 space-y-4"></div>
 
       <!-- Bracket-by-Bracket Leveling Zones + Synced Crafting Supply Checklists -->
@@ -642,79 +669,466 @@
     const JOBS_LIST = ["All Jobs", "WAR", "MNK", "WHM", "BLM", "RDM", "THF", "PLD", "DRK", "BST", "BRD", "RNG", "SAM", "NIN", "DRG", "SMN", "BLU", "COR", "PUP", "DNC", "SCH", "GEO", "RUN"];
     const SLOTS_LIST = ["Main / Sub", "Ranged / Ammo", "Head", "Neck", "Ear", "Body", "Hands", "Ring", "Back", "Waist", "Legs", "Feet", "Food / Consumable", "Material / Component"];
 
-    const DB_MASTER_VERSION = "cexi_master_suite_v2";
+    const DB_MASTER_VERSION = "cexi_master_suite_v3";
 
-    // --- 6-Job Progression & Crafting Guide Data (Strictly CatsEyeXI Content) ---
+    // --- Sword & Shield Paladin (PLD 75) Subjob Matrix Data ---
+    const PLD_SUBJOB_MATRIX = {
+      WAR: {
+        code: "PLD/WAR",
+        title: "Classic Physical & Provoke Tank",
+        reqStep: "Step 2 (WAR Lv. 37)",
+        summary: "The foundational Sword & Shield tank combination from Lv. 1 to 75. Gives you instant ranged snap-hate with Provoke, +25% Defense via Defender, and Shield Mastery TP generation.",
+        abilities: ["Provoke (30s instant hate)", "Defender (+25% DEF)", "Berserk (+25% ATK when DD tanking)", "Double Attack (Lv.25 Trait)", "Warcry (Party Attack Boost)"],
+        whenToUse: "EXP parties 1–75, physical NMs, Dynamis wave pulling, and learning hate control fundamentals."
+      },
+      BLU: {
+        code: "PLD/BLU",
+        title: "CatsEyeXI Enmity & AoE Snap-Hate King",
+        reqStep: "Step 8 (BLU Lv. 37)",
+        summary: "Arguably the strongest endgame and dungeon Sword & Shield Paladin subjob on CatsEyeXI! Blue Magic physical & breath spells generate massive volatile/cumulative enmity even when hitting for 0 damage, and Cocoon boosts your defense by +50%.",
+        abilities: ["Cocoon (+50% DEF buff!)", "Jettatura & Blank Gaze (High-enmity gaze hate)", "Geist Wall, Soporific & Sheep Song (AoE hate on entire links/camps!)", "Wild Carrot (Extra Cure)", "Head Butt (Stun) & Metallic Body (Stoneskin)"],
+        whenToUse: "HNM/Endgame tanking, AoE/multi-mob pulling, Allied Incursions, BCNMs, and holding hate off heavy 75 DDs."
+      },
+      RDM: {
+        code: "PLD/RDM",
+        title: "Magic Mitigation, Phalanx & Fast Cast Tank",
+        reqStep: "Step 5 (RDM Lv. 37)",
+        summary: "Turns your Sword & Shield Paladin into an unbreakable magical fortress. Phalanx shaves flat damage off every blocked hit, while Fast Cast II speeds up Flash, Cure IV, and Reprisal/Sentinel recasts.",
+        abilities: ["Phalanx (Flat damage reduction on every hit)", "Stoneskin & Blink (Absorbs big hits/spells)", "Fast Cast II (Faster Flash & Cure IV)", "Barspells & Magic Defense Bonus", "Dispel (Strip enemy buffs + Enmity)"],
+        whenToUse: "Magic-heavy HNMs, Citadel/Sky/Sea gods, kiting fights, and solo/low-man tough NMs."
+      },
+      NIN: {
+        code: "PLD/NIN",
+        title: "Hybrid Utsusemi Shadows + Shield Tank",
+        reqStep: "Step 9 (NIN Lv. 37)",
+        summary: "Combines Aegis/Kite/Koenig Shield blocks with Utsusemi: Ni & Ichi shadows. Your shield blocks normal melee swings to feed Shield Mastery TP while Utsusemi shadows completely absorb devastating single-target TP moves.",
+        abilities: ["Utsusemi: Ni (Lv.37 — 3 Shadows) & Ichi (Lv.12)", "Dual Wield (When solo farming with Joyeuse + Justice Sword)", "Tonko: Ni & Monomi: Ichi (Free Invis/Sneak with self-crafted tools)"],
+        whenToUse: "Bosses with lethal single-target TP moves, soloing NMs with Joyeuse, and Maat/BCNM challenges."
+      },
+      DNC: {
+        code: "PLD/DNC",
+        title: "Zero-Downtime Solo & Low-Man Sustain Tank",
+        reqStep: "Step 10 (DNC Lv. 37)",
+        summary: "Since Sword & Shield Paladin gains uninterrupted TP whenever its shield blocks an attack (Shield Mastery), PLD/DNC converts that endless TP into MP-free Curing Waltzes, Erase (Healing Waltz), and Haste/Drain Sambas.",
+        abilities: ["Drain Samba II (Party HP drain on every Sword swing)", "Curing Waltz II (Instant MP-free heals)", "Healing Waltz (Removes Paralyze/Silence/Poison/Blind)", "Haste Samba & Spectral Jig (Free Sneak + Invisible)"],
+        whenToUse: "Soloing NMs, farming Ventures, Campaign battles, and zero-downtime field grinding."
+      }
+    };
+
+    // --- All 22 CatsEyeXI Jobs Organized into 4 Strategic Self-Sufficiency Phases ---
     const GUIDE_JOBS = [
+      // PHASE 1: LOOT ENGINE & FOUNDATION SUBJOBS (STEPS 1-6)
       {
-        id: "THF",
-        stepNum: 1,
+        id: "THF", stepNum: 1, phase: 1, roleType: "THF",
         name: "1. Thief (THF)",
-        subtitle: "Loot & Treasure Hunter Engine",
-        subjobRec: "/WAR (Lv.18+) or /NIN (once leveled)",
-        whyOrder: "Leveling THF to 75 FIRST unlocks Treasure Hunter I (Lv.15) & Treasure Hunter II (Lv.45) (plus Thief's Knife / Assassin's Armlets for TH3–TH4). This triples your drop rates on hides, ores, silk, beetle shells, scorpion shells/claws, and testimonies so you can fund all 8 crafting guilds with zero AH dependency.",
-        craftFocus: "Bonecraft (Beetle/Scorpion Sets), Leathercraft (Hides/Cuir), Alchemy & Woodworking (Acid/Bloody/Sleep Bolts), Smithing (Daggers).",
-        keyUnlocks: ["Lv.15 Treasure Hunter I", "Lv.30 Sneak Attack + Trick Attack Combo", "Lv.45 Treasure Hunter II", "Lv.60 Assassin's Armlets (Dynamis) / Thief's Knife"]
+        subtitle: "Step 1 Mandatory: Lv.30+ First (Then 75) for Loot!",
+        subjobRec: "/WAR (Lv.18+), /NIN (Lv.30+), /DNC (Solo)",
+        whyOrder: "ALWAYS LEVEL THIEF FIRST TO AT LEAST LV. 30 (and 45/75 as you progress)! Treasure Hunter I (Lv.15), Steal, Gilfinder, and Treasure Hunter II (Lv.45) double/triple your drop rates on hides, beetle shells, scorpion claws, silk, ores, and subjob items. Farming materials on THF funds all 8 crafting guilds so your Paladin never pays Auction House markups.",
+        craftFocus: "Bonecraft (Beetle/Scorpion Armor), Leathercraft (Sheep/Dhalmel/Tiger/Coeurl Hides), Alchemy & Woodworking (Acid & Bloody Bolts), Smithing (Knives).",
+        keyUnlocks: ["Lv.15 Treasure Hunter I (Mandatory First Milestone)", "Lv.30 Sneak Attack + Trick Attack (Pause at 30 to unlock PLD, or push to 45/75!)", "Lv.45 Treasure Hunter II", "Lv.60 Assassin's Armlets (Dynamis TH+1) & Thief's Knife"],
+        gearProg: {
+          b_1_10: ["Bronze Knife +1 / Wax Sword", "Bronze Harness Set (Lv.7)", "Crossbow + Bone/Bronze Bolts"],
+          b_10_20: ["Brass Dagger +1 / Knife", "Bone Harness Set (Lv.16)", "Power Crossbow + Acid Bolts"],
+          b_20_30: ["Mercenary's Knife / Platoon Dagger", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1", "Acid Bolts (DEF Down proc!)"],
+          b_30_40: ["Federation Kris / Hornetneedle", "Noct Doublet / RSE Set", "Empress Hairpin (Valkurm NM)", "Acid Bolts"],
+          b_40_50: ["Bone Knife +1 / Beestinger", "Brigandine (Lv.45)", "Bloody Bolts (HP Drain!) + Acid Bolts"],
+          b_50_60: ["Rogue's AF Set + Scorpion Harness (Lv.57)", "Thief's Knife (TH+1)", "Sole Sushi"],
+          b_60_75: ["Assassin's Armlets + Thief's Knife (TH4!)", "Scorpion Harness +1 / Homam / Hecatomb", "Perdu/Blau Dolch (Evisceration)"]
+        }
       },
       {
-        id: "WAR",
-        stepNum: 2,
+        id: "WAR", stepNum: 2, phase: 1, roleType: "DD",
         name: "2. Warrior (WAR)",
-        subtitle: "Mandatory /WAR Subjob & Frontline",
-        subjobRec: "/MNK (Lv.1–18), /THF (Lv.30–60), /SAM or /NIN (Lv.60–75)",
-        whyOrder: "Leveling WAR second immediately gives you the mandatory Lv.37 /WAR subjob (Provoke, Berserk, Defender, Double Attack) required by PLD, SAM, NIN, and solo THF. Because your THF already farmed ores and leathers, Smithing & Bonecraft will hand-me-down full Scale, Beetle, Eisenbrust, and Haubergeon sets.",
-        craftFocus: "Smithing (Bronze -> Scale -> Eisenbrust -> Brigandine -> Haubergeon, Axes/Great Axes), Cooking (Meat Mithkabobs & Sole Sushi).",
-        keyUnlocks: ["Lv.5 Provoke", "Lv.15 Berserk", "Lv.25 Double Attack Trait", "Lv.30 Warcry / Aggressor (Lv.45)"]
+        subtitle: "Core PLD/WAR Subjob (Lv.37) & Shared Plate",
+        subjobRec: "/MNK (Lv.1–18), /THF (Lv.18–30), /SAM or /NIN (Lv.30–75)",
+        whyOrder: "Once THF is Lv.30+, level Warrior to at least Lv.37 (and 75 later). This unlocks the essential /WAR subjob (Provoke, Defender, Berserk, Double Attack) for your Sword & Shield Paladin AND lets you craft the Bronze, Scale, Beetle +1, and Eisenbrust armor sets that your Paladin will inherit directly.",
+        craftFocus: "Smithing (Bronze -> Scale -> Eisenbrust -> Brigandine -> Haubergeon, Swords/Axes), Cooking (Meat Mithkabobs & Sole Sushi).",
+        keyUnlocks: ["Lv.5 Provoke (Essential for PLD)", "Lv.15 Berserk & Defender (+25% DEF for PLD)", "Lv.25 Double Attack Trait", "Lv.37 Subjob Cap forLv.75 PLD/WAR"],
+        gearProg: {
+          b_1_10: ["Bronze Sword / Bronze Axe +1", "Bronze Harness Set (Lv.7 — Save for PLD!)", "Meat Jerky"],
+          b_10_20: ["Brass Xiphos / Brass Axe", "Scale Mail Set (Lv.18 — Save for PLD!)", "Selbina Milk"],
+          b_20_30: ["Centurion's Sword + Kite Shield (Skills up Sword & Shield early!)", "Beetle Harness +1 Set (Lv.21) ➔ Eisenbrust Set (Lv.29)"],
+          b_30_40: ["Centurion's Scale Mail / Eisenbrust Set", "Heavy Axe / Platoon Sword", "Meat Mithkabobs"],
+          b_40_50: ["Brigandine (Lv.45)", "Viking Axe / Honor Sword", "Sole Sushi"],
+          b_50_60: ["Fighter's AF Set + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)", "Raging Rush"],
+          b_60_75: ["Haubergeon +1 + Byakko's Haidate", "Maneater / Woodville's Axe / Joyeuse", "Steel Cyclone & Decimation"]
+        }
       },
       {
-        id: "PLD",
-        stepNum: 3,
-        name: "3. Paladin (PLD)",
-        subtitle: "Main Tank & Atonement / Cure Wall",
-        subjobRec: "/WAR (Lv.1–75) or /RDM & /NIN (Endgame Tanking)",
-        whyOrder: "Unlocked at Lv.30 via 'A Squire's Test' & 'A Knight's Test'. Shares 90% of its armor progression (Bronze, Scale, Eisenbrust, Brigandine, Gallant AF) directly with your just-leveled Warrior, saving huge inventory space and crafting materials.",
-        craftFocus: "Smithing (Heavy Plate Sets, Shields, Swords), Goldsmithing (Phalanx/Enmity Rings & Silver/Mythril Mail), Cooking (Defense/HP & MP Pies).",
-        keyUnlocks: ["Lv.30 Job Unlock (Southern San d'Oria)", "Lv.30 Holy Circle / Sentinel", "Lv.55 Rampart / Shield Mastery", "Lv.75 Chivalry & Atonement"]
+        id: "MNK", stepNum: 3, phase: 1, roleType: "DD",
+        name: "3. Monk (MNK)",
+        subtitle: "Early HP/Counter Subjob & Chi Blast NM Claimer",
+        subjobRec: "/WAR (Lv.1–75) or /NIN",
+        whyOrder: "Quickly taking MNK to Lv.18–37 gives you Boost, Dodge, Focus, Counter, Subtle Blow, and Max HP Up traits—a great early survival subjob in Valkurm Dunes and Qufim—plus BCNM/Skeleton-crushing blunt damage using Bonecraft & Leathercraft.",
+        craftFocus: "Bonecraft & Smithing (Baghnakhs, Cesti), Clothcraft & Leathercraft (Martial Arts Gis, Jujitsu Gi, Black Belt items).",
+        keyUnlocks: ["Lv.5 Dodge & Lv.10 Counter", "Lv.15 Boost & Chakra (Lv.35 Self-Heal)", "Lv.30 Subtle Blow Trait", "Lv.41 Chi Blast"],
+        gearProg: {
+          b_1_10: ["Bronze Knuckles +1", "Kenpogi Set / Bronze Harness", "Meat Jerky"],
+          b_10_20: ["Brass Baghnakhs +1", "Power Gi / Bone Harness Set", "Selbina Milk"],
+          b_20_30: ["Metal Knuckles / Poison Cesti", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1"],
+          b_30_40: ["Impact Knuckles", "Jujitsu Gi (Lv.37 — +4 ACC)", "Meat Mithkabobs"],
+          b_40_50: ["Cross-Counters / Bone Patas +1", "Brigandine (Lv.45) / Temple AF", "Brown Belt"],
+          b_50_60: ["Temple AF Set + Scorpion Harness (Lv.57)", "Ochiudo's Kote", "Asuran Fists Prep"],
+          b_60_75: ["Destroyers (Asuran Fists) + Black Belt", "Shura Togi / Melee Set", "Byakko's Haidate"]
+        }
       },
       {
-        id: "RDM",
-        stepNum: 4,
-        name: "4. Red Mage (RDM)",
-        subtitle: "Refresh / Fast Cast Engine & Solo God",
-        subjobRec: "/WHM or /BLM (Caster), /NIN or /WAR (Enspell Melee)",
-        whyOrder: "Leveling RDM fourth unlocks the powerhouse /RDM subjob for your Paladin (Fast Cast, Phalanx, Barspells, Stoneskin) and gives you an unkillable solo job for farming high-level NMs. Clothcraft and Goldsmithing (fed by THF silk/velvet/rainbow cloth drops) supply your entire caster wardrobe.",
-        craftFocus: "Clothcraft (Linen/Wool/Velvet/Vermillion Cloak), Goldsmithing (Jeweled/Electrum Rings & Torque), Alchemy (Silent Oil & Prism Powder), Cooking (Melon Pies).",
-        keyUnlocks: ["Lv.15 Fast Cast I", "Lv.33 Phalanx", "Lv.40 Convert", "Lv.41 Refresh (Massive Party/Trust Multiplier)"]
+        id: "WHM", stepNum: 4, phase: 1, roleType: "HEAL",
+        name: "4. White Mage (WHM)",
+        subtitle: "Teleport-Crag Taxi & /WHM Support Subjob",
+        subjobRec: "/BLM or /RDM or /SCH",
+        whyOrder: "Leveling WHM to Lv.37 unlocks all 6 Teleport scrolls (Holla, Dem, Mea, Vahzl, Yhoat, Altep), Sneak, Invisible, Reraise, Erase, and Curagas. This gives your RDM and SCH their core healing subjob and saves thousands of gil in travel time while farming crafting mats.",
+        craftFocus: "Clothcraft (Tunics, Robes, Cloaks), Woodworking (Clubs & Staves), Cooking (Melon Pies & Pineapple Juice), Alchemy (Medications).",
+        keyUnlocks: ["Lv.20 Sneak & Lv.25 Invisible", "Lv.32 Erase & Lv.33 Reraise", "Lv.36–38 Teleport-Holla/Dem/Mea/Yhoat/Altep/Vahzl", "Lv.40 Devine Seal / Cure IV"],
+        gearProg: {
+          b_1_10: ["Ash Club +1 / Maple Wand", "Freesword's / Tunic Set", "Melon Juice"],
+          b_10_20: ["Chestnut Wand / Holly Mace", "Cotton Tunic Set", "Silver Hairpin"],
+          b_20_30: ["Yew Wand +1", "Seer's Tunic Set (Lv.29)", "Melon Pies"],
+          b_30_40: ["Solid Wand / Blessed Hammer (Lv.41)", "RSE MP Set", " Pilgrim's Wand"],
+          b_40_50: ["Healer's AF Set", "Holy Maul / Elemental Staves (Lv.51)", "Melon Pie +1"],
+          b_50_60: ["Light Staff + Vermillion Cloak (Lv.59 — Refresh +1)", "Cure Clogs"],
+          b_60_75: ["Noble's Tunic / Cleric's Set", "Chatoyant/Light Staff", "Mjollnir / Hexa Strike"]
+        }
       },
       {
-        id: "SAM",
-        stepNum: 5,
-        name: "5. Samurai (SAM)",
-        subtitle: "2H Skillchain King & /SAM Subjob",
-        subjobRec: "/WAR (Lv.1–75) or /THF (Sneak Attack WS)",
-        whyOrder: "Unlocked at Lv.30 in Norg ('Forge Your Destiny' — use your THF/RDM to easily kill the Forger & Guardian Treant NMs). Provides the elite /SAM subjob (Meditate, Store TP, Hasso, Seigan + Third Eye) for your Warrior and Thief while reusing your Warrior's Beetle, Brigandine, and Haubergeon sets.",
-        craftFocus: "Smithing (Great Katanas, Haubergeon), Bonecraft (Beetle/Carapace/Scorpion Harness), Cooking (Sole Sushi / Meat Mithkabobs).",
-        keyUnlocks: ["Lv.30 Meditate (Instant TP)", "Lv.25 Hasso & Lv.35 Seigan", "Lv.60Hagakure / Tachi: Gekko & Kasha", "Lv.75 Soboro Sukehiro / Mythic"]
+        id: "RDM", stepNum: 5, phase: 1, roleType: "RDM",
+        name: "5. Red Mage (RDM)",
+        subtitle: "Elite PLD/RDM Subjob (Phalanx/Fast Cast) & Solo King",
+        subjobRec: "/WHM, /BLM, /NIN (Solo), or /WAR (Enspell Sword)",
+        whyOrder: "Taking RDM to Lv.37+ (and 75) unlocks the premier magic-tanking subjob for your Sword & Shield Paladin: Phalanx (Lv.33), Stoneskin, Blink, Fast Cast II, Barspells, and Dispel. Plus, RDM levels Sword & Shield skills alongside your Paladin!",
+        craftFocus: "Clothcraft (Velvet/Silk/Vermillion Cloak), Goldsmithing (Electrum Rings, Torque), Alchemy (Silent Oil & Prism Powder), Smithing (Swords).",
+        keyUnlocks: ["Lv.15 Fast Cast I (Lv.35 Fast Cast II)", "Lv.28 Stoneskin & Lv.33 Phalanx (Crucial for PLD/RDM!)", "Lv.40 Convert & Lv.41 Refresh", "Lv.75 Chainspell Solo NM Farmer"],
+        gearProg: {
+          b_1_10: ["Wax Sword +1 + Lauan Shield", "Tunic Set", "Melon Juice"],
+          b_10_20: ["Brass Xiphos +1", "Cotton Tunic Set / Bone Harness (Melee)", "Selbina Milk"],
+          b_20_30: ["Centurion's Sword + Kite Shield", "Seer's Tunic Set (Lv.29) or Beetle Set +1"],
+          b_30_40: ["Fencing Degen (Lv.41 AF1)", "Glamor Jupon / Electrum Rings", "Melon Pies"],
+          b_40_50: ["Brigandine (Melee) & Warlock's AF Set", "Elemental Staves (Lv.51)"],
+          b_50_60: ["Warlock's Chapeau (AF Head) + Vermillion Cloak (Lv.59)", "Joyeuse (Lv.70 Prep)"],
+          b_60_75: ["Duelist's Chapeau + Dalmatica", "Joyeuse + Genbu's Shield", "Savage Blade"]
+        }
       },
       {
-        id: "NIN",
-        stepNum: 6,
-        name: "6. Ninja (NIN)",
-        subtitle: "Utsusemi Shadow Tank, Dual Wield & Free Tools",
-        subjobRec: "/WAR (Lv.1–75) or /RDM (Enmity/Fast Cast)",
-        whyOrder: "Saved for #6 so your Woodworking (39+), Clothcraft (54+), and Alchemy (39+) are already leveled! Instead of going broke buying Shihei, Shinobi-Tabi, and Elemental Wheel tools on the AH, you craft 33-stack/99-stack tools for pennies and unlock the game-changing /NIN subjob (Dual Wield + Utsusemi) for THF, WAR, SAM, and RDM.",
-        craftFocus: "Woodworking (Shihei Lv.39, Uchitake Lv.33, Kaginawa), Clothcraft (Shinobi-Tabi Lv.54), Alchemy (Black Ink, Firesand), Smithing (Katanas).",
-        keyUnlocks: ["Lv.10 Dual Wield I (Lv.25 II, Lv.45 III)", "Lv.12 Utsusemi: Ichi (Korroloka Leech Quest)", "Lv.37 Utsusemi: Ni", "Lv.40 Elemental Wheel Ninjutsu"]
+        id: "BLM", stepNum: 6, phase: 1, roleType: "CASTER",
+        name: "6. Black Mage (BLM)",
+        subtitle: "Instant Warp / Escape Taxi & Elemental Burst",
+        subjobRec: "/RDM or /WHM or /SCH",
+        whyOrder: "Getting BLM to Lv.17 unlocks Warp and Lv.29 unlocks Escape (instant dungeon exit when farming coffer keys or ore in Gusgen/Garlaige/Crawlers' Nest). Reuses 100% of your WHM/RDM Clothcraft and Goldsmithing caster sets.",
+        craftFocus: "Clothcraft (Caster Robes & Hats), Goldsmithing (INT Rings & Earrings), Woodworking (Elemental Staves), Cooking (Rolanberry/Melon Pies).",
+        keyUnlocks: ["Lv.17 Warp (Instant Home Point)", "Lv.29 Escape (Instant Dungeon Exit)", "Lv.40 Warp II (Party Warp)", "Lv.50 Ancient Magic (Freeze, Tornado, Quake, Burst, Flood, Flare)"],
+        gearProg: {
+          b_1_10: ["Ash Staff / Maple Wand", "Freesword's Robe Set", "Melon Juice"],
+          b_10_20: ["Yew Wand +1", "Baron's Saio / Cotton Set", "2x Eremite's Ring (+INT)"],
+          b_20_30: ["Seer's Tunic Set (Lv.29)", "Moldavite Earring (Bibiki NM)", "Melon Pies"],
+          b_30_40: ["Solid Wand", "Black Cloak / RSE INT Set", "Wizard's Petasos"],
+          b_40_50: ["Wizard's AF Set", "Elemental Staves (Ice/Thunder/Dark at Lv.51)"],
+          b_50_60: ["Vermillion Cloak (Lv.59) + Sorcerer's Petasos", "Penitent's Rope"],
+          b_60_75: ["Weskit + Sorcerer's Tonban + Novio Earring", "Chatoyant Staff"]
+        }
+      },
+
+      // PHASE 2: ULTIMATE GOAL — SWORD & SHIELD PALADIN + CORE TANK SUBJOBS (STEPS 7-10)
+      {
+        id: "PLD", stepNum: 7, phase: 2, roleType: "PLD",
+        name: "7. Paladin (PLD) ★ GOAL",
+        subtitle: "ULTIMATE GOAL: Master Sword & Shield Paladin (1–75)",
+        subjobRec: "/WAR (Physical), /BLU (AoE/Enmity King), /RDM (Magic/Phalanx), /NIN (Shadows), /DNC (Solo)",
+        whyOrder: "YOUR PRIMARY MAIN JOB! Because you leveled THF (Lv.30+ for loot) and WAR/RDM first, you arrive at Paladin with all your Bronze, Scale, Beetle +1, and Eisenbrust sets already crafted, your Sword & Shield skills primed, and your core tank subjobs ready. Keep your Sword and Shield capped every single level!",
+        craftFocus: "Smithing (Heavy Plate Armor, Longswords, Kite/Heater/Tower Shields), Goldsmithing (Phalanx/Enmity Rings & Silver/Mythril Mail), Leathercraft (Shield Backings & Cuir), Cooking (Tanking Food & Pies).",
+        keyUnlocks: ["Lv.30 Unlock Quest ('A Squire's Test' & 'A Knight's Test')", "Lv.30 Sentinel & Holy Circle", "Lv.37 Flash (Massive Blind + Enmity)", "Lv.55 Shield Mastery (Gain TP & Uninterrupted Casting on Shield Block!)", "Lv.62 Rampart, Lv.71 Savage Blade, Lv.75 Chivalry & Atonement"],
+        gearProg: {
+          b_1_10: [" Wax Sword +1 / Bronze Sword +1", "Lauan Shield ➔ Marine Shield", "Bronze Harness Set (Lv.7)"],
+          b_10_20: ["Brass Xiphos +1 ➔ Flame Sword (Lv.18)", "Mahogany Shield", "Scale Mail Set (Lv.18)"],
+          b_20_30: ["Centurion's Sword + Kite Shield", "Beetle Harness +1 Set (Lv.21) ➔ Eisenbrust Set (Lv.29 — Massive DEF!)"],
+          b_30_40: ["gladiator's/Centurion's Sword + Heater/Kite Shield", "Eisenbrust Set (Lv.29) / Kampfdorn", "2x Knight's Ring (Phalanx)"],
+          b_40_50: ["Honor Sword (Lv.42 AF1) + Knight's Shield / Buckler", "Brigandine (Lv.45) + Mythril Plate", "2x Rubious Ring"],
+          b_50_60: ["Gallant Set (AF1–AF3) + Royal Knight's Chainmail (Lv.55)", "Palmerin's Shield / Koenig Shield", "Parade Gorget (Self-Refresh!)"],
+          b_60_75: ["Joyeuse / Hauteclaire / Excalibur + Aegis / Ochain / Koenig Shield", "Valor / Koenig / Homam Set + Haubergeon +1 (DD Set)", "Savage Blade & Atonement"]
+        }
       },
       {
-        id: "ALL",
-        stepNum: 7,
-        name: "All 6 Jobs Combined",
-        subtitle: "Master Shared Gear & Crafting Synergy",
-        subjobRec: "Full Subjob Matrix (/WAR, /THF, /RDM, /SAM, /NIN)",
-        whyOrder: "Displays the complete unified gear pipeline so you can craft each bracket's armor set once, pass it across THF -> WAR -> PLD -> RDM -> SAM -> NIN, and store sets cleanly in your CatsEyeXI Mog Wardrobes.",
-        craftFocus: "All 8 Guilds synchronized with THF Treasure Hunter farming.",
-        keyUnlocks: ["80-Slot Base Bag + Mog Wardrobes", "5 Simultaneous Trusts (RoV 2-13)", "RoV 2-30 Trust Refresh+1 & Attack Bonus"]
+        id: "BLU", stepNum: 8, phase: 2, roleType: "PLD",
+        name: "8. Blue Mage (BLU)",
+        subtitle: "Unlocks PLD/BLU (#1 CatsEyeXI Enmity & Cocoon Subjob)",
+        subjobRec: "/NIN, /WAR, /THF (Cannonball), or /RDM",
+        whyOrder: "Leveling BLU to Lv.37+ (and 75) gives your Sword & Shield Paladin the single most powerful tanking subjob on CatsEyeXI: Cocoon (+50% DEF), Jettatura, Blank Gaze, Geist Wall, Sheep Song, and Soporific for instant single-target and AoE hate. Plus, BLU uses Swords just like PLD!",
+        craftFocus: "Smithing (Swords), Bonecraft (Beetle & Scorpion Harness), Clothcraft & Leathercraft (Magus AF materials), Cooking (Sushi & Meat).",
+        keyUnlocks: ["Lv.8 Cocoon (+50% DEF) & Foot Kick", "Lv.8 Pollen & Lv.26 Wild Carrot (Self-Cures)", "Lv.18 Head Butt (Stun) & Sheep Song (AoE Hate)", "Lv.30 Blank Gaze, Geist Wall & Jettatura (Snap Enmity for PLD/BLU!)"],
+        gearProg: {
+          b_1_10: ["Wax Sword +1", "Bronze Harness Set (Lv.7)", "Learn Pollen, Foot Kick, Cocoon, Sprout Smack"],
+          b_10_20: ["Brass Xiphos +1", "Scale Mail / Bone Set", "Learn Head Butt, Battle Dance, Bludgeon, Sheep Song"],
+          b_20_30: ["Centurion's Sword", "Beetle Harness +1 Set (Lv.21)", "Learn Wild Carrot, Claw Cyclone, Soporific"],
+          b_30_40: ["Servers/Hunting Sword", "Eisenbrust / Jujitsu Gi", "Learn Blank Gaze, Geist Wall, Jettatura, Magic Fruit"],
+          b_40_50: ["Immortal's Scimitar (AF1)", "Brigandine (Lv.45)", "Learn Refueling (Self-Haste), Sickle Slash"],
+          b_50_60: ["Magus AF Set (Magus Jubbah) + Scorpion Harness (Lv.57)", "Learn Frightful Roar, Disseverment"],
+          b_60_75: ["Tizona / Perdu Hanger + Joyeuse", "Homam /Mirage Set + Crimson Cuisses", "Savage Blade & Expiacion"]
+        }
+      },
+      {
+        id: "NIN", stepNum: 9, phase: 2, roleType: "DD",
+        name: "9. Ninja (NIN)",
+        subtitle: "Unlocks PLD/NIN (Utsusemi Shadows) & Self-Crafted Tools",
+        subjobRec: "/WAR (Lv.1–75), /DNC, or /RDM",
+        whyOrder: "By waiting until Phase 2 to level NIN, your Woodworking (Lv.39 Shihei, Lv.33 Uchitake), Clothcraft (Lv.54 Shinobi-Tabi), and Alchemy (Black Ink/Firesand) are already skilled up! You craft 33/99-stacks of Ninjutsu tools for pennies and unlock the vital /NIN subjob for PLD, THF, WAR, RDM, and SAM.",
+        craftFocus: "Woodworking (Shihei Lv.39, Uchitake Lv.33), Clothcraft (Shinobi-Tabi Lv.54), Alchemy (Black Ink, Firesand), Smithing (Katanas).",
+        keyUnlocks: ["Lv.10 Dual Wield I (Lv.25 II, Lv.45 III)", "Lv.12 Utsusemi: Ichi (Korroloka Leech Quest)", "Lv.37 Utsusemi: Ni (Mandatory for PLD/NIN & THF/NIN!)", "Lv.40 Elemental Ninjutsu Wheel"],
+        gearProg: {
+          b_1_10: ["Kunai +1 / Wakizashi", "Bronze Harness Set", "Meat Jerky"],
+          b_10_20: ["Suzume + Dual Wield", "Bone Harness Set (Lv.16)", "Utsusemi: Ichi + Self-Crafted Shihei"],
+          b_20_30: ["iba / Kodachi +1", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1"],
+          b_30_40: ["Fudo x2 (Lv.34)", "Jujitsu Gi (Lv.37)", "Utsusemi: Ni (Lv.37)"],
+          b_40_50: ["Anju & Zushio (AF1)", "Brigandine (Lv.45)", "Self-Crafted Elemental Tools + Sole Sushi"],
+          b_50_60: ["Ninja AF Set + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)", "Koga Tekko Prep"],
+          b_60_75: ["Senjuinrikio + Perdu Blade", "Haubergeon +1 + Byakko's Haidate + Dusk Gloves", "Blade: Jin & Blade: Ku"]
+        }
+      },
+      {
+        id: "DNC", stepNum: 10, phase: 2, roleType: "DD",
+        name: "10. Dancer (DNC)",
+        subtitle: "Unlocks PLD/DNC (MP-Free Waltzes, Erase & Sambas)",
+        subjobRec: "/NIN or /WAR or /THF",
+        whyOrder: "Completes your Paladin's 5-subjob arsenal! Because Sword & Shield Paladin generates constant TP every time its shield blocks (Shield Mastery), PLD/DNC turns blocked hits into free Curing Waltzes, Healing Waltz (Erase), Drain Samba II, and Haste Samba. Shares all Dagger & Leather/Bone gear with THF.",
+        craftFocus: "Smithing & Bonecraft (Daggers, Beetle/Scorpion Harness), Leathercraft & Clothcraft (Dancer Casaque/Tights), Cooking (Meat & Sushi).",
+        keyUnlocks: ["Lv.5 Drain Samba (Lv.35 Drain Samba II)", "Lv.15 Curing Waltz (Lv.30 Curing Waltz II)", "Lv.25 Spectral Jig (Free Sneak & Invisible!)", "Lv.35 Healing Waltz (Erase) & Haste Samba (Lv.45)"],
+        gearProg: {
+          b_1_10: ["Bronze Knife +1", "Bronze Harness Set", "Drain Samba"],
+          b_10_20: ["Brass Dagger +1", "Bone Harness Set (Lv.16)", "Curing Waltz"],
+          b_20_30: ["Mercenary's Knife", "Beetle Harness +1 Set (Lv.21)", "Spectral Jig (Lv.25)"],
+          b_30_40: ["Hornetneedle / Bone Knife", "Noct Doublet / Jujitsu Gi", "Curing Waltz II & Healing Waltz"],
+          b_40_50: ["War Hoop (AF1)", "Brigandine (Lv.45)", "Haste Samba (Lv.45)"],
+          b_50_60: ["Dancer's AF Set + Scorpion Harness (Lv.57)", "Dancing Edge"],
+          b_60_75: ["Blau Dolch + Joyeuse", "Etoile Set + Rapparee Harness", "Evisceration & Pyrrhic Kleos"]
+        }
+      },
+
+      // PHASE 3: PHYSICAL & HYBRID POWERHOUSES (STEPS 11-17)
+      {
+        id: "SAM", stepNum: 11, phase: 3, roleType: "DD",
+        name: "11. Samurai (SAM)",
+        subtitle: "2H Skillchain Master & /SAM Meditate Subjob",
+        subjobRec: "/WAR, /THF, or /NIN",
+        whyOrder: "Unlocked at Lv.30 in Norg ('Forge Your Destiny'). Gives your WAR, DRK, and DRG the elite /SAM subjob (Meditate, Hasso, Seigan + Third Eye, Store TP) and reuses 100% of your WAR/PLD Scale, Beetle, Brigandine, and Haubergeon armor sets.",
+        craftFocus: "Smithing (Great Katanas, Haubergeon +1), Bonecraft (Scorpion Harness), Cooking (Sole Sushi & Meat Mithkabobs).",
+        keyUnlocks: ["Lv.25 Hasso (+10% Haste/STR with 2H) & Lv.35 Seigan", "Lv.30 Meditate (Instant 100%+ TP)", "Lv.60 Tachi: Gekko / Yukikaze", "Lv.71 Tachi: Kasha (EVWS)"],
+        gearProg: {
+          b_1_10: [" Mumeito / Wax Sword", "Bronze Harness Set (Lv.7)", "Meat Jerky"],
+          b_10_20: ["Tachi", "Scale Mail Set (Lv.18)", "Selbina Milk"],
+          b_20_30: ["Odachi / Platoon Tachi", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1"],
+          b_30_40: ["Uchigatana +1", "Jujitsu Gi (Lv.37) / Centurion's Scale", "Meat Mithkabobs"],
+          b_40_50: ["Magoroku (AF1) / Soboro Sukehiro (Lv.50 Multi-Hit!)", "Brigandine (Lv.45)"],
+          b_50_60: ["Myochin AF Set + Haubergeon (Lv.59)", "Tachi: Yukikaze & Gekko"],
+          b_60_75: ["Hagun / Soboro Sukehiro / Amanomurakumo", "Haubergeon +1 + Byakko's Haidate", "Tachi: Kasha"]
+        }
+      },
+      {
+        id: "DRK", stepNum: 12, phase: 3, roleType: "DD",
+        name: "12. Dark Knight (DRK)",
+        subtitle: "Stun, Last Resort, Guillotine & Heavy Plate Share",
+        subjobRec: "/SAM, /WAR, /THF, or /NIN",
+        whyOrder: "Unlocked at Lv.30 ('Blade of Darkness'). Shares all heavy plate and mail sets (Scale, Beetle +1, Eisenbrust, Brigandine, Haubergeon) directly with your Paladin and Warrior while Smithing crafts your Scythes and Great Swords.",
+        craftFocus: "Smithing (Scythes, Great Swords, Eisenbrust, Haubergeon), Alchemy (Poison Potions), Cooking (Meat Mithkabobs & Sushi).",
+        keyUnlocks: ["Lv.10 Attack Bonus Traits", "Lv.15 Last Resort & Lv.30 Souleater", "Lv.37 Stun (Dark Magic)", "Lv.60 Guillotine & Lv.71 Spiral Hell / Ground Strike"],
+        gearProg: {
+          b_1_10: ["Bronze Zaghnal / Wax Sword", "Bronze Harness Set", "Meat Jerky"],
+          b_10_20: ["Brass Zaghnal / Claymore", "Scale Mail Set (Lv.18)", "Selbina Milk"],
+          b_20_30: ["Platoon Zaghnal", "Beetle Harness +1 Set (Lv.21) ➔ Eisenbrust (Lv.29)"],
+          b_30_40: ["Heavy Halberd / Scythe", "Eisenbrust Set (Lv.29)", "Stun (Lv.37)"],
+          b_40_50: ["Raven Scythe (AF1)", "Brigandine (Lv.45)", "Sole Sushi"],
+          b_50_60: ["Chaos AF Set + Haubergeon (Lv.59)", "Guillotine & Cross Reaper"],
+          b_60_75: ["Tredecim Scythe / Apocalypse / Ragnarok", "Haubergeon +1 + Homam / Ares Set"]
+        }
+      },
+      {
+        id: "DRG", stepNum: 13, phase: 3, roleType: "DD",
+        name: "13. Dragoon (DRG)",
+        subtitle: "Wyvern Healing Breaths, Penta Thrust & /SAM Synergy",
+        subjobRec: "/SAM, /WAR, /WHM, or /RDM (Solo Healing Breath Triggers!)",
+        whyOrder: "Unlocked at Lv.30 ('The Holy Crest'). When paired with /RDM or /WHM, casting any low-MP spell triggers your Wyvern's Healing Breath for unstoppable soloing; paired with /SAM, Penta Thrust and Impulse Drive shred Colibri and NMs.",
+        craftFocus: "Woodworking & Smithing (Lances/Spears), Bonecraft (Beetle & Scorpion Harness), Leathercraft (Cuir/Scale).",
+        keyUnlocks: ["Lv.10 Jump, Lv.35 High Jump, Lv.50 Super Jump", "Lv.20 Wyvern Call & Healing Breath", "Lv.49 Penta Thrust", "Lv.71 Impulse Drive (EVWS)"],
+        gearProg: {
+          b_1_10: ["Bronze Spear +1", "Bronze Harness Set", "Meat Jerky"],
+          b_10_20: ["Brass Spear +1", "Scale Mail / Bone Set", "Selbina Milk"],
+          b_20_30: ["Platoon Lance", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1"],
+          b_30_40: ["RSE / Centurion's Scale Mail", "Lance +1", "Meat Mithkabobs"],
+          b_40_50: ["Peregrine (AF1)", "Brigandine (Lv.45)", "Penta Thrust (Lv.49)"],
+          b_50_60: ["Drachen AF Set (Drachen Armet enhances Wyvern Breaths!) + Scorpion Harness (Lv.57)"],
+          b_60_75: ["Thalassocrat / Gungnir + Love Halberd", "Homam Set + Ares's Cuirass", "Impulse Drive"]
+        }
+      },
+      {
+        id: "RNG", stepNum: 14, phase: 3, roleType: "RNG",
+        name: "14. Ranger (RNG)",
+        subtitle: "Woodworking/Alchemy Ammo Engine & Barrage Sniper",
+        subjobRec: "/NIN, /WAR, or /SAM",
+        whyOrder: "Unlocked at Lv.30 ('Painful Memory'). Because your Woodworking, Smithing, Bonecraft, and Alchemy guilds are already leveled from making THF bolts and NIN tools, you can self-craft 99-stacks of Arrows, Bolts, and Bullets for fraction of AH cost!",
+        craftFocus: "Woodworking (Bows, Crossbows, Arrow Shafts), Alchemy (Acid/Bloody/Sleep/Venom Bolts & Bullets), Bonecraft (Arrowheads & Scorpion Harness).",
+        keyUnlocks: ["Lv.10 Wide Scan & Sharpshot", "Lv.30 Barrage (Multi-Shot Burst!)", "Lv.55 Sidewinder & Slug Shot", "Lv.71 Empyreal Arrow & Detonator (EVWS)"],
+        gearProg: {
+          b_1_10: ["Shortbow +1 + Wooden Arrows", "Bronze Harness Set", "Crossbow + Bolts"],
+          b_10_20: ["Power Bow / Power Crossbow", "Bone Harness Set (Lv.16)", "Acid Bolts"],
+          b_20_30: ["Great Bow +1 + Beetle Arrows", "Beetle Harness +1 Set (Lv.21)", "Noct Set"],
+          b_30_40: ["Battle Bow +1 + Horn Arrows", "Noct Doublet +1 Set", "Barrage (Lv.30)"],
+          b_40_50: ["Sniping Bow (AF1) + Demon/Scorpion Arrows", "Brigandine / Hunter's AF Set"],
+          b_50_60: ["Hunter's Jerkin (AF Body) + Scorpion Harness (Lv.57)", "Sidewinder / Slug Shot"],
+          b_60_75: ["Eurytos' Bow / Culverin / Annihilator", "Scout's Set + Kirin's Osode", "Vulcan's Staff"]
+        }
+      },
+      {
+        id: "COR", stepNum: 15, phase: 3, roleType: "RNG",
+        name: "15. Corsair (COR)",
+        subtitle: "EXP/Chaos/Samurai Rolls & Elemental Quick Draw",
+        subjobRec: "/NIN, /RNG, /WAR, or /WHM",
+        whyOrder: "Unlocked at Lv.30 ('Luck of the Draw'). Shares all Ranged/Accuracy gear and Alchemy bullets with Ranger while providing party-wide Phantom Rolls (Corsair's EXP Roll, Chaos Attack Roll, Evoker's Refresh Roll) and Quick Draw elemental cards.",
+        craftFocus: "Alchemy & Smithing (Bronze/Iron/Silver/Steel Bullets & Guns), Woodworking (Trump Cards), Cooking (Pot-au-feu / Sushi).",
+        keyUnlocks: ["Lv.5 Phantom Roll & Corsair's Roll (+EXP!)", "Lv.14 Chaos Roll (+ATK) & Lv.37 Samurai Roll (Store TP)", "Lv.40 Quick Draw (Elemental Card Nukes + Dispel/Enhance)", "Lv.52 Evoker's Roll (Party Refresh) & Lv.55 Slug Shot"],
+        gearProg: {
+          b_1_10: ["Wax Sword + Bandolier/Pistol", "Bronze Harness Set", "Bronze Bullets"],
+          b_10_20: ["Power Crossbow + Acid Bolts", "Bone Harness Set (Lv.16)", "Chaos Roll"],
+          b_20_30: ["Military Gun + Bullets", "Beetle Harness +1 Set (Lv.21)", "Noct Set"],
+          b_30_40: ["Republic Gun + Silver Bullets", "Noct Doublet +1", "Samurai Roll (Lv.37)"],
+          b_40_50: ["Trump Gun (AF1) + Elemental Cards", "Brigandine (Lv.45)", "Quick Draw (Lv.40)"],
+          b_50_60: ["Corsair's Tricorne & Frac (AF Set) + Scorpion Harness (Lv.57)", "Slug Shot"],
+          b_60_75: ["Martial Gun / Coffinmaker + Joyeuse", "Commodore Set + Denon/Skadi", "Leaden Salute & Detonator"]
+        }
+      },
+      {
+        id: "BST", stepNum: 16, phase: 3, roleType: "PET",
+        name: "16. Beastmaster (BST)",
+        subtitle: "Open-World Solo Master, Axes & Jug Pets",
+        subjobRec: "/WHM, /NIN, or /DNC",
+        whyOrder: "Unlocked at Lv.30 ('Save My Son'). Reuses your Warrior's 1H Axes and heavy/medium armor sets (Scale, Beetle +1, Brigandine, Haubergeon) while Cooking & Alchemy craft Pet Food Biscuits and Jugs.",
+        craftFocus: "Smithing (1H Axes & Haubergeon), Cooking (Pet Food Alpha–Zeta Biscuits & Broth Jugs), Goldsmithing & Clothcraft (CHR Gear for Charm).",
+        keyUnlocks: ["Lv.1 Charm & Gauge", "Lv.23 Call Beast (Jug Pets)", "Lv.35 Leave & Tame", "Lv.71 Decimation (EVWS)"],
+        gearProg: {
+          b_1_10: ["Bronze Axe +1", "Bronze Harness Set", "Bird/Hare/Sheep Charm"],
+          b_10_20: ["Brass Axe +1", "Scale Mail Set (Lv.18)", "CHR Rings"],
+          b_20_30: ["Centurion's Axe", "Beetle Harness +1 Set (Lv.21)", "Call Beast Jugs"],
+          b_30_40: ["Battleaxe +1", "Eisenbrust / Centurion's Set", "Pet Food Delta"],
+          b_40_50: ["Barbarian's Axe (AF1) / Viking Axe", "Brigandine (Lv.45) + Monster Gaiters"],
+          b_50_60: ["Beast AF Set (CHR!) + Haubergeon (Lv.59)", "Rampage"],
+          b_60_75: ["Maneater / Temperance Axe + Gaudy Harness", "Monster/Byakko's Set", "Decimation"]
+        }
+      },
+      {
+        id: "PUP", stepNum: 17, phase: 3, roleType: "PET",
+        name: "17. Puppetmaster (PUP)",
+        subtitle: "Customizable Automaton (WHM/BLM/RNG/PLD Frames)",
+        subjobRec: "/WAR, /MNK, /NIN, or /DNC",
+        whyOrder: "Unlocked at Lv.30 ('No Strings Attached'). Shares Hand-to-Hand weapons and martial arts gear with Monk while your Goldsmithing, Alchemy, Smithing, and Woodworking guilds craft Automaton Attachments and Lubricant.",
+        craftFocus: "Goldsmithing, Smithing & Alchemy (Automaton Oil +1/+2, Attachments, Animator), Clothcraft (Puppetry AF).",
+        keyUnlocks: ["Lv.1 Activate & Maneuvers", "Lv.10 Harlequin Frame -> Lv.20 Valoredge (Tank) / Sharpshot (RNG) / Stormwaker (RDM)", "Lv.30 Soulsoother (WHM Head) & Spiritreaver (BLM Head)", "Lv.60 Stringing Pummel"],
+        gearProg: {
+          b_1_10: ["Bronze Cesti +1", "Tunic / Kenpogi Set", "Harlequin Automaton"],
+          b_10_20: ["Brass Baghnakhs +1", "Bone Harness Set", "Automaton Oil"],
+          b_20_30: ["Metal Knuckles", "Beetle Harness +1 Set (Lv.21)", "Valoredge / Stormwaker Frame"],
+          b_30_40: ["Impact Knuckles", "Jujitsu Gi (Lv.37)", "Soulsoother / Spiritreaver Heads"],
+          b_40_50: ["Turbo Charger + Tension Spring", "Brigandine (Lv.45) / Patas"],
+          b_50_60: ["Puppetry AF Set (Puppetry Taj & Babouches) + Scorpion Harness (Lv.57)"],
+          b_60_75: ["Hades Sainti / Kenkonken", "Pantin Set + Usukane", "Stringing Pummel"]
+        }
+      },
+
+      // PHASE 4: SUPPORT, PET & CATSEYEXI CUSTOM LV.75 JOBS (STEPS 18-22)
+      {
+        id: "BRD", stepNum: 18, phase: 4, roleType: "HEAL",
+        name: "18. Bard (BRD)",
+        subtitle: "Ultimate Party Buffer (Marches, Madrigals, Ballads)",
+        subjobRec: "/WHM, /RDM, or /NIN",
+        whyOrder: "Unlocked at Lv.30 ('Path of the Bard'). Woodworking, Bonecraft, and Goldsmithing craft your Wind and String instruments (Cornette +1, Flute +1, Horn +1) and CHR rings, making you the #1 most requested support job for Merit and Endgame parties.",
+        craftFocus: "Woodworking & Bonecraft (Flutes, Cornettes, Horns, Harps), Goldsmithing (CHR Rings), Clothcraft (Sha'ir Manteel).",
+        keyUnlocks: ["Lv.15 Minuet / Madrigal / Paeon", "Lv.25 Mage's Ballad (Party MP Refresh!)", "Lv.29 Advancing March & Lv.60 Victory March", "Lv.33 Elegy (Enemy Slow) & Finale (Dispel)"],
+        gearProg: {
+          b_1_10: ["Bronze Knife + Flute +1 / Maple Harp +1", "Tunic Set"],
+          b_10_20: ["Cornette +1 (Minuet +1)", "Cotton Set + CHR Rings"],
+          b_20_30: ["Traversiere +1 (Madrigal +1)", "Seer's Set", "Mage's Ballad (Lv.25)"],
+          b_30_40: ["Faerie Piccolo / Horn +1", "Electrum Rings + CHR Cape"],
+          b_40_50: ["Paper Knife (AF1) + Rose Harp +1", "Choral AF Set"],
+          b_50_60: ["Choral Roundlet & Cannions + Elemental Staves (Light/Earth/Wind)"],
+          b_60_75: ["Sha'ir Manteel + Marduk / Bards Set", "Gjallarhorn / Relic Horn", "Victory March + Ballad II"]
+        }
+      },
+      {
+        id: "SMN", stepNum: 19, phase: 4, roleType: "CASTER",
+        name: "19. Summoner (SMN)",
+        subtitle: "Prime Avatar Blood Pacts & Fenrir/Diabolos BCNMs",
+        subjobRec: "/WHM, /RDM, or /SCH",
+        whyOrder: "Unlocked at Lv.30 ('I Can Hear a Rainbow'). Because your Sword & Shield Paladin and RDM are already Lv.75, you can easily clear all 6 Elemental Prime Avatar BCNMs plus Fenrir and Diabolos! Shares all Elemental Staves and Clothcraft gear with WHM/BLM.",
+        craftFocus: "Woodworking (Elemental Staves reduce Avatar Perpetuation Cost!), Clothcraft (Austere/Penance Robes, Evoker's AF), Goldsmithing (Evoker's Ring).",
+        keyUnlocks: ["Lv.1 Carbuncle", "Lv.20 Mini-Tuning Fork Avatars (or Lv.65+ Prime Trials)", "Lv.51 Elemental Staves (-Perpetuation Cost!)", "Lv.70 Predator Claws / Eclipse Bite / Spinning Dive"],
+        gearProg: {
+          b_1_10: ["Ash Staff / Wand", "Tunic Set", "Carbuncle Ruby"],
+          b_10_20: ["Yew Wand +1", "Cotton Set", "Astral Ring x2"],
+          b_20_30: ["Seer's Tunic Set (Lv.29)", "Carbuncle Mitts (NM)", "Melon Pies"],
+          b_30_40: ["Kukulkan's Staff", "Austere Robe (Lv.50 Prep)"],
+          b_40_50: ["Kukulkan's Staff (AF1)", "Austere Set (Lv.50 Summoning Skill!)"],
+          b_50_60: ["Elemental Staves (Lv.51 — Mandatory!) + Evoker's AF Set + Evoker's Ring"],
+          b_60_75: ["Chatoyant Staff + Summoner's Doublet/Horn + Yinyang Robe", "Predator Claws"]
+        }
+      },
+      {
+        id: "SCH", stepNum: 20, phase: 4, roleType: "CASTER",
+        name: "20. Scholar (SCH)",
+        subtitle: "Light/Dark Arts Strategems, Sublimation & Helix/Weather",
+        subjobRec: "/RDM, /WHM, or /BLM",
+        whyOrder: "Unlocked at Lv.30 ('A Little Knowledge' in Eldieme [S]). Reuses 100% of your WHM, BLM, and RDM Clothcraft robes, Elemental Staves, and Goldsmithing rings while providing Sublimation (MP battery) and Accession (AoE Stoneskin/Phalanx/Sneak/Invis).",
+        craftFocus: "Clothcraft (Scholar AF, Vermillion Cloak, Errant Set), Woodworking (Elemental Staves), Cooking (Pies).",
+        keyUnlocks: ["Lv.10 Light Arts & Dark Arts", "Lv.18helix Spells & Weather Storms (Sandstorm–Voidstorm)", "Lv.35 Sublimation (Free MP Pool!)", "Lv.40 Accession (AoE Stoneskin/Phalanx/Regen!)"],
+        gearProg: {
+          b_1_10: ["Maple Wand +1", "Tunic Set", "Light/Dark Arts"],
+          b_10_20: ["Yew Wand +1", "Cotton Tunic Set", "Helix Spells"],
+          b_20_30: ["Seer's Tunic Set (Lv.29)", "Pilgrim's Wand", "Melon Pies"],
+          b_30_40: ["Solid Wand", "Black Cloak / RSE Set", "Sublimation (Lv.35)"],
+          b_40_50: ["Kladenets (AF1)", "Accession & Manifestation (Lv.40)"],
+          b_50_60: ["Scholar's AF Set (Scholar's Mortarboard & Gown) + Elemental Staves"],
+          b_60_75: ["Argute Set + Chatoyant Staff + Mahatma Houpelande", "Kaustra / Klimaform"]
+        }
+      },
+      {
+        id: "GEO", stepNum: 21, phase: 4, roleType: "CASTER",
+        name: "21. Geomancer (GEO) ★ CEXI",
+        subtitle: "CatsEyeXI Custom Lv.75 Unlock ('The Unnamed Way')",
+        subjobRec: "/RDM, /WHM, or /BLM",
+        whyOrder: "EXCLUSIVE CATSEYEXI CUSTOM CONTENT! Requires an existing Lv.75 job (your Paladin or Thief!) to unlock from Master Lao in Windurst Waters (K-8). Unlocks Sylvie's Geomancer Magic Shop in Ru'Lude Gardens (H-5) and provides massive Indi-/Geo- aura buffs/debuffs.",
+        craftFocus: "Woodworking & Smithing (Clubs & Staves), Goldsmithing (Handbells), Clothcraft (Caster/Refresh Gear, Vermillion Cloak).",
+        keyUnlocks: ["Prereq: Level 75 on at least 1 job -> Speak to Master Lao (Windurst Waters K-8)", "Reward: Dowser's Wand + Sylvie Geomancer Magic Shop (Ru'Lude Gardens H-5)", "Indi-Fury / Indi-Frailty / Indi-Haste / Geo-Malaise", "Lv.60 Gustav Tunnel Custom Mining Scroll Chests"],
+        gearProg: {
+          b_1_10: ["Dowser's Wand / Ash Club", "Tunic Set + Matre Bell", "Indi-Poison / Indi-Voidance"],
+          b_10_20: ["Chestnut Wand", "Cotton Set", "Indi-Precision / Indi-Regen"],
+          b_20_30: ["Yew Wand +1", "Seer's Tunic Set (Lv.29)", "Indi-Refresh / Indi-Fury"],
+          b_30_40: ["Solid Wand", "RSE Caster Set", "Geo-Colure Luopans"],
+          b_40_50: ["Blessed Hammer / Rose Wand", "Errant / Velvet Set"],
+          b_50_60: ["Elemental Staves (Lv.51) + Vermillion Cloak (Lv.59)", "Indi-Haste / Geo-Frailty"],
+          b_60_75: ["Idris (CatsEyeXI Ergon) / Chatoyant Staff + Bagua/Geomancy Set", "Bolster & Full Circle"]
+        }
+      },
+      {
+        id: "RUN", stepNum: 22, phase: 4, roleType: "PLD",
+        name: "22. Rune Fencer (RUN) ★ CEXI",
+        subtitle: "CatsEyeXI Custom Lv.75 Unlock ('Runic Insurrection')",
+        subjobRec: "/PLD, /WAR, /BLU, /DRK, or /SAM",
+        whyOrder: "EXCLUSIVE CATSEYEXI CUSTOM CONTENT! Unlocked at Lv.75 from Octavien in Bastok Markets (F-10). Pairs directly with your Master Paladin (/PLD subjob or /BLU subjob) and shares Scorpion Harness, Haubergeon, Homam, and Great Swords to give you the ultimate Magic/Elemental Tank alongside your Physical Sword & Shield Paladin!",
+        craftFocus: "Smithing (Great Swords, Brigandine, Haubergeon +1), Bonecraft (Scorpion Harness +1), Leathercraft (Cuir/Dusk), Cooking (Sushi & Tanking Food).",
+        keyUnlocks: ["Prereq: Level 75 on at least 1 job -> Speak to Octavien (Bastok Markets F-10)", "Reward: Beorc Sword + Rune Fencer Unlock", "Elemental Runes (Ignis, Gelus, Flabra, Tellus, Sulpor, Unda, Lux, Tenebrae)", "Vallation, Pflug, Foil, Crusade (Scroll from Gustav Tunnel Mining!)"],
+        gearProg: {
+          b_1_10: ["Beorc Sword / Wax Claymore", "Bronze Harness Set", "Elemental Runes"],
+          b_10_20: ["Claymore +1", "Scale Mail Set (Lv.18)", "Vallation (Elemental Ward)"],
+          b_20_30: ["mythtil/Platoon Claymore", "Beetle Harness +1 Set (Lv.21)", "Swordplay & Swipe"],
+          b_30_40: ["Heavy Greatsword", "Eisenbrust / Jujitsu Gi", "Flash & Pflug"],
+          b_40_50: ["Brigandine (Lv.45) + Mythril Greatsword", "Battuta & Lunge"],
+          b_50_60: ["Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)", "Foil & Vivacious Pulse"],
+          b_60_75: ["Epeolatry (CatsEyeXI Ergon) / Subduer", "Runeist/Futhark + Homam + Haubergeon +1", "Crusade & Dimidiation"]
+        }
+      },
+      {
+        id: "ALL", stepNum: 23, phase: 0, roleType: "PLD",
+        name: "★ All 22 Jobs Master View",
+        subtitle: "Full 4-Phase Gear & Crafting Synergy Matrix",
+        subjobRec: "PLD/BLU • PLD/WAR • PLD/RDM • PLD/NIN • PLD/DNC",
+        whyOrder: "Shows the unified gear checklist across all 22 jobs so you can craft shared milestones once (Bronze -> Scale -> Beetle +1 -> Eisenbrust -> Brigandine -> Scorpion Harness -> Haubergeon -> Vermillion Cloak) and pass them across your entire roster via CatsEyeXI Mog Wardrobes!",
+        craftFocus: "All 8 Crafting Guilds synchronized with Step 1 Thief Treasure Hunter farming.",
+        keyUnlocks: ["80-Slot Base Bag + Mog Wardrobes", "5 Simultaneous Trusts (RoV 2-13)", "RoV 2-30 Trust Refresh+1 & Attack Bonus"],
+        gearProg: null
       }
     ];
 
@@ -743,7 +1157,7 @@
         }
       },
       PLD: {
-        roleNote: "On Paladin, YOU are the main tank! Drop tank Trusts so nobody steals your hate (allowing Shield Mastery TP gain & Chivalry) and stack pure Haste, March, Refresh, and a Skillchain partner.",
+        roleNote: "On Sword & Shield Paladin (and Rune Fencer / BLU Tank), YOU are the main tank! Drop tank Trusts so nobody steals your hate (allowing Shield Mastery TP gain, Flash/Cocoon hate, & Chivalry) and stack pure Haste II, Double March, Refresh II, and a Skillchain opener.",
         slots: {
           3: [
             { name: "Koru-Moru", role: "Refresh II & Haste II on You", unlock: "RoV Cipher / Curio Moogle" },
@@ -766,7 +1180,7 @@
         }
       },
       RDM: {
-        roleNote: "Red Mage can level as an Enspell frontliner or a backline caster/nuker. Use Valaineral to hold AoE hate while Shantotto II magic bursts off melee skillchains.",
+        roleNote: "Red Mage can level as an Enspell Sword & Shield frontliner or a backline caster/nuker. Use Valaineral to hold AoE hate while Shantotto II magic bursts off melee skillchains.",
         slots: {
           3: [
             { name: "Valaineral", role: "AoE Tank & Uriel Blade", unlock: "RoV 1-6 Cipher" },
@@ -789,7 +1203,7 @@
         }
       },
       DD: {
-        roleNote: "For WAR, SAM, and NIN: Stack Haste II + Double March + Chaos/Corsair Roll so your delay drops to the cap, and use Ayame to open or close Light/Darkness skillchains.",
+        roleNote: "For Melee DDs (WAR, MNK, NIN, DNC, SAM, DRK, DRG): Stack Haste II + Double March + Chaos/Corsair Roll so your delay drops to the cap, and use Ayame to open or close Light/Darkness skillchains.",
         slots: {
           3: [
             { name: "Valaineral (or AAHM)", role: "Tank (or swap to Joachim if tanking on WAR/NIN)", unlock: "RoV 1-6 Cipher" },
@@ -810,6 +1224,98 @@
             { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
           ]
         }
+      },
+      RNG: {
+        roleNote: "For Ranged DDs (RNG, COR): Keep a rock-solid Tank Trust in front so you stay at sweet-spot distance, pair with Koru-Moru (Dia III + Flurry II), and let Qultada/Joachim buff Ranged Attack & Accuracy.",
+        slots: {
+          3: [
+            { name: "Valaineral (or Amchuchu)", role: "High-Hate Tank (Keeps mob stationary at range)", unlock: "RoV 1-6 Cipher" },
+            { name: "Koru-Moru", role: "Flurry II / Dia III (-15% DEF)", unlock: "RoV Cipher" },
+            { name: "Kupipi", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          4: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Koru-Moru", role: "Flurry II / Dia III", unlock: "RoV Cipher" },
+            { name: "Qultada (or Joachim)", role: "EXP + Hunter's/Chaos Roll / Prelude", unlock: "RoV / Lower Jeuno" },
+            { name: "Kupipi", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          5: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Opens Skillchains for Sidewinder / Slug Shot", unlock: "Bastok Rank 3" },
+            { name: "Koru-Moru", role: "Flurry II / Dia III", unlock: "RoV Cipher" },
+            { name: "Qultada", role: "EXP Roll + Chaos Roll", unlock: "RoV Cipher" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ]
+        }
+      },
+      CASTER: {
+        roleNote: "For Casters (BLM, SMN, SCH, GEO): Have Valaineral hold hate while Ayame + Zeid II form automatic Lv.2/Lv.3 Skillchains every 15 seconds so you can Magic Burst / Blood Pact for massive bonus damage!",
+        slots: {
+          3: [
+            { name: "Valaineral", role: "AoE Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Koru-Moru (or Joachim)", role: "Refresh II / Ballad MP Battery", unlock: "RoV Cipher" },
+            { name: "Kupipi", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          4: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Skillchain Partner 1", unlock: "Bastok Rank 3" },
+            { name: "Zeid II (or Koru-Moru)", role: "Skillchain Partner 2 / Refresh II", unlock: "RoV 1-18 / RoV" },
+            { name: "Kupipi", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          5: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Skillchain Opener", unlock: "Bastok Rank 3" },
+            { name: "Zeid II", role: "Skillchain Closer (Burst off his WS!)", unlock: "RoV 1-18 Cipher" },
+            { name: "Koru-Moru (or Qultada)", role: "Refresh II / Evoker's & EXP Roll", unlock: "RoV Cipher" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ]
+        }
+      },
+      HEAL: {
+        roleNote: "For Healer & Support Jobs (WHM, BRD): Since you handle buffs/heals, bring a Tank and stack your hardest-hitting melee/magic Trust DDs (Zeid II, Semih Lafihna, Shantotto II, Tenzen) to melt mobs.",
+        slots: {
+          3: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Zeid II (or Excenmille)", role: "Heavy Physical DD & Stun", unlock: "RoV 1-18 / San d'Oria Lv.5" },
+            { name: "Shantotto II (or Semih Lafihna)", role: "Magic Burst / Ranged DD", unlock: "RoV / Rank 6" }
+          ],
+          4: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Skillchain Opener", unlock: "Bastok Rank 3" },
+            { name: "Zeid II", role: "Skillchain Closer", unlock: "RoV 1-18" },
+            { name: "Shantotto II (or Qultada)", role: "Magic Burst / EXP Roll", unlock: "RoV Cipher" }
+          ],
+          5: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Skillchain Opener", unlock: "Bastok Rank 3" },
+            { name: "Zeid II", role: "Skillchain Closer", unlock: "RoV 1-18" },
+            { name: "Shantotto II", role: "Magic Burst Finisher", unlock: "RoV / Curio Moogle" },
+            { name: "Koru-Moru (or Qultada)", role: "Haste II / Refresh II / EXP Roll", unlock: "RoV Cipher" }
+          ]
+        }
+      },
+      PET: {
+        roleNote: "For Pet Jobs (BST, PUP): Your Jug Pet / Charmed Mob or Automaton fights alongside you, so use Koru-Moru, Qultada, and Joachim to buff your accuracy/haste while Kupipi keeps you topped off.",
+        slots: {
+          3: [
+            { name: "Valaineral (or Zeid II)", role: "Tank or DD Partner", unlock: "RoV 1-6 / 1-18" },
+            { name: "Koru-Moru", role: "Haste II / Dia III", unlock: "RoV Cipher" },
+            { name: "Kupipi", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          4: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Koru-Moru", role: "Haste II / Dia III", unlock: "RoV Cipher" },
+            { name: "Qultada", role: "EXP Roll + Chaos Roll", unlock: "RoV Cipher" },
+            { name: "Kupipi", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          5: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Skillchain Opener for Rampage / Stringing Pummel", unlock: "Bastok Rank 3" },
+            { name: "Koru-Moru", role: "Haste II / Dia III", unlock: "RoV Cipher" },
+            { name: "Qultada", role: "EXP Roll + Chaos Roll", unlock: "RoV Cipher" },
+            { name: "Kupipi", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ]
+        }
       }
     };
 
@@ -823,17 +1329,9 @@
         craftTargets: [
           "Smithing 0 ➔ 10 (Bronze Ingots, Bronze Sheets, Bronze Scales)",
           "Leathercraft 0 ➔ 10 (Sheep Wool, Sheep Leather from Ronfaure/Konschtat Sheep)",
-          "Woodworking 0 ➔ 10 (Arrowwood/Ash Lumber for Bolts)",
+          "Woodworking 0 ➔ 10 (Arrowwood/Ash Lumber for Bolts & Shields)",
           "Bonecraft 0 ➔ 10 (Bone Chips from night skeletons)"
         ],
-        jobGear: {
-          THF: ["Bronze Knife / Wax Sword (+1)", "Bronze Harness Set (Lv.7)", "Crossbow + Bone/Bronze Bolts"],
-          WAR: ["Bronze Axe / Wax Sword (+1)", "Bronze Harness Set (Lv.7)", "Selbina Milk / Meat Jerky"],
-          PLD: ["(Unlocks at Lv.30 — Save your WAR Bronze Harness Set in Mog Wardrobe!)"],
-          RDM: ["Wax Sword / Ash Club", "Freesword's / Linen Robe Set", "Melon Juice"],
-          SAM: ["(Unlocks at Lv.30 — Save your WAR Bronze Set)"],
-          NIN: ["(Unlocks at Lv.30 — Farm Beehive Chips & Moko Grass now with THF!)"]
-        },
         cartRecipes: ["rec_bronze_harness"]
       },
       {
@@ -843,128 +1341,80 @@
         zones: "La Theine Plateau, Konschtat Highlands, Tahrongi Canyon (10–14) ➔ Valkurm Dunes / Buburimu Peninsula (14–20)",
         cexiNotes: "At Lv.15, THF unlocks Treasure Hunter I! Register at the Goblin Venture Guild (5,000 Gil) to run daily !ventures. At Lv.18, use THF Treasure Hunter I to farm your Subjob items (Crab Apron, Damselfly Worm, Magicked Skull in Valkurm) in minutes.",
         craftTargets: [
-          "Smithing 10 ➔ 22 (Brass Ingots/Sheets -> Scale Mail Set)",
+          "Smithing 10 ➔ 22 (Brass Ingots/Sheets -> Scale Mail Set for WAR/PLD)",
           "Bonecraft 10 ➔ 20 (Bone Subligar, Bone Harness, Beetle Rings)",
           "Cooking 0 ➔ 25 (Selbina Butter, Grilled Hare, Meat Jerky)",
-          "Woodworking 10 ➔ 20 (Holly Lumber for Bolts)"
+          "Woodworking 10 ➔ 20 (Mahogany/Elm Shields & Holly Lumber for Bolts)"
         ],
-        jobGear: {
-          THF: ["Knife / Brass Dagger (+1)", "Bone Harness Set (Lv.16)", "Power Crossbow + Acid/Bone Bolts"],
-          WAR: ["Brass Axe / Great Axe", "Scale Mail Set (Lv.18 — Shared with PLD)", "Bone Hairpin"],
-          PLD: ["Reuses WAR's Lv.18 Scale Mail Set + Mahogany/Elm Shield"],
-          RDM: ["Cotton Tunic /Baron's Set", "Silver Hairpin", "Selbina Milk / Melon Pie"],
-          SAM: ["Reuses WAR's Lv.16 Bone / Lv.18 Scale Set + Tachi"],
-          NIN: ["Lv.12 Utsusemi: Ichi (Korroloka Tunnel Quest)", "Reuses THF Bone Harness Set"]
-        },
         cartRecipes: ["rec_scale_mail"]
       },
       {
         id: "b_20_30",
         range: "Lv. 20 – 30",
-        title: "Qufim Island, Beetle Armor Power Spike & Job Unlocks",
-        zones: "Qufim Island, Korroloka Tunnel (20–25) ➔ Yuhtunga Jungle / Battalia Downs (25–30)",
-        cexiNotes: "At Lv.20, get your Chocobo License in Upper Jeuno. Complete Nation Mission 2-3 (Dragon BCNM) for Rank 3, then immediately complete RoV 1-6 for Rhapsody in White (Unlocks your 4th Simultaneous Trust Slot!). At Lv.30, unlock PLD, SAM, and NIN using your THF!",
+        title: "Qufim Island, Beetle +1 / Eisenbrust Spike & PLD Unlock!",
+        zones: "Qufim Island, Korroloka Tunnel (20–25) ➔ Yuhtunga Jungle / Batallia Downs (25–30)",
+        cexiNotes: "FIRST MAJOR CHECKPOINT: Reach Lv.30 on THF first! Get your Chocobo License (Lv.20), clear Nation Mission 2-3 + RoV 1-6 for Rhapsody in White (4th Trust Slot!), and use your Lv.30 THF to unlock Paladin ('A Squire's Test' & 'A Knight's Test' in Southern San d'Oria) plus BLU, NIN, DNC, SAM, DRK, DRG, RNG, COR, BST, PUP, BRD, SMN, and SCH!",
         craftTargets: [
           "Bonecraft 20 ➔ 30 (Beetle Harness +1 Set & Beetle Earring +1 x2 using Carpenter's Landing/Jungle Beetle Shells/Jaws)",
+          "Smithing 22 ➔ 38 (Iron Sheets/Chains -> Eisenbrust Set Lv.29 for Sword & Shield PLD!)",
           "Alchemy 0 ➔ 39 (Beeswax -> Silent Oil Lv.24, Acid Bolt Heads -> Acid Bolts Lv.39)",
-          "Woodworking 20 ➔ 35 (Uchitake Lv.33 & Ash Lumber)",
           "Cooking 25 ➔ 40 (Meat Mithkabobs Lv.38)"
         ],
-        jobGear: {
-          THF: ["Mercenary's Knife / Platoon Dagger", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1 (+6 ATK)", "Acid Bolts (Def Down proc!)"],
-          WAR: ["Platoon Great Axe / Centurion's Axe", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1", "Meat Mithkabobs"],
-          PLD: ["Centurion's Sword + Kite Shield", "Beetle Harness +1 Set (Lv.21) ➔ Eisenbrust Set (Lv.29)"],
-          RDM: ["Seer's Tunic Set (Lv.29)", "Beetle Earring +1 (for Enspell melee)", "Melon Pies"],
-          SAM: ["Mumeito / Platoon Tachi", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1"],
-          NIN: ["Dual Wield II (Lv.25)", "Beetle Harness +1 Set (Lv.21)", "Self-Crafted Uchitake (Woodworking Lv.33)"]
-        },
-        cartRecipes: ["rec_beetle_harness", "rec_beetle_earring", "rec_silent_oil", "rec_meat_mithkabob", "rec_uchitake"]
+        cartRecipes: ["rec_beetle_harness", "rec_beetle_earring", "rec_eisenbrust", "rec_silent_oil", "rec_meat_mithkabob"]
       },
       {
         id: "b_30_40",
         range: "Lv. 30 – 40",
-        title: "Garlaige Citadel, Crawlers' Nest & Shihei Self-Sufficiency",
+        title: "Garlaige Citadel, Crawlers' Nest & Lv.37 PLD Subjob Cap",
         zones: "Garlaige Citadel (Bats/Beetles 30–37) ➔ Crawlers' Nest / Eastern Altepa Desert (36–40)",
-        cexiNotes: "At Lv.30, unlock Sebastian/Domenic BCNM Teleports ('Digging Up Dirt') and Portalix Stronghold Teleports ('Up, Up and Away') in Lower Jeuno. THF gets Sneak Attack + Trick Attack combo at Lv.30 and Viper Bite at Lv.33!",
+        cexiNotes: "At Lv.30, unlock Sebastian/Domenic BCNM Teleports ('Digging Up Dirt') and Portalix Stronghold Teleports ('Up, Up and Away') in Lower Jeuno. Level WAR, BLU, RDM, NIN, and DNC to Lv.37 here so your Sword & Shield Paladin has all 5 subjobs ready!",
         craftTargets: [
-          "Woodworking 35 ➔ 41 (Shihei Lv.39 — Bast Parchment + Black Ink = 33x tools per craft!)",
-          "Smithing 22 ➔ 40 (Iron Sheets -> Eisenbrust Set Lv.29 / Kampfplatte)",
+          "Woodworking 30 ➔ 41 (Shihei Lv.39 — Bast Parchment + Black Ink = 33x tools per craft for PLD/NIN!)",
           "Alchemy 39 ➔ 45 (Black Ink, Prism Powder Lv.41)",
-          "Clothcraft 20 ➔ 40 (Linen Cloth, Velvet Cloth)"
+          "Clothcraft 20 ➔ 40 (Linen Cloth, Velvet Cloth)",
+          "Cooking 40 ➔ 45 (Melon Pies Lv.41 for PLD/RDM & Casters)"
         ],
-        jobGear: {
-          THF: ["Federation Kris / Hornetneedle", "RSE Set / Noct Doublet Set", "Acid Bolts + Shihei (once /NIN)"],
-          WAR: ["Heavy Axe / Voulge", "Eisenbrust Set (Lv.29) / Centurion's Scale Mail (Lv.30)", "Rajas Ring (CoP)"],
-          PLD: ["Eisenbrust Set (Lv.29 — Huge DEF spike for tanking)", "Holy Shield / Kite Shield"],
-          RDM: ["Seer's Set + Glamor Jupon", "Enhancing/Enfeebling Torque", "Melon Pies"],
-          SAM: ["uchigatana +1 / Jujitsu Gi (Lv.37)", "Centurion's Scale Set"],
-          NIN: ["Lv.37 Utsusemi: Ni (Game Changer!)", "Self-Crafted Shihei (Woodworking Lv.39)", "Jujitsu Gi"]
-        },
-        cartRecipes: ["rec_shihei", "rec_acid_bolt", "rec_eisenbrust", "rec_prism_powder", "rec_melon_pie"]
+        cartRecipes: ["rec_shihei", "rec_acid_bolt", "rec_prism_powder", "rec_melon_pie", "rec_uchitake"]
       },
       {
         id: "b_40_50",
         range: "Lv. 40 – 50",
-        title: "Crawlers' Nest, Gustav Tunnel & Treasure Hunter II",
-        zones: "Crawlers' Nest (Worker Crawlers/Beetles 40–46) ➔ Gustav Tunnel / Escha/Wajaom / Garlaige Basement (46–50)",
-        cexiNotes: "At Lv.45, THF unlocks Treasure Hunter II! Use THF Lv.45+ in Maze of Shakhrami / Crawlers' Nest to farm Scorpion Shells, Scorpion Claws, Silk Thread, and Gold Beastcoins. At Lv.50, complete Limit Break 1 (Exoray Mold, Bomb Coal, Ancient Papyrus) and unlock your AF1 Weapons!",
+        title: "Crawlers' Nest, Gustav Tunnel, Brigandine & Treasure Hunter II",
+        zones: "Crawlers' Nest (Worker Crawlers/Beetles 40–46) ➔ Gustav Tunnel / Wajaom / Garlaige Basement (46–50)",
+        cexiNotes: "Take THF to Lv.45 for Treasure Hunter II! Farm Scorpion Shells, Scorpion Claws, Silk Thread, and Gold Beastcoins in Maze of Shakhrami / Crawlers' Nest. At Lv.50, complete Limit Break 1 (Exoray Mold, Bomb Coal, Ancient Papyrus) and unlock your AF1 Weapons (Honor Sword for PLD)!",
         craftTargets: [
-          "Smithing 40 ➔ 55 (Steel Ingots/Sheets -> Brigandine Lv.45)",
+          "Smithing 40 ➔ 55 (Steel Ingots/Sheets -> Brigandine Lv.45 — worn by 12+ jobs!)",
           "Clothcraft 40 ➔ 55 (Velvet/Silk Cloth, Shinobi-Tabi Lv.54)",
-          "Cooking 40 ➔ 56 (Sole Sushi Lv.56 for accuracy on IT mobs)",
-          "Alchemy 45 ➔ 56 (Bloody Bolts Lv.55 — HP Drain makes THF/WAR unstoppable)"
+          "Cooking 45 ➔ 56 (Sole Sushi Lv.56 for accuracy on IT mobs)",
+          "Alchemy 45 ➔ 56 (Bloody Bolts Lv.55)"
         ],
-        jobGear: {
-          THF: ["Bone Knife +1 / Beestinger", "Brigandine (Lv.45 — Shared across THF/WAR/PLD/RDM/SAM/NIN!)", "Bloody Bolts + Acid Bolts"],
-          WAR: ["Viking Axe / Barbaroi Axe", "Brigandine (Lv.45)", "Sole Sushi / Meat Mithkabob"],
-          PLD: ["Honor Sword (AF1)", "Brigandine (Lv.45) + Steel Scale Set", "Buckler / Knight's Shield"],
-          RDM: ["Fencing Degen (AF1) + Brigandine (for Melee) or Velvet Robe", "Refresh (Lv.41!)"],
-          SAM: ["Magoroku (AF1)", "Brigandine (Lv.45)", "Sole Sushi"],
-          NIN: ["Anju & Zushio (AF1)", "Brigandine (Lv.45)", "Elemental Wheel Tools + Shinobi-Tabi"]
-        },
         cartRecipes: ["rec_brigandine", "rec_bloody_bolt", "rec_sole_sushi", "rec_shinobi_tabi"]
       },
       {
         id: "b_50_60",
         range: "Lv. 50 – 60",
-        title: "Wajaom Woodlands, Bhaflau Thickets, AF Armor & Scorpion Harness",
+        title: "Wajaom/Bhaflau Colibri, Gallant AF, Shield Mastery & Scorpion Harness",
         zones: "Wajaom Woodlands / Bhaflau Thickets (Lesser Colibri 50–58) ➔ Quicksand Caves / Kuftal Tunnel (56–60)",
-        cexiNotes: "Advance Nation Rank to 6 (Shadow Lord) and Chains of Promathia / ToAU to unlock RoV 2-13 (Rhapsody in Crimson = 5th Simultaneous Trust Slot!). Collect all 6 jobs' Artifact (AF1–AF3) armor coffers using THF to pick coffer locks or farm keys.",
+        cexiNotes: "Advance Nation Rank to 6 (Shadow Lord) and CoP/ToAU to unlock RoV 2-13 (Rhapsody in Crimson = 5th Simultaneous Trust Slot!). At Lv.55, Sword & Shield Paladin unlocks Shield Mastery (+TP on block & spell interruption immunity). Use THF to farm coffer keys for Gallant Armor!",
         craftTargets: [
           "Bonecraft 50 ➔ 88 (Carapace Harness -> Scorpion Harness Lv.57!)",
-          "Smithing 55 ➔ 80 (Darksteel Sheets -> Haubergeon Lv.59!)",
+          "Smithing 55 ➔ 80 (Darksteel Sheets -> Haubergeon Lv.59 & Royal Knight's Chainmail!)",
           "Clothcraft 55 ➔ 83 (Rainbow Cloth -> Vermillion Cloak Lv.59!)"
         ],
-        jobGear: {
-          THF: ["Rogue's Set (AF) + Scorpion Harness (Lv.57 — +10 ACC / +10 EVA)", "Dancing Edge (Lv.60)"],
-          WAR: ["Fighter's Set (AF) + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)", "Raging Rush (Lv.60)"],
-          PLD: ["Gallant Set (AF — Head/Body/Legs/Hands) + Royal Knight's Chainmail (Lv.55)"],
-          RDM: ["Warlock's Chapeau (AF Head — Fast Cast!) + Vermillion Cloak (Lv.59 — Refresh +1/tick)"],
-          SAM: ["Myochin Set (AF) + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)", "Tachi: Yukikaze/Gekko"],
-          NIN: ["Ninja Tekko/Kyahan (AF) + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)"]
-        },
         cartRecipes: ["rec_scorpion_harness", "rec_haubergeon", "rec_vermillion_cloak"]
       },
       {
         id: "b_60_75",
         range: "Lv. 60 – 75",
-        title: "Endgame Push, Maat Limit Break 5, EVWS & CatsEyeXI Unlocks",
-        zones: "Bhaflau Thickets (Colibri 60–65) ➔ Mire / Aydeewa / Ru'Aun Gardens (Sky) / Bibiki Bay / KRT (65–75)",
-        cexiNotes: "At Lv.60, complete CatsEyeXI's 'Broken Bones' quest in Selbina/Gustav Tunnel to unlock custom Gustav Mining (drops Lv.75 spells & Scrolls!). At Lv.65, unlock Dynamis (1-hour zone cooldown on CatsEyeXI) to farm THF Assassin's Armlets (TH+1) first! Complete RoV 2-30 ('The Decisive Heroine') so all your Trusts gain Refresh+1 and Attack/Acc buffs.",
+        title: "Master Sword & Shield Paladin 75, Joyeuse, Aegis/Excalibur & GEO/RUN",
+        zones: "Bhaflau Thickets (Colibri 60–65) ➔ Caedarva Mire / Aydeewa / Ru'Aun Gardens (Sky) / KRT (65–75)",
+        cexiNotes: "At Lv.60, clear CatsEyeXI's 'Broken Bones' (Gustav Tunnel Mining for Lv.75 scrolls & Crusade!). Use THF + PLD to farm Charybdis in Sea Serpent Grotto for Joyeuse (Lv.70 multi-hit Sword!). At Lv.65, unlock Dynamis for Assassin's Armlets (TH4) and Aegis/Excalibur currency. Once your first job hits Lv.75, unlock CatsEyeXI's custom Geomancer & Rune Fencer!",
         craftTargets: [
-          "Smithing 80 ➔ 100+ (Haubergeon +1, Thick Armor, Darksteel/Adaman Gear)",
+          "Smithing 80 ➔ 100+ (Haubergeon +1, Koenig/Kaiser Abjuration Gear, Excalibur/Aegis Synth Stages)",
           "Bonecraft 88 ➔ 100+ (Scorpion Harness +1, Dragon Harness)",
-          "Clothcraft 83 ➔ 100+ (Errant/Mahatma Houpelande, Cursed Dalmatica)",
-          "Goldsmithing & Alchemy 75 ➔ 100+ (Endgame Rings, Panacea, Icarus Wings)"
+          "Clothcraft 83 ➔ 100+ (Dalmatica, Mahatma Houpelande)",
+          "Goldsmithing & Alchemy 75 ➔ 100+ (Phalanx/Shadow/Defending Rings, Panacea, Icarus Wings)"
         ],
-        jobGear: {
-          THF: ["Thief's Knife + Assassin's Armlets (TH4!)", "Homam / Hecatomb / SH+1", "Evisceration (EVWS) & Shark Bite"],
-          WAR: ["Byakko's Haidate + Haubergeon +1", "Maneater / Woodville's Axe / Bravura", "Steel Cyclone & Decimation (EVWS)"],
-          PLD: ["Koenig / Valor / Homam Set", "Joyeuse / Hauteclaire / Aegis / Excalibur", "Savage Blade (EVWS) & Atonement"],
-          RDM: ["Duelist's Chapeau (Dynamis Refresh+Fast Cast) + Dalmatica", "Joyeuse + Genbu's Shield", "Savage Blade (EVWS)"],
-          SAM: ["Haubergeon +1 + Byakko's Haidate", "Hagun / Soboro Sukehiro / Amanomurakumo", "Tachi: Kasha (EVWS)"],
-          NIN: ["Haubergeon +1 + Koga Tekko + Byakko's Haidate", "Senjuinrikio + Perdu Blade", "Blade: Ku (EVWS) & Blade: Jin"]
-        },
         cartRecipes: ["rec_haubergeon", "rec_scorpion_harness", "rec_optical_hat", "rec_shihei", "rec_sole_sushi"]
       }
     ];
@@ -974,7 +1424,9 @@
       activeTab: 'quests', // 'quests', 'guide', 'crafting', 'cart', 'scraper', 'backup'
       questSubMode: 'log', // 'log', 'route'
       scraperMode: 'quest', // 'quest', 'craft'
-      guideSelectedJob: 'THF', // 'THF', 'WAR', 'PLD', 'RDM', 'SAM', 'NIN', 'ALL'
+      guideSelectedJob: 'PLD', // Default highlight on PLD or THF
+      guidePhaseFilter: 'ALL_PHASES', // 'ALL_PHASES', '1', '2', '3', '4'
+      guidePldSubjob: 'BLU', // 'WAR', 'BLU', 'RDM', 'NIN', 'DNC'
       guideTrustCount: 3, // 3, 4, 5
       guideProgress: {}, // milestoneKey -> boolean
       playerLevel: 75,
@@ -1631,14 +2083,70 @@
         }
       });
 
-      // 2. Render Job Pills
+      // 1B. Render Sword & Shield Paladin Interactive Subjob Matrix
+      const pldTabsEl = document.getElementById('guide-pld-subjob-tabs');
+      if (pldTabsEl) {
+        pldTabsEl.innerHTML = Object.keys(PLD_SUBJOB_MATRIX).map(subKey => {
+          const item = PLD_SUBJOB_MATRIX[subKey];
+          const isSel = appState.guidePldSubjob === subKey;
+          return `
+            <button type="button" data-pld-sub="${subKey}" class="guide-pld-sub-btn p-2 rounded-lg border text-left transition ${
+              isSel
+                ? 'bg-amber-600/20 border-amber-400 text-amber-200 shadow'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+            }">
+              <div class="text-xs font-mono font-bold ${isSel ? 'text-amber-300' : 'text-slate-200'}">🛡️ ${escapeHtml(item.code)}</div>
+              <div class="text-[10px] truncate opacity-85">${escapeHtml(item.title)}</div>
+            </button>
+          `;
+        }).join('');
+
+        const activeSub = PLD_SUBJOB_MATRIX[appState.guidePldSubjob] || PLD_SUBJOB_MATRIX.BLU;
+        document.getElementById('guide-pld-subjob-detail').innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2">
+            <div>
+              <span class="text-sm font-serif font-bold text-amber-300">${escapeHtml(activeSub.code)} — ${escapeHtml(activeSub.title)}</span>
+              <span class="ml-2 text-[11px] font-mono bg-slate-950 text-indigo-300 border border-slate-700 px-2 py-0.5 rounded">${escapeHtml(activeSub.reqStep)}</span>
+            </div>
+            <button type="button" data-guide-job="${appState.guidePldSubjob}" class="guide-job-pill text-[11px] bg-indigo-900/70 hover:bg-indigo-800 text-indigo-200 px-2.5 py-1 rounded border border-indigo-700 font-semibold self-start sm:self-center">
+              Jump to ${appState.guidePldSubjob} Guide ➔
+            </button>
+          </div>
+          <p class="text-slate-300 leading-relaxed">${escapeHtml(activeSub.summary)}</p>
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            ${activeSub.abilities.map(ab => `<span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-amber-200 text-[11px] font-mono">★ ${escapeHtml(ab)}</span>`).join('')}
+          </div>
+          <div class="text-[11px] text-slate-400 pt-1"><strong class="text-emerald-400">Best Used For:</strong> ${escapeHtml(activeSub.whenToUse)}</div>
+        `;
+      }
+
+      // 1C. Update Phase Filter Buttons
+      document.querySelectorAll('.guide-phase-btn').forEach(btn => {
+        const pf = btn.getAttribute('data-phase-filter');
+        if (pf === appState.guidePhaseFilter) {
+          btn.className = 'guide-phase-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow';
+        } else {
+          btn.className = 'guide-phase-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200';
+        }
+      });
+
+      // 2. Render 22-Job Pills (Filtered by Phase if selected)
       const pillsEl = document.getElementById('guide-job-pills');
-      pillsEl.innerHTML = GUIDE_JOBS.map(j => {
+      const visibleJobs = GUIDE_JOBS.filter(j => {
+        if (appState.guidePhaseFilter === 'ALL_PHASES') return true;
+        if (j.id === 'ALL') return true;
+        return String(j.phase) === String(appState.guidePhaseFilter);
+      });
+
+      pillsEl.innerHTML = visibleJobs.map(j => {
         const isSel = j.id === appState.guideSelectedJob;
+        const isGoal = j.id === 'PLD' || j.id === 'THF';
         return `
-          <button type="button" data-guide-job="${j.id}" class="guide-job-pill p-2.5 rounded-xl border text-left transition ${
+          <button type="button" data-guide-job="${j.id}" class="guide-job-pill p-2 rounded-xl border text-left transition ${
             isSel
-              ? 'bg-amber-950/60 border-amber-500 text-amber-100 shadow-md'
+              ? 'bg-amber-950/70 border-amber-400 text-amber-100 shadow-md'
+              : isGoal
+              ? 'bg-slate-900/90 border-amber-700/50 text-slate-200 hover:border-amber-500'
               : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
           }">
             <div class="text-xs font-serif font-bold truncate ${isSel ? 'text-amber-300' : 'text-slate-200'}">${escapeHtml(j.name)}</div>
@@ -1650,14 +2158,22 @@
       // 3. Render Selected Job Spotlight
       const jobObj = GUIDE_JOBS.find(j => j.id === appState.guideSelectedJob) || GUIDE_JOBS[0];
       const spotlightEl = document.getElementById('guide-job-spotlight');
+      const phaseNames = {
+        1: "Phase 1: Loot Engine & Foundation Subjobs (Steps 1–6)",
+        2: "Phase 2: Ultimate Goal Sword & Shield PLD + Core Tank Subs (Steps 7–10)",
+        3: "Phase 3: Physical & Hybrid Powerhouses (Steps 11–17)",
+        4: "Phase 4: Support, Pet & CatsEyeXI Custom Lv.75 Jobs (Steps 18–22)",
+        0: "Master All-22-Job Overview"
+      };
       spotlightEl.innerHTML = `
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3 mb-3">
           <div>
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-slate-950">Step ${jobObj.stepNum} of 6</span>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-slate-950">${jobObj.id === 'ALL' ? 'All 22 Jobs' : `Step ${jobObj.stepNum} of 22`}</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-950 text-indigo-300 border border-indigo-800">${escapeHtml(phaseNames[jobObj.phase] || '')}</span>
               <h3 class="text-base sm:text-lg font-serif font-bold text-amber-300">${escapeHtml(jobObj.name)} — ${escapeHtml(jobObj.subtitle)}</h3>
             </div>
-            <p class="text-xs text-slate-400 mt-1">Recommended Subjob: <strong class="text-indigo-300">${escapeHtml(jobObj.subjobRec)}</strong></p>
+            <p class="text-xs text-slate-400 mt-1">Recommended Subjob(s): <strong class="text-indigo-300">${escapeHtml(jobObj.subjobRec)}</strong></p>
           </div>
           <div class="text-xs bg-slate-950 px-3 py-2 rounded-lg border border-slate-800">
             <span class="text-slate-500 block text-[10px] uppercase font-bold">Primary Supply Guilds</span>
@@ -1682,8 +2198,8 @@
       `;
 
       // 4. Render Dynamic Trust Setup Matrix
-      const trustGroupKey = (jobObj.id === 'THF' || jobObj.id === 'PLD' || jobObj.id === 'RDM') ? jobObj.id : 'DD';
-      const trustData = GUIDE_TRUST_SETUPS[trustGroupKey];
+      const trustGroupKey = jobObj.roleType || 'DD';
+      const trustData = GUIDE_TRUST_SETUPS[trustGroupKey] || GUIDE_TRUST_SETUPS.DD;
       const activeTrustList = trustData.slots[appState.guideTrustCount] || trustData.slots[3];
       const trustMatrixEl = document.getElementById('guide-trust-matrix');
 
@@ -1720,11 +2236,11 @@
         </div>
       `;
 
-      // 5. Render Bracket-by-Bracket Cards
+      // 5. Render Bracket-by-Bracket Cards for Selected Job (or All 22 Jobs)
       const bracketsEl = document.getElementById('guide-brackets-container');
       const jobsToRender = appState.guideSelectedJob === 'ALL'
-        ? ['THF', 'WAR', 'PLD', 'RDM', 'SAM', 'NIN']
-        : [appState.guideSelectedJob];
+        ? GUIDE_JOBS.filter(j => j.id !== 'ALL')
+        : [jobObj];
 
       bracketsEl.innerHTML = GUIDE_BRACKETS.map(b => {
         const bKey = `bracket_done_${b.id}`;
@@ -1743,14 +2259,14 @@
           `;
         }).join('');
 
-        const gearRowsHtml = jobsToRender.map(jId => {
-          const items = b.jobGear[jId] || [];
+        const gearRowsHtml = jobsToRender.map(jItem => {
+          const items = (jItem.gearProg && jItem.gearProg[b.id]) || [];
           return `
             <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 space-y-1.5">
-              <div class="text-xs font-bold text-amber-400 font-mono">${jId} Gear & Supply Targets:</div>
+              <div class="text-xs font-bold text-amber-400 font-mono">${escapeHtml(jItem.name)} Gear & Supply Targets:</div>
               <div class="flex flex-wrap gap-1.5">
                 ${items.map((gItem, gIdx) => {
-                  const gKey = `gear_${b.id}_${jId}_${gIdx}`;
+                  const gKey = `gear_${b.id}_${jItem.id}_${gIdx}`;
                   const gDone = !!appState.guideProgress[gKey];
                   return `
                     <button type="button" data-milestone="${gKey}" class="guide-milestone-check text-xs px-2.5 py-1 rounded border flex items-center gap-1.5 transition text-left ${
@@ -1801,8 +2317,8 @@
                 <div class="space-y-1.5">${craftItemsHtml}</div>
               </div>
               <div class="space-y-2">
-                <div class="text-xs font-bold uppercase tracking-wider text-slate-400">2. Self-Crafted Gear & Tool Checklist</div>
-                <div class="space-y-2">${gearRowsHtml}</div>
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-400">2. Self-Crafted Gear & Tool Checklist (${jobObj.id === 'ALL' ? 'All 22 Jobs' : escapeHtml(jobObj.name)})</div>
+                <div class="space-y-2 max-h-96 overflow-y-auto pr-1">${gearRowsHtml}</div>
               </div>
             </div>
           </div>
@@ -2157,9 +2673,23 @@
           return;
         }
 
+        const pldSubBtn = e.target.closest('.guide-pld-sub-btn');
+        if (pldSubBtn) {
+          appState.guidePldSubjob = pldSubBtn.getAttribute('data-pld-sub') || 'BLU';
+          renderGuideView();
+          return;
+        }
+
+        const phaseBtn = e.target.closest('.guide-phase-btn');
+        if (phaseBtn) {
+          appState.guidePhaseFilter = phaseBtn.getAttribute('data-phase-filter') || 'ALL_PHASES';
+          renderGuideView();
+          return;
+        }
+
         const jobPill = e.target.closest('.guide-job-pill');
         if (jobPill) {
-          appState.guideSelectedJob = jobPill.getAttribute('data-guide-job') || 'THF';
+          appState.guideSelectedJob = jobPill.getAttribute('data-guide-job') || 'PLD';
           renderGuideView();
           return;
         }
