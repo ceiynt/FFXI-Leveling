@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CatsEyeXI ACE Mode Companion</title>
+  <style>
+    :root {
+      --bg: #0f141e;
+      --surface: #182030;
+      --surface-alt: #202b40;
+      --border: #2e3d59;
+      --text: #e6ecf5;
+      --muted: #98a6c0;
+      --accent: #d4af37;
+      --accent-soft: rgba(212, 175, 55, 0.15);
+      --green: #34d399;
+      --green-soft: rgba(52, 211, 153, 0.15);
+      --blue: #60a5fa;
+      --blue-soft: rgba(96, 165, 250, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 3rem;
+    }
+
+    header {
+      background: linear-gradient(180deg, #162033 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1rem 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      color: var(--accent);
+      letter-spacing: 0.3px;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding-bottom: 0.35rem;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    main {
+      max-width: 960px;
+      margin: 1.25rem auto;
+      padding: 0 1rem;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .card h3 {
+      font-size: 0.98rem;
+      color: var(--text);
+      margin: 0.85rem 0 0.35rem;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    ul.clean-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    ul.clean-list li {
+      font-size: 0.9rem;
+      background: var(--surface-alt);
+      padding: 0.65rem 0.8rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 5px;
+      text-transform: uppercase;
+      margin-right: 0.35rem;
+    }
+
+    .badge-gold { background: var(--accent-soft); color: var(--accent); }
+    .badge-green { background: var(--green-soft); color: var(--green); }
+    .badge-blue { background: var(--blue-soft); color: var(--blue); }
+
+    .craft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .craft-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+
+    .craft-box label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .craft-box span.cap {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .craft-box input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin: 0.75rem 0 1rem;
+      align-items: center;
+    }
+
+    .filters select {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.85rem;
+      flex: 1 1 200px;
+    }
+
+    .slot-toggle-group {
+      display: inline-flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .slot-toggle-btn {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      border-radius: 6px;
+      padding: 0.42rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .slot-toggle-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .slot-unlock-hint {
+      font-size: 0.78rem;
+      color: var(--blue);
+      background: rgba(96, 165, 250, 0.08);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      padding: 0.45rem 0.7rem;
+      border-radius: 7px;
+      margin-bottom: 0.75rem;
+    }
+
+    .recipe-item {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 0.65rem;
+      transition: border-color 0.15s;
+    }
+
+    .recipe-item.ready {
+      border-left: 4px solid var(--green);
+    }
+
+    .recipe-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .recipe-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .recipe-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .recipe-source {
+      font-size: 0.82rem;
+      color: var(--blue);
+      background: rgba(96, 165, 250, 0.08);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .trust-slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.5rem;
+      margin: 0.6rem 0;
+    }
+
+    .trust-slot {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem;
+    }
+
+    .trust-slot.locked {
+      opacity: 0.42;
+      border-style: dashed;
+    }
+
+    .trust-role {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .trust-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      background: var(--surface-alt);
+      padding: 0.7rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .check-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+
+    .check-row.done .check-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--accent);
+      background: var(--surface-alt);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>CatsEyeXI ACE Mode Companion</h1>
+    <div class="subtitle">Tandem Leveling, Gear Crafting, Trust Setups &amp; Server Roadmap</div>
+    <nav class="tabs" id="tabBar">
+      <button class="tab-btn active" data-tab="crafting">Crafting &amp; Gear</button>
+      <button class="tab-btn" data-tab="trusts">Trust Setups</button>
+      <button class="tab-btn" data-tab="leveling">Job Order &amp; Camps</button>
+      <button class="tab-btn" data-tab="builds">SAM &amp; PLD Builds</button>
+      <button class="tab-btn" data-tab="storage">Bags &amp; Storage</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="crafting" class="panel active">
+    <div class="card">
+      <h2>Your Crafting Levels (ACE 3.0x Rate)</h2>
+      <p>Update your current skill levels below. Your progress saves automatically in your browser, and craftable gear highlights in green when you reach its skill tier.</p>
+      <div class="craft-grid">
+        <div class="craft-box">
+          <label for="skill-smithing">Smithing (Main)</label>
+          <span class="cap">Cap: 110 (Relic Voucher @ 100)</span>
+          <input type="number" id="skill-smithing" min="0" max="110" value="0" />
+        </div>
+        <div class="craft-box">
+          <label for="skill-leathercraft">Leathercraft</label>
+          <span class="cap">Subcraft Cap: 70</span>
+          <input type="number" id="skill-leathercraft" min="0" max="70" value="0" />
+        </div>
+        <div class="craft-box">
+          <label for="skill-goldsmithing">Goldsmithing</label>
+          <span class="cap">Subcraft Cap: 70</span>
+          <input type="number" id="skill-goldsmithing" min="0" max="70" value="0" />
+        </div>
+        <div class="craft-box">
+          <label for="skill-clothcraft">Clothcraft</label>
+          <span class="cap">Subcraft Cap: 70</span>
+          <input type="number" id="skill-clothcraft" min="0" max="70" value="0" />
+        </div>
+        <div class="craft-box">
+          <label for="skill-woodworking">Woodworking</label>
+          <span class="cap">Subcraft Cap: 70</span>
+          <input type="number" id="skill-woodworking" min="0" max="70" value="0" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Tandem Gear &amp; Material Sourcing Guide</h2>
+      <p>Filter crafted gear by combat job, craft discipline, or equip level so you never fall behind while leveling.</p>
+      <div class="filters">
+        <select id="filter-job">
+          <option value="ALL">All Combat Jobs</option>
+          <option value="THF">Thief (THF)</option>
+          <option value="WAR">Warrior (WAR)</option>
+          <option value="PLD">Paladin (PLD)</option>
+          <option value="RDM">Red Mage (RDM)</option>
+          <option value="NIN">Ninja (NIN)</option>
+          <option value="SAM">Samurai (SAM)</option>
+        </select>
+        <select id="filter-craft">
+          <option value="ALL">All Crafts</option>
+          <option value="Smithing">Smithing</option>
+          <option value="Leathercraft">Leathercraft</option>
+          <option value="Goldsmithing">Goldsmithing</option>
+          <option value="Clothcraft">Clothcraft</option>
+          <option value="Woodworking">Woodworking</option>
+        </select>
+        <select id="filter-tier">
+          <option value="ALL">All Level Tiers</option>
+          <option value="1-20">Levels 1–20</option>
+          <option value="21-40">Levels 21–40</option>
+          <option value="41-60">Levels 41–60</option>
+          <option value="61-75">Levels 61–75</option>
+        </select>
+      </div>
+      <div id="recipe-list"></div>
+    </div>
+  </section>
+
+  <section id="trusts" class="panel">
+    <div class="card">
+      <h2>Recommended ACE Mode Trust Setups</h2>
+      <p>Choose your active job and toggle how many Trust slots you have unlocked (3 to 5) as you progress through Rhapsodies of Vana'diel.</p>
+      <div class="filters">
+        <select id="trust-job-select">
+          <option value="THF">Thief (Material Farming &amp; Fast Chains)</option>
+          <option value="PLD">Paladin (Sword &amp; Board Tanking)</option>
+          <option value="RDM">Red Mage (Magic Burst &amp; Hybrid Solo)</option>
+          <option value="WAR">Warrior / Ninja (Pure Melee Cleave)</option>
+          <option value="SAM">Samurai (Self-Skillchain Spam)</option>
+        </select>
+        <div class="slot-toggle-group" role="group" aria-label="Unlocked Trust Slots">
+          <button type="button" class="slot-toggle-btn" data-slots="3">3 Slots</button>
+          <button type="button" class="slot-toggle-btn" data-slots="4">4 Slots</button>
+          <button type="button" class="slot-toggle-btn active" data-slots="5">5 Slots</button>
+        </div>
+      </div>
+      <div id="trust-unlock-banner" class="slot-unlock-hint"></div>
+      <div id="trust-display"></div>
+    </div>
+
+    <div class="card">
+      <h2>Core Trusts to Unlock Early</h2>
+      <ul class="clean-list">
+        <li><strong>Valaineral (Tank):</strong> Unlocked via RoE tutorial quests. Uses Uriel Blade for massive low-to-mid level AoE damage and rock-solid hate.</li>
+        <li><strong>Ayame (Skillchain Opener):</strong> Unlocked via Bastok quest (Lv. 30+). Automatically opens weapon skills that chain with your last used WS.</li>
+        <li><strong>Apururu or Kupipi (Healer):</strong> Kupipi is free at start; Apururu (Unity) provides AoE cures, status removal, and self-refresh.</li>
+        <li><strong>Ulmia &amp; Joachim (Bards):</strong> Provide March (Haste) and Ballad (MP Refresh) songs to maximize attack speed and uptime.</li>
+        <li><strong>Shantotto II (Magic DPS):</strong> Available via login points/special vendors; magic bursts relentlessly on every skillchain.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="leveling" class="panel">
+    <div class="card">
+      <h2>Job Leveling Sequence Checklist</h2>
+      <p>Level in this order so each job supplies materials, subjobs, or hand-me-down gear for the next.</p>
+      <div id="job-checklist"></div>
+    </div>
+
+    <div class="card">
+      <h2>ACE Mode Leveling Camps &amp; Milestones</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Levels</th>
+            <th>Recommended Camps</th>
+            <th>Key Milestones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1–10</strong></td>
+            <td>Starter Zones (Ronfaure / Gustaberg / Sarutabaruta)</td>
+            <td>Activate RoE objectives, unlock starter Trusts, buy Sparks weapons.</td>
+          </tr>
+          <tr>
+            <td><strong>10–20</strong></td>
+            <td>Valkurm Dunes / La Theine Plateau</td>
+            <td>Unlock Subjob at Lv. 18 (Selbina/Mhaura). Farm Sheep &amp; Lizard skins.</td>
+          </tr>
+          <tr>
+            <td><strong>20–30</strong></td>
+            <td>Qufim Island</td>
+            <td>At Lv. 30: Unlock Dancer (level to 25 for Spectral Jig), PLD, NIN, and SAM.</td>
+          </tr>
+          <tr>
+            <td><strong>30–50</strong></td>
+            <td>Crawler's Nest / Garlaige Citadel</td>
+            <td>Farm Raptor/Tiger hides &amp; Silk. Start AF1 weapon quests at Lv. 40.</td>
+          </tr>
+          <tr>
+            <td><strong>50–60</strong></td>
+            <td>Garlaige Citadel / Boyahda Tree</td>
+            <td>Complete Genkai 1 &amp; 2 Limit Breaks. Complete Artifact Armor (AF) quests.</td>
+          </tr>
+          <tr>
+            <td><strong>60–75</strong></td>
+            <td>Boyahda Tree / Kuftal Tunnel / Ru'Aun Gardens</td>
+            <td>Complete Genkai 3–5. Farm Sky elementals on THF for crystal clusters.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="builds" class="panel">
+    <div class="card">
+      <h2>Dope Samurai (SAM) Blueprint</h2>
+      <ul class="clean-list">
+        <li><strong>Unlock Quest:</strong> Speak to Jaucribaix in Norg at Lv. 30+ (<em>Forge Your Destiny</em>). Use Dancer's Spectral Jig (Lv. 25) to sneak safely through Sea Serpent Grotto.</li>
+        <li><strong>Best Subjobs:</strong> <strong>/WAR</strong> for pure damage (Berserk, Warcry, Double Attack); <strong>/NIN</strong> for soloing NMs (Utsusemi shadows); <strong>/DNC</strong> for farming convenience.</li>
+        <li><strong>Skillchain Loop:</strong> Pair with Trust <strong>Ayame</strong> to spam <strong>Tachi: Yukikaze</strong> (60), <strong>Tachi: Gekko</strong> (65), and <strong>Tachi: Kasha</strong> (70) for nonstop Light skillchains.</li>
+        <li><strong>Level 75 Gear Goals:</strong> Hachiman set, Myochin Kabuto &amp; Domaru (AF), <strong>Hagun</strong> or custom <strong>Sasanuki +1</strong> (Smithing), <strong>Rajas Ring</strong> (CoP), Ochiudo's Kote, and Fuma Sune-Ate.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Epic Sword &amp; Board Paladin (PLD) Blueprint</h2>
+      <ul class="clean-list">
+        <li><strong>Unlock Quest:</strong> Speak to Balasiel in Southern San d'Oria at Lv. 30+ (<em>A Knight's Test</em>).</li>
+        <li><strong>Why PLD Rules Sword &amp; Board:</strong> A+ Shield skill, <strong>Shield Mastery</strong> (prevents spell interruption + gives TP on blocks), Flash, Sentinel, Rampart, and Cure IV.</li>
+        <li><strong>Best Subjobs:</strong> <strong>/WAR</strong> for party tanking (Provoke, Defender); <strong>/NIN</strong> for soloing hard bosses (Utsusemi); <strong>/RDM</strong> for Phalanx, Stoneskin, and Fast Cast.</li>
+        <li><strong>Level 75 Gear Goals:</strong> Koenig / Adaman Cuirass (Smithing), Hauteclaire or <strong>Excalibur</strong> (100 Smithing Relic Voucher), and <strong>Aegis</strong> or Ochain shield.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="storage" class="panel">
+    <div class="card">
+      <h2>Inventory &amp; Storage Expansion Guide</h2>
+      <p>FFXI does not have wearable bags. Expand your carrying capacity using these quests and storage commands:</p>
+      <ul class="clean-list">
+        <li><strong>Gobbiebag Quests (30 → 80 Slots):</strong> Visit Bluffnix in Lower Jeuno (H-9). Trade 4 crafted materials per tier (or 1 <strong>Goblin Stew 880</strong>) with enough Jeuno fame.</li>
+        <li><strong>Mog Sack (<code>/sack</code>):</strong> Buy from an Artisan Moogle for 9,980 gil. Talk to the Artisan Moogle again after each Gobbiebag upgrade to sync its size up to 80 slots.</li>
+        <li><strong>Mog Satchel (<code>/satchel</code>) &amp; Mog Case (<code>/case</code>):</strong> Accessible anywhere in the field. Satchel mirrors Gobbiebag size; Case starts at 80 slots.</li>
+        <li><strong>Mog Wardrobes (<code>/wardrobe</code>):</strong> 80-slot gear-only bags. You can equip gear directly from Wardrobes without moving it to your main inventory.</li>
+        <li><strong>Porter Moogles:</strong> Trade full Artifact/Relic armor sets + a Storage Slip to store 5 pieces inside 1 inventory slot.</li>
+        <li><strong>CatsEyeXI Mog Vault (Lv. 75):</strong> Custom server system that swaps entire Wardrobes, Sacks, or Cases into extradimensional storage for a small gil fee.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<script>
+  const recipes = [
+    {
+      name: "Leather Armor Set (Lv. 7)",
+      craft: "Leathercraft",
+      skillReq: 10,
+      tier: "1-20",
+      jobs: ["THF", "WAR", "PLD", "NIN", "RDM"],
+      source: "Farm Sheepskins from Sheep in La Theine Plateau / Konschtat Highlands + Dark/Wind Crystals."
+    },
+    {
+      name: "Bronze / Brass Daggers & Spatha (Lv. 1–15)",
+      craft: "Smithing",
+      skillReq: 12,
+      tier: "1-20",
+      jobs: ["THF", "PLD", "RDM", "WAR"],
+      source: "Farm Quadavs in Konschtat / Pashhow for Bronze/Brass gear to desynthesize, or buy Copper/Tin ore at guild."
+    },
+    {
+      name: "Copper / Brass Rings & Earrings (Lv. 1–18)",
+      craft: "Goldsmithing",
+      skillReq: 15,
+      tier: "1-20",
+      jobs: ["THF", "WAR", "PLD", "RDM", "NIN", "SAM"],
+      source: "Buy Copper/Zinc ores from Goldsmithing Guild in Bastok Markets; farm Fire/Wind crystals via Signet."
+    },
+    {
+      name: "Lizard Armor Set (Lv. 17) & Brass Scale Mail (Lv. 16)",
+      craft: "Leathercraft",
+      skillReq: 18,
+      tier: "1-20",
+      jobs: ["THF", "WAR", "PLD", "NIN"],
+      source: "Farm Hill Lizards in Valkurm Dunes for Lizard Skins while leveling 10–20."
+    },
+    {
+      name: "Cotton Doublet Set (Lv. 18)",
+      craft: "Clothcraft",
+      skillReq: 18,
+      tier: "1-20",
+      jobs: ["RDM"],
+      source: "Farm Cotton Bolls from Mandragoras/Crawlers or buy Cotton Thread at Windurst Weavers' Guild."
+    },
+    {
+      name: "Chainmail Set (Lv. 24) & Kite / Brass Shields",
+      craft: "Smithing",
+      skillReq: 28,
+      tier: "21-40",
+      jobs: ["WAR", "PLD"],
+      source: "Mine Iron Ore in Zeruhn Mines / Gusgen Mines or desynthesize Goblin/Quadav drops in Qufim."
+    },
+    {
+      name: "Studded Leather (Lv. 20) & Cuir Armor Set (Lv. 29)",
+      craft: "Leathercraft",
+      skillReq: 32,
+      tier: "21-40",
+      jobs: ["THF", "WAR", "NIN"],
+      source: "Farm Dhalmel Hides in Buburimu Peninsula / Tahrongi Canyon and Sheep/Lizard leathers."
+    },
+    {
+      name: "Velvet Robe Set (Lv. 32) & Shinobi Gi",
+      craft: "Clothcraft",
+      skillReq: 38,
+      tier: "21-40",
+      jobs: ["RDM", "NIN"],
+      source: "Farm Crawlers in Maze of Shakhrami / Crawler's Nest for Silk Threads; buy Velvet/Wool mats at guild."
+    },
+    {
+      name: "Eisenplate Set (Lv. 36) & Centurion's Sword / Kunai",
+      craft: "Smithing",
+      skillReq: 42,
+      tier: "21-40",
+      jobs: ["PLD", "WAR", "NIN", "RDM"],
+      source: "Smelt Steel Ingots (Iron Ore + Bomb Ash from Gusgen Mines); check Bastok/San d'Oria Smithing guilds."
+    },
+    {
+      name: "Raptor Armor Set (Lv. 38)",
+      craft: "Leathercraft",
+      skillReq: 42,
+      tier: "21-40",
+      jobs: ["THF", "WAR", "NIN"],
+      source: "Farm Raptors in Jugner Forest and Meriphataud Mountains for Raptor Skins."
+    },
+    {
+      name: "Mythril Rings (Lv. 36) & Silver/Mythril Hairpins",
+      craft: "Goldsmithing",
+      skillReq: 40,
+      tier: "21-40",
+      jobs: ["THF", "WAR", "PLD", "RDM", "NIN", "SAM"],
+      source: "Farm Quadavs in Beadeaux for Mythril Beastcoins/Ores to smelt Mythril Ingots."
+    },
+    {
+      name: "Brigandine (Lv. 45 Body — All 5 Jobs!)",
+      craft: "Leathercraft",
+      skillReq: 52,
+      tier: "41-60",
+      jobs: ["THF", "WAR", "PLD", "RDM", "NIN"],
+      source: "Farm Ram Skins (La Theine/Konschtat Rams) + Silk Cloth (Crawler's Nest) + Darksteel/Silver."
+    },
+    {
+      name: "Darksteel Armor (Lv. 55) & Darksteel Weapons/Shields",
+      craft: "Smithing",
+      skillReq: 62,
+      tier: "41-60",
+      jobs: ["WAR", "PLD", "THF", "NIN"],
+      source: "Farm Quadavs in Beadeaux or mine Darksteel Ore in Gusgen/Ifrit's Cauldron."
+    },
+    {
+      name: "Sniper's Rings (Lv. 50 Accuracy Rings)",
+      craft: "Goldsmithing",
+      skillReq: 58,
+      tier: "41-60",
+      jobs: ["THF", "WAR", "PLD", "NIN", "SAM"],
+      source: "Farm Horn/Bone materials and Silver/Mythril Ingots; essential accuracy boost for all melee jobs."
+    },
+    {
+      name: "Haubergeon (Lv. 59) & Hauberk (Lv. 69)",
+      craft: "Smithing",
+      skillReq: 78,
+      tier: "61-75",
+      jobs: ["WAR", "NIN", "PLD", "SAM"],
+      source: "Requires Darksteel Sheets/Ingots + High-end Leather straps. Best-in-slot melee accuracy/attack body."
+    },
+    {
+      name: "Dusk Gloves & Trousers (Lv. 72 Haste Gear)",
+      craft: "Leathercraft",
+      skillReq: 70,
+      tier: "61-75",
+      jobs: ["THF", "WAR", "PLD", "NIN", "SAM"],
+      source: "Farm Behemoth/Coeurl hides and high-tier leathers; top Haste gear for Lv. 75 melee."
+    },
+    {
+      name: "Errant Houppelande (Lv. 72) & Prism Cape (Lv. 71)",
+      craft: "Clothcraft",
+      skillReq: 70,
+      tier: "61-75",
+      jobs: ["RDM"],
+      source: "Craft Rainbow Cloth (Spider Webs from Boyahda Tree/Kuftpig) and Silk Cloth."
+    },
+    {
+      name: "Adaman Cuirass / Koenig Armor & Sasanuki +1 (Lv. 73–75)",
+      craft: "Smithing",
+      skillReq: 95,
+      tier: "61-75",
+      jobs: ["PLD", "WAR", "SAM"],
+      source: "Farm Sky/Endgame ores & clusters on THF. Reaching 100 Smithing grants your free Relic Weapon Voucher!"
+    }
+  ];
+
+  const trustSetups = {
+    THF: {
+      title: "Thief (THF/WAR or THF/DNC) — Fast Chains & Material Farming",
+      slots: [
+        { role: "Slot 1 (Tank)", name: "Valaineral" },
+        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
+        { role: "Slot 3 (Haste/Support)", name: "Ulmia" },
+        { role: "Slot 4 (Magic Burst)", name: "Shantotto II" },
+        { role: "Slot 5 (Skillchain/DPS)", name: "Ayame / Zeid II" }
+      ],
+      notes: {
+        3: "With 3 slots, run Tank + Healer + Bard. Use Trick Attack onto Valaineral to lock hate while Ulmia keeps March haste active for fast kills.",
+        4: "Adding Shantotto II in Slot 4 adds massive magic burst damage whenever you or Valaineral open a skillchain.",
+        5: "With all 5 slots, Ayame opens skillchains that you close with Sneak/Trick Attack WS, letting Shantotto II Magic Burst every single fight."
+      }
+    },
+    PLD: {
+      title: "Paladin (PLD/WAR or PLD/NIN) — Sword & Board Tanking",
+      slots: [
+        { role: "Slot 1 (Healer)", name: "Apururu / Kupipi" },
+        { role: "Slot 2 (Refresh/Haste)", name: "Ulmia" },
+        { role: "Slot 3 (Magic Burst)", name: "Shantotto II" },
+        { role: "Slot 4 (Skillchain DPS)", name: "Ayame" },
+        { role: "Slot 5 (Refresh/Debuff)", name: "King of Hearts / Joachim" }
+      ],
+      notes: {
+        3: "Since YOU are the Sword & Board tank, skip Valaineral. Run Healer + Bard (Ballad/March) + Shantotto II for steady MP and damage.",
+        4: "Adding Ayame in Slot 4 creates a skillchain loop with your Sword weapon skills so Shantotto II can Magic Burst consistently.",
+        5: "Adding King of Hearts or Joachim in Slot 5 gives you double MP Refresh and Haste II/March so your MP never runs dry while tanking."
+      }
+    },
+    RDM: {
+      title: "Red Mage (RDM/NIN or RDM/BLM) — Hybrid Melee & Magic Burst",
+      slots: [
+        { role: "Slot 1 (Tank)", name: "Valaineral" },
+        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
+        { role: "Slot 3 (Magic Burst)", name: "Shantotto II" },
+        { role: "Slot 4 (Haste/Support)", name: "Ulmia" },
+        { role: "Slot 5 (Skillchain Opener)", name: "Ayame" }
+      ],
+      notes: {
+        3: "With 3 slots, you supply Haste and Refresh yourself while Valaineral tanks, Kupipi/Apururu heals, and Shantotto II nukes.",
+        4: "Adding Ulmia frees up your MP by covering Haste songs so you can focus on enfeebling and meleeing.",
+        5: "With all 5 slots, Ayame opens weapon skills for you to close, letting both you and Shantotto II Magic Burst together."
+      }
+    },
+    WAR: {
+      title: "Warrior (WAR/NIN) & Ninja (NIN/WAR) — Melee Blenders",
+      slots: [
+        { role: "Slot 1 (Tank)", name: "Valaineral" },
+        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
+        { role: "Slot 3 (Haste Support)", name: "Ulmia" },
+        { role: "Slot 4 (Magic Burst)", name: "Shantotto II" },
+        { role: "Slot 5 (2nd Support)", name: "Joachim / Koru-Moru" }
+      ],
+      notes: {
+        3: "With 3 slots, Valaineral holds AoE hate while Ulmia boosts your melee swing speed with March.",
+        4: "Adding Shantotto II turns every Great Axe or Katana weapon skill into huge magic burst spikes.",
+        5: "Adding a second support (Joachim or Koru-Moru) pushes your Haste near cap for nonstop XP chains."
+      }
+    },
+    SAM: {
+      title: "Samurai (SAM/WAR) — Nonstop Light Skillchain Spam",
+      slots: [
+        { role: "Slot 1 (Tank)", name: "Valaineral" },
+        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
+        { role: "Slot 3 (Skillchain Partner)", name: "Ayame" },
+        { role: "Slot 4 (Magic Burst)", name: "Shantotto II" },
+        { role: "Slot 5 (Haste Support)", name: "Ulmia" }
+      ],
+      notes: {
+        3: "With 3 slots, bring Ayame alongside Tank + Healer so you can immediately spam self-skillchains using Meditate.",
+        4: "Adding Shantotto II in Slot 4 lets her Magic Burst off every Light skillchain you and Ayame create.",
+        5: "Adding Ulmia in Slot 5 accelerates your TP gain even further for back-to-back Tachi: Gekko / Kasha chains."
+      }
+    }
+  };
+
+  const slotUnlockInfo = {
+    3: "<strong>3 Trust Slots (Default Start):</strong> Available immediately after completing the basic Trust tutorial quests in your starting nation.",
+    4: "<strong>4 Trust Slots Unlocked:</strong> Reach <em>Rhapsodies of Vana'diel</em> Chapter 1, Mission 12 ("The Lion's Roar") and receive the "Rhapsody in White" key item.",
+    5: "<strong>5 Trust Slots Unlocked (Max on CatsEyeXI):</strong> Reach <em>Rhapsodies of Vana'diel</em> Chapter 2, Mission 18 ("A Path Untraveled") and receive the "Rhapsody in Umber" key item."
+  };
+
+  const levelingOrder = [
+    { id: "job-thf", title: "1. Thief (1 → 75)", desc: "Primary loot/crystal/hide farmer with Treasure Hunter. Unlock subjob at 18 and Dancer at 30." },
+    { id: "job-war", title: "2. Warrior (1 → 75)", desc: "Essential subjob for THF and PLD (Provoke/Defender). Reuses THF Leather/Scale/Chainmail sets." },
+    { id: "job-nin", title: "3. Ninja (30 → 75)", desc: "Unlocks Utsusemi shadows for soloing NMs on PLD, SAM, THF, and RDM." },
+    { id: "job-pld", title: "4. Paladin (30 → 75)", desc: "Your main Sword & Board tank, fully supplied by your Smithing & Goldsmithing crafts." },
+    { id: "job-rdm", title: "5. Red Mage (1 → 75)", desc: "Leveled last once THF & Sparks have funded all magic scrolls and Clothcraft gear." },
+    { id: "job-sam", title: "Bonus: Samurai (30 → 75)", desc: "Unlock in Norg at 30+; pairs with Smithing Great Katanas (Sasanuki) and /WAR subjob." }
+  ];
+
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  const crafts = ["smithing", "leathercraft", "goldsmithing", "clothcraft", "woodworking"];
+  const skills = {};
+
+  crafts.forEach(c => {
+    const input = document.getElementById(`skill-${c}`);
+    const saved = localStorage.getItem(`cexi_skill_${c}`);
+    if (saved !== null) input.value = saved;
+    skills[c] = parseInt(input.value, 10) || 0;
+
+    input.addEventListener("input", () => {
+      const val = Math.max(0, Math.min(parseInt(input.max, 10), parseInt(input.value, 10) || 0));
+      skills[c] = val;
+      localStorage.setItem(`cexi_skill_${c}`, val);
+      renderRecipes();
+    });
+  });
+
+  function renderRecipes() {
+    const jobFilter = document.getElementById("filter-job").value;
+    const craftFilter = document.getElementById("filter-craft").value;
+    const tierFilter = document.getElementById("filter-tier").value;
+    const container = document.getElementById("recipe-list");
+
+    const filtered = recipes.filter(r => {
+      if (jobFilter !== "ALL" && !r.jobs.includes(jobFilter)) return false;
+      if (craftFilter !== "ALL" && r.craft !== craftFilter) return false;
+      if (tierFilter !== "ALL" && r.tier !== tierFilter) return false;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<p>No gear recipes match your current filter selection.</p>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(r => {
+      const userSkill = skills[r.craft.toLowerCase()] || 0;
+      const isReady = userSkill >= r.skillReq - 5;
+      const statusBadge = isReady
+        ? `<span class="badge badge-green">Ready to Craft (Skill ${r.skillReq})</span>`
+        : `<span class="badge badge-gold">Req: ${r.craft} ${r.skillReq}</span>`;
+
+      return `
+        <div class="recipe-item ${isReady ? "ready" : ""}">
+          <div class="recipe-header">
+            <span class="recipe-title">${r.name}</span>
+            <div>${statusBadge}</div>
+          </div>
+          <div class="recipe-meta">
+            <strong>Jobs:</strong> ${r.jobs.join(", ")} &bull; <strong>Tier:</strong> Lv. ${r.tier}
+          </div>
+          <div class="recipe-source">
+            <strong>Materials &amp; Farming:</strong> ${r.source}
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  document.getElementById("filter-job").addEventListener("change", renderRecipes);
+  document.getElementById("filter-craft").addEventListener("change", renderRecipes);
+  document.getElementById("filter-tier").addEventListener("change", renderRecipes);
+  renderRecipes();
+
+  let activeTrustSlots = parseInt(localStorage.getItem("cexi_trust_slots"), 10) || 5;
+
+  function updateSlotButtons() {
+    document.querySelectorAll(".slot-toggle-btn").forEach(btn => {
+      const count = parseInt(btn.dataset.slots, 10);
+      btn.classList.toggle("active", count === activeTrustSlots);
+    });
+  }
+
+  document.querySelectorAll(".slot-toggle-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      activeTrustSlots = parseInt(btn.dataset.slots, 10);
+      localStorage.setItem("cexi_trust_slots", activeTrustSlots);
+      updateSlotButtons();
+      renderTrusts();
+    });
+  });
+
+  function renderTrusts() {
+    const job = document.getElementById("trust-job-select").value;
+    const data = trustSetups[job];
+    const container = document.getElementById("trust-display");
+    const banner = document.getElementById("trust-unlock-banner");
+
+    banner.innerHTML = slotUnlockInfo[activeTrustSlots];
+
+    container.innerHTML = `
+      <h3>${data.title} (${activeTrustSlots} Active Trusts)</h3>
+      <div class="trust-slots">
+        ${data.slots.map((s, index) => {
+          const isUnlocked = index < activeTrustSlots;
+          return `
+            <div class="trust-slot ${isUnlocked ? "" : "locked"}">
+              <div class="trust-role">${isUnlocked ? s.role : `Locked (Slot ${index + 1})`}</div>
+              <div class="trust-name">${isUnlocked ? s.name : "Unlock via RoV"}</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+      <p style="margin-top:0.6rem; color: var(--text);">${data.notes[activeTrustSlots]}</p>
+    `;
+  }
+
+  updateSlotButtons();
+  document.getElementById("trust-job-select").addEventListener("change", renderTrusts);
+  renderTrusts();
+
+  function renderChecklist() {
+    const container = document.getElementById("job-checklist");
+    container.innerHTML = levelingOrder.map(item => {
+      const checked = localStorage.getItem(`cexi_check_${item.id}`) === "true";
+      return `
+        <label class="check-row ${checked ? "done" : ""}">
+          <input type="checkbox" data-id="${item.id}" ${checked ? "checked" : ""} />
+          <div>
+            <div class="check-title" style="font-weight:700; font-size:0.95rem;">${item.title}</div>
+            <div style="font-size:0.83rem; color:var(--muted);">${item.desc}</div>
+          </div>
+        </label>
+      `;
+    }).join("");
+
+    container.querySelectorAll("input[type='checkbox']").forEach(cb => {
+      cb.addEventListener("change", () => {
+        localStorage.setItem(`cexi_check_${cb.dataset.id}`, cb.checked);
+        renderChecklist();
+      });
+    });
+  }
+
+  renderChecklist();
+</script>
+</body>
+</html>
