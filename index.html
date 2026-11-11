@@ -205,19 +205,30 @@
 
       <!-- Route Optimizer Subview -->
       <div id="quest-route-container" class="hidden space-y-6">
-        <div class="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div>
             <h2 id="route-header-title" class="text-lg font-serif font-bold text-amber-400 flex items-center gap-2">
-              🧭 CatsEyeXI Route Optimizer
+              🧭 CatsEyeXI Route Optimizer (≤ Lv. 75 Eligible Only)
             </h2>
             <p class="text-xs text-slate-400 mt-1">
-              Groups available in-town quest pickups by proximity to your current location, batches ongoing field tasks by zone, and queues turn-ins.
+              Strictly filters out quests above your current character level (<strong id="route-lvl-desc" class="text-amber-300">Lv. 75</strong>) or with incomplete prerequisites so you only travel to NPCs you can actually flag right now.
             </p>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-950 p-2 rounded-lg border border-slate-800 w-full sm:w-auto">
-            <label for="route-user-current-zone" class="text-xs text-slate-400 whitespace-nowrap">Your Current Zone:</label>
-            <select id="route-user-current-zone" class="bg-slate-900 text-amber-300 font-semibold text-xs px-2.5 py-1.5 rounded border border-slate-700 flex-1 focus:outline-none"></select>
+          <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+            <!-- Direct Job Level Filter inside Route Optimizer -->
+            <div class="flex items-center gap-1.5 bg-slate-950 p-2 rounded-lg border border-amber-700/60">
+              <label for="route-lvl-input" class="text-xs font-bold text-amber-400 whitespace-nowrap">Job Lv Filter:</label>
+              <button id="route-lvl-dec" type="button" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center text-xs font-bold">-</button>
+              <input id="route-lvl-input" type="number" min="1" max="75" value="75" class="w-10 bg-slate-900 border border-slate-700 rounded text-center font-mono text-xs sm:text-sm font-bold text-amber-200 py-0.5 focus:outline-none" />
+              <button id="route-lvl-inc" type="button" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center text-xs font-bold">+</button>
+            </div>
+
+            <!-- Current Zone Selector -->
+            <div class="flex items-center gap-2 bg-slate-950 p-2 rounded-lg border border-slate-800 flex-1 sm:flex-initial">
+              <label for="route-user-current-zone" class="text-xs text-slate-400 whitespace-nowrap">Current Zone:</label>
+              <select id="route-user-current-zone" class="bg-slate-900 text-amber-300 font-semibold text-xs px-2.5 py-1.5 rounded border border-slate-700 flex-1 focus:outline-none"></select>
+            </div>
           </div>
         </div>
 
@@ -1795,14 +1806,22 @@
     }
 
     function getQuestMinLevel(quest) {
-      if (typeof quest.min_level === 'number') return quest.min_level;
+      if (typeof quest.min_level === 'number' && quest.min_level > 1) return quest.min_level;
       if (Array.isArray(quest.prerequisites)) {
         for (const p of quest.prerequisites) {
-          const m = String(p).match(/Level\s+(\d+)/i);
+          const m = String(p).match(/(?:Level|Lv\.?)\s*(\d+)/i);
           if (m) return parseInt(m[1], 10);
         }
       }
-      return 1;
+      if (Array.isArray(quest.steps)) {
+        for (const s of quest.steps) {
+          const m = String(s).match(/(?:Reach|Requires|At)\s+(?:Level|Lv\.?)\s*(\d+)/i);
+          if (m) return parseInt(m[1], 10);
+        }
+      }
+      const titleMatch = String(quest.title || '').match(/(?:Level|Lv\.?)\s*(\d+)/i);
+      if (titleMatch) return parseInt(titleMatch[1], 10);
+      return typeof quest.min_level === 'number' ? quest.min_level : 1;
     }
 
     function checkQuestPrereqs(quest) {
@@ -1990,6 +2009,16 @@
 
     function renderRouteOptimizer() {
       const container = document.getElementById('route-optimizer-phases');
+      const curLv = appState.playerLevel;
+
+      // Sync Route Optimizer Header & Level Filter Box
+      const titleEl = document.getElementById('route-header-title');
+      if (titleEl) titleEl.textContent = `🧭 CatsEyeXI Route Optimizer (≤ Lv. ${curLv} Eligible Only)`;
+      const descEl = document.getElementById('route-lvl-desc');
+      if (descEl) descEl.textContent = `Lv. ${curLv}`;
+      const routeLvInput = document.getElementById('route-lvl-input');
+      if (routeLvInput && document.activeElement !== routeLvInput) routeLvInput.value = curLv;
+
       const pending = appState.quests.filter(q => (appState.userProgress[q.id]?.status || 'Not Started') !== 'Completed');
 
       if (pending.length === 0) {
@@ -1997,11 +2026,20 @@
         return;
       }
 
-      // Phase 1: Pickups
+      // Count how many unaccepted quests are hidden due to being above playerLevel
+      let hiddenOverLevelCount = 0;
+
+      // Phase 1: Pickups (Strictly enforce minLvl <= curLv AND all prerequisite quests completed)
       const pickups = pending.filter(q => {
         const prog = appState.userProgress[q.id] || { status: 'Not Started', step: -1 };
+        if (prog.status !== 'Not Started') return false;
+        const minLvl = getQuestMinLevel(q);
         const lock = checkQuestPrereqs(q);
-        return prog.status === 'Not Started' && !lock.isLocked;
+        if (minLvl > curLv || lock.isTooHighLevel) {
+          hiddenOverLevelCount++;
+          return false;
+        }
+        return !lock.isLocked;
       });
 
       const pickupClusters = {};
@@ -2013,8 +2051,12 @@
 
       const sortedPickupZones = Object.keys(pickupClusters).sort((a, b) => getZoneDistance(appState.userCurrentZone, a) - getZoneDistance(appState.userCurrentZone, b));
 
-      // Phase 2: Active field steps
-      const active = pending.filter(q => (appState.userProgress[q.id]?.status || 'Not Started') === 'In Progress');
+      // Phase 2: Active field steps (Also filter out any quests accidentally marked In Progress that exceed curLv)
+      const active = pending.filter(q => {
+        const prog = appState.userProgress[q.id] || { status: 'Not Started', step: -1 };
+        const minLvl = getQuestMinLevel(q);
+        return prog.status === 'In Progress' && minLvl <= curLv;
+      });
       const fieldMap = {};
       active.forEach(q => {
         const prog = appState.userProgress[q.id] || { status: 'In Progress', step: -1 };
@@ -2038,20 +2080,34 @@
       container.innerHTML = `
         <!-- Phase 1 -->
         <div class="bg-indigo-950/20 border border-indigo-900/40 p-4 rounded-xl space-y-3">
-          <h3 class="text-sm font-serif font-bold text-indigo-300">Phase 1: Available Pickups near ${escapeHtml(appState.userCurrentZone)}</h3>
-          ${sortedPickupZones.length === 0 ? '<p class="text-xs text-slate-500 italic">No unaccepted pickups available right now.</p>' : sortedPickupZones.map(z => `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <h3 class="text-sm font-serif font-bold text-indigo-300">Phase 1: Eligible Quest Pickups (≤ Lv. ${curLv}) near ${escapeHtml(appState.userCurrentZone)}</h3>
+            <span class="text-[11px] font-mono text-amber-300 bg-slate-950/90 border border-slate-800 px-2.5 py-0.5 rounded">
+              ${pickups.length} Eligible Now • ${hiddenOverLevelCount} Hidden (&gt; Lv. ${curLv})
+            </span>
+          </div>
+          ${sortedPickupZones.length === 0 ? `<p class="text-xs text-slate-500 italic">No unaccepted quests eligible at Lv. ${curLv} right now (${hiddenOverLevelCount} higher-level quests hidden).</p>` : sortedPickupZones.map(z => `
             <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 space-y-2">
               <div class="flex items-center justify-between text-xs font-bold text-amber-300">
                 <span>📍 ${escapeHtml(z)}</span>
                 <span class="text-slate-400 font-normal">${getZoneDistance(appState.userCurrentZone, z)} zone hops away</span>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                ${pickupClusters[z].map(q => `
+                ${pickupClusters[z].map(q => {
+                  const qLv = getQuestMinLevel(q);
+                  return `
                   <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex items-center justify-between gap-2">
-                    <span class="text-xs font-semibold text-slate-200 truncate">${escapeHtml(q.title)}</span>
-                    <button type="button" class="route-accept-btn text-xs bg-indigo-900 hover:bg-indigo-800 text-indigo-100 px-2.5 py-1 rounded" data-quest-id="${q.id}">Accept</button>
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-amber-950 text-amber-300 border border-amber-800 shrink-0">Lv.${qLv}</span>
+                        <span class="text-xs font-semibold text-slate-200 truncate">${escapeHtml(q.title)}</span>
+                      </div>
+                      <div class="text-[11px] text-slate-400 truncate mt-0.5">NPC: <span class="text-amber-400">${escapeHtml(q.start_npc || 'Quest NPC')}</span></div>
+                    </div>
+                    <button type="button" class="route-accept-btn text-xs bg-indigo-900 hover:bg-indigo-800 text-indigo-100 px-2.5 py-1 rounded shrink-0" data-quest-id="${q.id}">Accept</button>
                   </div>
-                `).join('')}
+                `;
+                }).join('')}
               </div>
             </div>
           `).join('')}
@@ -3157,6 +3213,9 @@
 
       // Set initial level values in UI
       document.getElementById('header-lvl-input').value = appState.playerLevel;
+      const routeLvlInput = document.getElementById('route-lvl-input');
+      if (routeLvlInput) routeLvlInput.value = appState.playerLevel;
+      document.getElementById('quest-btn-toggle-overlevel').textContent = appState.hideOverLevel ? `≤ Lv.${appState.playerLevel} Only` : 'Showing All Lv';
       document.getElementById('route-user-current-zone').value = appState.userCurrentZone;
 
       // Master Tab Navigation
@@ -3166,27 +3225,31 @@
 
       document.getElementById('btn-quick-cart').addEventListener('click', () => switchMasterTab('cart'));
 
-      // Level Controls
-      document.getElementById('header-lvl-dec').addEventListener('click', () => {
-        appState.playerLevel = Math.max(1, appState.playerLevel - 1);
+      function syncAllLevelInputs(newLv) {
+        appState.playerLevel = Math.max(1, Math.min(75, newLv));
         document.getElementById('header-lvl-input').value = appState.playerLevel;
+        if (routeLvlInput) routeLvlInput.value = appState.playerLevel;
+        document.getElementById('quest-btn-toggle-overlevel').textContent = appState.hideOverLevel ? `≤ Lv.${appState.playerLevel} Only` : 'Showing All Lv';
         saveMasterState();
         renderQuestsView();
-      });
-      document.getElementById('header-lvl-inc').addEventListener('click', () => {
-        appState.playerLevel = Math.min(75, appState.playerLevel + 1);
-        document.getElementById('header-lvl-input').value = appState.playerLevel;
-        saveMasterState();
-        renderQuestsView();
-      });
+      }
+
+      // Level Controls (Top Header & Route Optimizer)
+      document.getElementById('header-lvl-dec').addEventListener('click', () => syncAllLevelInputs(appState.playerLevel - 1));
+      document.getElementById('header-lvl-inc').addEventListener('click', () => syncAllLevelInputs(appState.playerLevel + 1));
       document.getElementById('header-lvl-input').addEventListener('input', (e) => {
         const val = parseInt(e.target.value, 10);
-        if (!isNaN(val)) {
-          appState.playerLevel = Math.max(1, Math.min(75, val));
-          saveMasterState();
-          renderQuestsView();
-        }
+        if (!isNaN(val)) syncAllLevelInputs(val);
       });
+
+      if (routeLvlInput) {
+        document.getElementById('route-lvl-dec').addEventListener('click', () => syncAllLevelInputs(appState.playerLevel - 1));
+        document.getElementById('route-lvl-inc').addEventListener('click', () => syncAllLevelInputs(appState.playerLevel + 1));
+        routeLvlInput.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value, 10);
+          if (!isNaN(val)) syncAllLevelInputs(val);
+        });
+      }
 
       // Quest Sub-Navigation
       document.getElementById('btn-quest-sub-log').addEventListener('click', () => {
