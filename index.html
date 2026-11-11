@@ -1,968 +1,2435 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CatsEyeXI ACE Mode Companion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#020617" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>CatsEyeXI Master Suite — Quests, Crafting & Route Companion</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f172a'/%3E%3Cpath d='M25 75 A 10 10 0 0 1 35 65 H 75 V 20 H 35 A 10 10 0 0 0 25 30 Z' fill='none' stroke='%23f59e0b' stroke-width='7'/%3E%3Ccircle cx='52' cy='43' r='8' fill='%23f59e0b'/%3E%3C/svg%3E" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Cinzel', 'Georgia', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
   <style>
-    :root {
-      --bg: #0f141e;
-      --surface: #182030;
-      --surface-alt: #202b40;
-      --border: #2e3d59;
-      --text: #e6ecf5;
-      --muted: #98a6c0;
-      --accent: #d4af37;
-      --accent-soft: rgba(212, 175, 55, 0.15);
-      --green: #34d399;
-      --green-soft: rgba(52, 211, 153, 0.15);
-      --blue: #60a5fa;
-      --blue-soft: rgba(96, 165, 250, 0.15);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      padding-bottom: 3rem;
+      background-color: #020617;
+      color: #cbd5e1;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
-
-    header {
-      background: linear-gradient(180deg, #162033 0%, var(--bg) 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 1.25rem 1rem 0.75rem;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    input, textarea, select {
+      user-select: text;
     }
-
-    .header-inner {
-      max-width: 960px;
-      margin: 0 auto;
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
-
-    h1 {
-      font-size: 1.35rem;
-      color: var(--accent);
-      letter-spacing: 0.3px;
-      margin-bottom: 0.2rem;
-    }
-
-    .subtitle {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 0.9rem;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 0.4rem;
-      overflow-x: auto;
-      padding-bottom: 0.35rem;
-      scrollbar-width: none;
-    }
-
-    .tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .tab-btn {
-      background: var(--surface);
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.5rem 0.85rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .tab-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-
-    main {
-      max-width: 960px;
-      margin: 1.25rem auto;
-      padding: 0 1rem;
-    }
-
-    .panel {
-      display: none;
-    }
-
-    .panel.active {
-      display: block;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.1rem;
-      margin-bottom: 1rem;
-    }
-
-    .card h2 {
-      font-size: 1.1rem;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-
-    .card h3 {
-      font-size: 0.98rem;
-      color: var(--text);
-      margin: 0.85rem 0 0.35rem;
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
-    }
-
-    ul.clean-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    ul.clean-list li {
-      font-size: 0.9rem;
-      background: var(--surface-alt);
-      padding: 0.65rem 0.8rem;
-      border-radius: 8px;
-      border-left: 3px solid var(--accent);
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.15rem 0.45rem;
-      border-radius: 5px;
-      text-transform: uppercase;
-      margin-right: 0.35rem;
-    }
-
-    .badge-gold { background: var(--accent-soft); color: var(--accent); }
-    .badge-green { background: var(--green-soft); color: var(--green); }
-    .badge-blue { background: var(--blue-soft); color: var(--blue); }
-
-    .craft-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.75rem;
-      margin-top: 0.75rem;
-    }
-
-    .craft-box {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem;
-    }
-
-    .craft-box label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.25rem;
-    }
-
-    .craft-box span.cap {
-      font-size: 0.72rem;
-      color: var(--muted);
-      display: block;
-      margin-bottom: 0.4rem;
-    }
-
-    .craft-box input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0.4rem 0.5rem;
-      border-radius: 6px;
-    }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      margin: 0.75rem 0 1rem;
-      align-items: center;
-    }
-
-    .filters select {
-      background: var(--surface-alt);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.55rem 0.75rem;
-      font-size: 0.85rem;
-      flex: 1 1 200px;
-    }
-
-    .slot-toggle-group {
-      display: inline-flex;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 3px;
-      gap: 3px;
-    }
-
-    .slot-toggle-btn {
-      background: transparent;
-      color: var(--muted);
-      border: none;
-      border-radius: 6px;
-      padding: 0.42rem 0.75rem;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .slot-toggle-btn.active {
-      background: var(--accent);
-      color: var(--bg);
-    }
-
-    .slot-unlock-hint {
-      font-size: 0.78rem;
-      color: var(--blue);
-      background: rgba(96, 165, 250, 0.08);
-      border: 1px solid rgba(96, 165, 250, 0.25);
-      padding: 0.45rem 0.7rem;
-      border-radius: 7px;
-      margin-bottom: 0.75rem;
-    }
-
-    .recipe-item {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.85rem;
-      margin-bottom: 0.65rem;
-      transition: border-color 0.15s;
-    }
-
-    .recipe-item.ready {
-      border-left: 4px solid var(--green);
-    }
-
-    .recipe-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 0.35rem;
-    }
-
-    .recipe-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text);
-    }
-
-    .recipe-meta {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
-
-    .recipe-source {
-      font-size: 0.82rem;
-      color: var(--blue);
-      background: rgba(96, 165, 250, 0.08);
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-    }
-
-    .trust-slots {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.5rem;
-      margin: 0.6rem 0;
-    }
-
-    .trust-slot {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.65rem;
-    }
-
-    .trust-slot.locked {
-      opacity: 0.42;
-      border-style: dashed;
-    }
-
-    .trust-role {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .trust-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .check-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.65rem;
-      background: var(--surface-alt);
-      padding: 0.7rem;
-      border-radius: 8px;
-      margin-bottom: 0.5rem;
-      cursor: pointer;
-    }
-
-    .check-row input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-top: 2px;
-      accent-color: var(--accent);
-    }
-
-    .check-row.done .check-title {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 0.6rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    th {
-      color: var(--accent);
-      background: var(--surface-alt);
+    input[type=number] { -moz-appearance: textfield; }
+    .tab-active {
+      background-color: #d97706 !important;
+      color: #020617 !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-amber-900 selection:text-white pb-16">
 
-<header>
-  <div class="header-inner">
-    <h1>CatsEyeXI ACE Mode Companion</h1>
-    <div class="subtitle">Tandem Leveling, Gear Crafting, Trust Setups &amp; Server Roadmap</div>
-    <nav class="tabs" id="tabBar">
-      <button class="tab-btn active" data-tab="crafting">Crafting &amp; Gear</button>
-      <button class="tab-btn" data-tab="trusts">Trust Setups</button>
-      <button class="tab-btn" data-tab="leveling">Job Order &amp; Camps</button>
-      <button class="tab-btn" data-tab="builds">SAM &amp; PLD Builds</button>
-      <button class="tab-btn" data-tab="storage">Bags &amp; Storage</button>
-    </nav>
+  <!-- Toast Notification Overlay -->
+  <div id="toast" class="hidden fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-emerald-900 text-emerald-100 px-4 py-2 rounded-lg shadow-2xl border border-emerald-500 text-xs sm:text-sm font-semibold transition-all duration-300"></div>
+
+  <!-- Top Sticky Master Navigation Header -->
+  <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-40 shadow-xl">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 flex flex-col gap-2">
+      
+      <!-- Top Row: App Brand + Global Character Level + Quick Tools -->
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500 via-amber-700 to-indigo-950 flex items-center justify-center border border-amber-400/40 text-amber-100 shadow-inner shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-xl font-serif font-bold text-amber-50 leading-tight tracking-wide">
+              CatsEye<span class="text-amber-500">XI</span> <span class="text-slate-400 font-sans font-normal text-xs sm:text-sm">Master Suite</span>
+            </h1>
+            <div class="flex items-center gap-2 text-[11px] text-slate-400">
+              <span id="stat-quests-badge">0 / 0 Quests</span>
+              <span>•</span>
+              <span id="stat-recipes-badge">0 Recipes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-2.5 ml-auto">
+          <!-- Global Player Level Adjuster (Affects Quest Eligibility & Skill Caps) -->
+          <div class="flex items-center bg-slate-950 border border-amber-600/60 rounded-lg px-2 py-1 gap-1 shadow-inner" title="Your Character Level (1-75)">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">Lv.</span>
+            <button id="header-lvl-dec" type="button" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 flex items-center justify-center text-xs font-bold transition">-</button>
+            <input id="header-lvl-input" type="number" min="1" max="75" value="75" class="w-8 bg-transparent text-center font-mono text-sm font-bold text-amber-200 focus:outline-none" />
+            <button id="header-lvl-inc" type="button" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 flex items-center justify-center text-xs font-bold transition">+</button>
+          </div>
+
+          <!-- Material Cart Quick Icon -->
+          <button id="btn-quick-cart" type="button" class="relative p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition" title="View Material Cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span id="cart-item-counter" class="hidden absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-[10px] font-bold px-1.5 py-0.2 rounded-full shadow">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Second Row: Master Top Navigation Bar (6 Tabs) -->
+      <nav class="bg-slate-950 p-1 rounded-xl border border-slate-800 grid grid-cols-2 sm:grid-cols-6 gap-1 shadow-inner">
+        <button id="nav-btn-quests" type="button" class="tab-active text-xs sm:text-sm py-2 px-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 truncate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>📜 Quests & Route</span>
+        </button>
+        <button id="nav-btn-guide" type="button" class="text-xs sm:text-sm py-2 px-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5 truncate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>⚔️ Job & Craft Guide</span>
+        </button>
+        <button id="nav-btn-crafting" type="button" class="text-xs sm:text-sm py-2 px-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5 truncate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+          <span>⚒️ Crafting & Recipes</span>
+        </button>
+        <button id="nav-btn-cart" type="button" class="text-xs sm:text-sm py-2 px-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5 truncate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span>🛒 Material Cart</span>
+        </button>
+        <button id="nav-btn-scraper" type="button" class="text-xs sm:text-sm py-2 px-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5 truncate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <span>🌐 Live Scraper</span>
+        </button>
+        <button id="nav-btn-backup" type="button" class="text-xs sm:text-sm py-2 px-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5 truncate">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>💾 Backup / Sync</span>
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-4 py-5">
+    
+    <!-- ================= TAB 1: QUEST TRACKER & ROUTE OPTIMIZER ================= -->
+    <section id="tab-panel-quests" class="space-y-6">
+      
+      <!-- Quest Sub-Navigation Mode: Checklist vs. Route Optimizer -->
+      <div class="flex items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+        <div class="flex gap-2">
+          <button id="btn-quest-sub-log" type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-slate-950 shadow">
+            Quest Checklist (<span id="quest-filtered-count">0</span>)
+          </button>
+          <button id="btn-quest-sub-route" type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200">
+            🧭 Route Optimizer
+          </button>
+        </div>
+
+        <button id="btn-open-add-quest" type="button" class="text-xs bg-indigo-900/80 hover:bg-indigo-800 text-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-700 flex items-center gap-1 font-medium transition">
+          <span>+ Add Custom Quest</span>
+        </button>
+      </div>
+
+      <!-- Quest Filters Bar -->
+      <div id="quest-filter-bar" class="bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          
+          <div class="relative sm:col-span-2">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <input id="quest-filter-search" type="text" placeholder="Search quests, NPCs, zones, rewards..." class="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-amber-500" />
+          </div>
+
+          <!-- Level Filter Toggle -->
+          <div class="flex items-center justify-between gap-2 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5">
+            <span class="text-xs text-slate-400">Filter:</span>
+            <button id="quest-btn-toggle-overlevel" type="button" class="text-[11px] px-2.5 py-1 rounded font-semibold transition bg-amber-900/50 border border-amber-700 text-amber-200">
+              ≤ Lv.75 Only
+            </button>
+          </div>
+
+          <select id="quest-filter-category" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:border-amber-500">
+            <option value="All">All Categories</option>
+          </select>
+
+          <select id="quest-filter-zone" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:border-amber-500">
+            <option value="All">All Zones</option>
+          </select>
+
+          <div class="flex gap-2">
+            <select id="quest-filter-status" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:border-amber-500 flex-1">
+              <option value="All">All Status</option>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <button id="quest-btn-toggle-locked" type="button" class="px-3 py-2 rounded-lg border text-xs font-semibold flex items-center justify-center transition bg-slate-950 border-slate-700 text-slate-400" title="Hide Locked Quests">
+              🔒
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Quest Cards List Container -->
+      <div id="quest-list-container" class="space-y-4"></div>
+
+      <!-- Route Optimizer Subview -->
+      <div id="quest-route-container" class="hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 id="route-header-title" class="text-lg font-serif font-bold text-amber-400 flex items-center gap-2">
+              🧭 CatsEyeXI Route Optimizer
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Groups available in-town quest pickups by proximity to your current location, batches ongoing field tasks by zone, and queues turn-ins.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 bg-slate-950 p-2 rounded-lg border border-slate-800 w-full sm:w-auto">
+            <label for="route-user-current-zone" class="text-xs text-slate-400 whitespace-nowrap">Your Current Zone:</label>
+            <select id="route-user-current-zone" class="bg-slate-900 text-amber-300 font-semibold text-xs px-2.5 py-1.5 rounded border border-slate-700 flex-1 focus:outline-none"></select>
+          </div>
+        </div>
+
+        <div id="route-optimizer-phases" class="space-y-6"></div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 1B: 6-JOB & CRAFTING SELF-SUFFICIENCY GUIDE ================= -->
+    <section id="tab-panel-guide" class="hidden space-y-6">
+
+      <!-- Top Interactive Controls Banner -->
+      <div class="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-xl space-y-4 shadow-lg">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <h2 class="text-base sm:text-xl font-serif font-bold text-amber-400 flex items-center gap-2">
+              ⚔️ CatsEyeXI 6-Job Self-Sufficiency & Crafting Supply Roadmap
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Master sequence: <strong class="text-amber-300">1. THF</strong> (TH Loot Engine) ➔ <strong class="text-amber-300">2. WAR</strong> (/WAR Sub) ➔ <strong class="text-amber-300">3. PLD</strong> (Tank) ➔ <strong class="text-amber-300">4. RDM</strong> (/RDM Fast Cast) ➔ <strong class="text-amber-300">5. SAM</strong> (/SAM Meditate) ➔ <strong class="text-amber-300">6. NIN</strong> (/NIN Utsusemi + Self-Crafted Tools).
+            </p>
+          </div>
+
+          <!-- Simultaneous Trust Count Selector (3 / 4 / 5) -->
+          <div class="flex items-center gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 shrink-0 self-start lg:self-center">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2">Active Trusts:</span>
+            <button type="button" data-trust-count="3" class="guide-trust-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-600 text-slate-950">
+              3 Trusts (Lv.5+)
+            </button>
+            <button type="button" data-trust-count="4" class="guide-trust-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-slate-200">
+              4 Trusts (RoV 1-6)
+            </button>
+            <button type="button" data-trust-count="5" class="guide-trust-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-slate-200">
+              5 Trusts (RoV 2-13)
+            </button>
+          </div>
+        </div>
+
+        <!-- Job Sequence Selector Pills -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span class="font-bold uppercase tracking-wider text-[11px]">Select Active Job in Sequence (Adapts Trust Matrix & Gear Focus):</span>
+            <span id="guide-progress-summary" class="text-emerald-400 font-mono font-bold">0 / 0 Milestones Checked</span>
+          </div>
+          <div id="guide-job-pills" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2"></div>
+        </div>
+      </div>
+
+      <!-- Why This 6-Job & Crafting Synergy Order Works (Selected Job Spotlight) -->
+      <div id="guide-job-spotlight" class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 sm:p-5"></div>
+
+      <!-- Dynamic Trust Setup Matrix (Adapts to 3, 4, or 5 Trusts & Selected Job) -->
+      <div id="guide-trust-matrix" class="bg-slate-900/70 border border-indigo-900/50 rounded-xl p-4 sm:p-5 space-y-4"></div>
+
+      <!-- Bracket-by-Bracket Leveling Zones + Synced Crafting Supply Checklists -->
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <h3 class="text-base sm:text-lg font-serif font-bold text-amber-300">
+            🗺️ Bracket-by-Bracket Leveling Camps & Self-Crafted Gear Pipeline (Lv. 1–75)
+          </h3>
+          <span class="text-xs text-slate-400">Click any milestone to check off • Click <strong class="text-amber-400">➕ Queue Bracket Gear to Cart</strong> to load recipes</span>
+        </div>
+        <div id="guide-brackets-container" class="space-y-4"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 2: CRAFTING LOG & RECIPES ================= -->
+    <section id="tab-panel-crafting" class="hidden space-y-6">
+      
+      <!-- Guild Skill Trackers Grid (All 8 Guilds) -->
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm sm:text-base font-serif font-bold text-amber-400 flex items-center gap-2">
+            <span>⚒️ Guild Skill Levels (0–110)</span>
+          </h2>
+          <span class="text-xs text-slate-400">Click level to edit</span>
+        </div>
+        <div id="guild-levels-grid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5"></div>
+      </div>
+
+      <!-- Recipe Filters -->
+      <div class="bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          
+          <div class="relative sm:col-span-2">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <input id="craft-filter-search" type="text" placeholder="Search recipe name or ingredient..." class="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-amber-500" />
+          </div>
+
+          <select id="craft-filter-guild" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:border-amber-500">
+            <option value="All">All Guilds</option>
+          </select>
+
+          <select id="craft-filter-crystal" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:border-amber-500">
+            <option value="All">All Crystals</option>
+          </select>
+
+          <select id="craft-filter-job" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:border-amber-500">
+            <option value="All">All Jobs</option>
+          </select>
+
+          <select id="craft-filter-slot" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:border-amber-500">
+            <option value="All">All Slots</option>
+          </select>
+
+        </div>
+      </div>
+
+      <!-- Recipes Container -->
+      <div id="recipe-list-container" class="space-y-4"></div>
+    </section>
+
+    <!-- ================= TAB 3: BATCH MATERIAL CART ================= -->
+    <section id="tab-panel-cart" class="hidden space-y-6">
+      
+      <div class="bg-slate-900/80 border border-slate-800 p-4 sm:p-5 rounded-xl flex items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base sm:text-lg font-serif font-bold text-amber-400">
+            🛒 Batch Material Cart & Synthesis Planner
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Aggregates required crystals (with 12-stacks) and raw ingredients for queued batches. Tap items to check them off as bought or farmed.
+          </p>
+        </div>
+        <button id="btn-clear-cart" type="button" class="text-xs bg-rose-950/80 hover:bg-rose-900 text-rose-200 border border-rose-800 px-3 py-1.5 rounded-lg transition font-medium">
+          Clear Cart
+        </button>
+      </div>
+
+      <!-- Active Cart Queued Items -->
+      <div id="cart-queued-batches" class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3"></div>
+
+      <!-- Aggregated Materials & Crystals Checklist -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-slate-900/70 p-4 rounded-xl border border-slate-800 space-y-3">
+          <h3 class="text-sm font-serif font-bold text-amber-300">🔮 Required Crystals (Singles & Stacks)</h3>
+          <div id="cart-crystals-list" class="space-y-2"></div>
+        </div>
+
+        <div class="bg-slate-900/70 p-4 rounded-xl border border-slate-800 space-y-3">
+          <h3 class="text-sm font-serif font-bold text-amber-300">📦 Required Raw Ingredients</h3>
+          <div id="cart-materials-list" class="space-y-2"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 4: UNIVERSAL WIKI SCRAPER ================= -->
+    <section id="tab-panel-scraper" class="hidden space-y-6">
+      
+      <!-- Scraper Mode Tabs: Quests Scraper vs Recipe Scraper -->
+      <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+          <div>
+            <h2 class="text-base sm:text-lg font-serif font-bold text-amber-400">
+              🌐 Live MediaWiki Scraper (BG-Wiki & FFXIclopedia)
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Pull live 75-era quest walkthroughs and 3,000+ crafting synthesis tables directly into your local database.
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button id="btn-scraper-mode-quest" type="button" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-slate-950">
+              Quests Scraper
+            </button>
+            <button id="btn-scraper-mode-craft" type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200">
+              Recipes Scraper
+            </button>
+          </div>
+        </div>
+
+        <!-- Quests Scraper Section -->
+        <div id="scraper-subview-quest" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <select id="scraper-quest-region" class="bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 px-3 py-2">
+              <option value="Category:San_d'Oria_Quests">San d'Oria Quests</option>
+              <option value="Category:Bastok_Quests">Bastok Quests</option>
+              <option value="Category:Windurst_Quests">Windurst Quests</option>
+              <option value="Category:Jeuno_Quests">Jeuno Quests</option>
+              <option value="Category:Other_Areas_Quests">Outlands Quests</option>
+              <option value="Category:Aht_Urhgan_Quests">Aht Urhgan Quests</option>
+              <option value="Category:Artifact_Armor_Quests">Artifact Armor Quests</option>
+            </select>
+            <button id="btn-scrape-category" type="button" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm transition flex items-center justify-center gap-2">
+              ⚡ Scrape Category Quests
+            </button>
+            <button id="btn-scrape-all-regions" type="button" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs sm:text-sm transition flex items-center justify-center gap-2">
+              🚀 Full 800+ Quest Scan
+            </button>
+          </div>
+
+          <!-- Single Quest Scraper -->
+          <div class="pt-3 border-t border-slate-800 flex gap-2">
+            <input id="scraper-single-quest-name" type="text" placeholder="Enter single quest name (e.g. The Holy Crest, Borghertz's Hands)" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200" />
+            <button id="btn-scrape-single-quest" type="button" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-xs font-semibold">
+              Deep Scrape
+            </button>
+          </div>
+        </div>
+
+        <!-- Recipe Scraper Section -->
+        <div id="scraper-subview-craft" class="hidden space-y-4">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="scraper-guild-buttons-container"></div>
+          <button id="btn-scrape-all-guilds" type="button" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2.5 rounded-lg text-xs sm:text-sm transition flex items-center justify-center gap-2">
+            ⚡ Scan & Import All 8 Crafting Guilds (2,500–3,200+ Recipes)
+          </button>
+        </div>
+
+        <!-- Scraper Progress Console -->
+        <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span id="scraper-status-label">Engine Ready.</span>
+            <span id="scraper-counter-badge">0 Items Discovered</span>
+          </div>
+          <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div id="scraper-progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <div id="scraper-log-terminal" class="h-28 overflow-y-auto font-mono text-[11px] text-slate-400 space-y-1 p-2 bg-slate-950/80 rounded border border-slate-800/80"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 5: UNIFIED BACKUP & SYNC ================= -->
+    <section id="tab-panel-backup" class="hidden space-y-6">
+      
+      <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-4">
+        <div>
+          <h2 class="text-base sm:text-lg font-serif font-bold text-amber-400">
+            💾 Unified State Backup & Sync (PC ⇄ Mobile)
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Export and import all quests, completed steps, recipes, guild levels, and material cart batches as a single JSON file.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-2.5">
+          <button id="btn-download-json-file" type="button" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm transition flex items-center gap-2 shadow">
+            💾 Download .json File
+          </button>
+          
+          <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer flex items-center gap-2">
+            📂 Upload .json File
+            <input id="input-upload-json-file" type="file" accept=".json" class="hidden" />
+          </label>
+
+          <button id="btn-copy-raw-json" type="button" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2 rounded-lg text-xs font-semibold transition">
+            📋 Copy JSON Text
+          </button>
+
+          <button id="btn-restore-defaults" type="button" class="ml-auto text-xs text-rose-400 hover:text-rose-300 underline font-medium">
+            Reset to Default Verified Databases
+          </button>
+        </div>
+
+        <textarea id="raw-backup-json" rows="10" placeholder="Paste backup JSON here..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-amber-500"></textarea>
+
+        <button id="btn-apply-pasted-json" type="button" class="w-full bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition shadow">
+          Apply Pasted JSON Data
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL: ADD CUSTOM QUEST -->
+  <div id="modal-add-quest" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+    <form id="form-create-quest" class="bg-slate-900 border border-slate-700 rounded-xl max-w-lg w-full p-5 space-y-3 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="text-base font-serif font-bold text-amber-400">Add Custom CatsEyeXI Quest</h3>
+        <button id="btn-close-quest-modal" type="button" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <div class="grid grid-cols-4 gap-2">
+        <input id="add-quest-title" type="text" required placeholder="Quest Title *" class="col-span-3 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200" />
+        <input id="add-quest-minlvl" type="number" min="1" max="75" value="1" placeholder="Lv." class="col-span-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-amber-300 font-mono" title="Minimum Level" />
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <input id="add-quest-category" type="text" value="Custom Quests" placeholder="Category" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200" />
+        <input id="add-quest-zone" type="text" value="Southern San d'Oria" placeholder="Start Zone" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200" />
+      </div>
+      <input id="add-quest-npc" type="text" placeholder="Start NPC (e.g. Secodiand F-6)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200" />
+      <textarea id="add-quest-steps" rows="3" placeholder="Walkthrough Steps (one per line)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200"></textarea>
+      <input id="add-quest-rewards" type="text" placeholder="Rewards (comma separated)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200" />
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="btn-cancel-quest-modal" type="button" class="px-4 py-2 text-xs rounded-lg bg-slate-800 text-slate-300">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-xs rounded-lg bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold">Save Quest</button>
+      </div>
+    </form>
   </div>
-</header>
 
-<main>
-  <section id="crafting" class="panel active">
-    <div class="card">
-      <h2>Your Crafting Levels (ACE 3.0x Rate)</h2>
-      <p>Update your current skill levels below. Your progress saves automatically in your browser, and craftable gear highlights in green when you reach its skill tier.</p>
-      <div class="craft-grid">
-        <div class="craft-box">
-          <label for="skill-smithing">Smithing (Main)</label>
-          <span class="cap">Cap: 110 (Relic Voucher @ 100)</span>
-          <input type="number" id="skill-smithing" min="0" max="110" value="0" />
-        </div>
-        <div class="craft-box">
-          <label for="skill-leathercraft">Leathercraft</label>
-          <span class="cap">Subcraft Cap: 70</span>
-          <input type="number" id="skill-leathercraft" min="0" max="70" value="0" />
-        </div>
-        <div class="craft-box">
-          <label for="skill-goldsmithing">Goldsmithing</label>
-          <span class="cap">Subcraft Cap: 70</span>
-          <input type="number" id="skill-goldsmithing" min="0" max="70" value="0" />
-        </div>
-        <div class="craft-box">
-          <label for="skill-clothcraft">Clothcraft</label>
-          <span class="cap">Subcraft Cap: 70</span>
-          <input type="number" id="skill-clothcraft" min="0" max="70" value="0" />
-        </div>
-        <div class="craft-box">
-          <label for="skill-woodworking">Woodworking</label>
-          <span class="cap">Subcraft Cap: 70</span>
-          <input type="number" id="skill-woodworking" min="0" max="70" value="0" />
-        </div>
-      </div>
-    </div>
+  <script>
+    // --- Master Vana'diel Proximity & Route Graph ---
+    const ZONE_GRAPH = {
+      "Southern San d'Oria": ["Northern San d'Oria", "Port San d'Oria", "West Ronfaure", "East Ronfaure"],
+      "Northern San d'Oria": ["Southern San d'Oria", "Port San d'Oria", "West Ronfaure", "Chateau d'Oraguille"],
+      "Chateau d'Oraguille": ["Northern San d'Oria"],
+      "Port San d'Oria": ["Southern San d'Oria", "Northern San d'Oria", "West Ronfaure"],
+      "West Ronfaure": ["Southern San d'Oria", "Northern San d'Oria", "East Ronfaure", "La Theine Plateau", "King Ranperre's Tomb", "Ghelsba Outpost"],
+      "East Ronfaure": ["Southern San d'Oria", "West Ronfaure", "Bostaunieux Oubliette"],
+      "King Ranperre's Tomb": ["West Ronfaure"],
+      "Ghelsba Outpost": ["West Ronfaure", "Fort Ghelsba"],
+      "Fort Ghelsba": ["Ghelsba Outpost", "Horlais Peak"],
+      "Horlais Peak": ["Fort Ghelsba"],
+      "La Theine Plateau": ["West Ronfaure", "Valkurm Dunes", "Jugner Forest", "Ordelle's Caves"],
+      "Ordelle's Caves": ["La Theine Plateau"],
+      "Valkurm Dunes": ["La Theine Plateau", "Konschtat Highlands", "Selbina", "Gustav Tunnel"],
+      "Gustav Tunnel": ["Valkurm Dunes", "Cape Teriggan"],
+      "Selbina": ["Valkurm Dunes", "Mhaura"],
+      "Jugner Forest": ["La Theine Plateau", "Batallia Downs", "Davoi", "Carpenters' Landing"],
+      "Davoi": ["Jugner Forest", "Monastic Cavern"],
+      "Batallia Downs": ["Jugner Forest", "Rolanberry Fields", "Upper Jeuno", "Eldieme Necropolis"],
+      "Eldieme Necropolis": ["Batallia Downs"],
+      "Bastok Markets": ["Bastok Mines", "Port Bastok", "South Gustaberg", "Metalworks"],
+      "Bastok Mines": ["Bastok Markets", "Port Bastok", "North Gustaberg", "Zeruhn Mines", "Metalworks"],
+      "Port Bastok": ["Bastok Markets", "Bastok Mines", "North Gustaberg"],
+      "Metalworks": ["Bastok Markets", "Bastok Mines"],
+      "Zeruhn Mines": ["Bastok Mines", "Palborough Mines"],
+      "North Gustaberg": ["Bastok Mines", "Port Bastok", "South Gustaberg", "Konschtat Highlands", "Dangruf Wadi"],
+      "South Gustaberg": ["Bastok Markets", "North Gustaberg", "Dangruf Wadi", "Palborough Mines"],
+      "Dangruf Wadi": ["North Gustaberg", "South Gustaberg"],
+      "Palborough Mines": ["South Gustaberg", "Waughroon Shrine"],
+      "Waughroon Shrine": ["Palborough Mines"],
+      "Konschtat Highlands": ["North Gustaberg", "Valkurm Dunes", "Pashhow Marshlands", "Gusgen Mines"],
+      "Gusgen Mines": ["Konschtat Highlands"],
+      "Pashhow Marshlands": ["Konschtat Highlands", "Rolanberry Fields", "Beadeaux"],
+      "Beadeaux": ["Pashhow Marshlands", "Qulun Dome"],
+      "Rolanberry Fields": ["Pashhow Marshlands", "Batallia Downs", "Sauromugue Champaign", "Lower Jeuno", "Crawlers' Nest"],
+      "Crawlers' Nest": ["Rolanberry Fields"],
+      "Windurst Woods": ["Windurst Waters", "Windurst Walls", "Port Windurst", "East Sarutabaruta"],
+      "Windurst Waters": ["Windurst Woods", "Windurst Walls", "Port Windurst", "West Sarutabaruta"],
+      "Windurst Walls": ["Windurst Woods", "Windurst Waters", "Port Windurst", "Heavens Tower", "Toraimarai Canal"],
+      "Port Windurst": ["Windurst Woods", "Windurst Waters", "West Sarutabaruta"],
+      "Heavens Tower": ["Windurst Walls"],
+      "Toraimarai Canal": ["Windurst Walls", "Inner Horutoto Ruins"],
+      "West Sarutabaruta": ["Windurst Waters", "Port Windurst", "East Sarutabaruta", "Giddeus", "Inner Horutoto Ruins"],
+      "East Sarutabaruta": ["Windurst Woods", "West Sarutabaruta", "Tahrongi Canyon", "Inner Horutoto Ruins"],
+      "Inner Horutoto Ruins": ["East Sarutabaruta", "West Sarutabaruta"],
+      "Giddeus": ["West Sarutabaruta", "Balga's Dais"],
+      "Balga's Dais": ["Giddeus"],
+      "Tahrongi Canyon": ["East Sarutabaruta", "Buburimu Peninsula", "Meriphataud Mountains", "Maze of Shakhrami"],
+      "Maze of Shakhrami": ["Tahrongi Canyon"],
+      "Buburimu Peninsula": ["Tahrongi Canyon", "Mhaura", "Bibiki Bay"],
+      "Mhaura": ["Buburimu Peninsula", "Selbina", "Aht Urhgan Whitegate"],
+      "Meriphataud Mountains": ["Tahrongi Canyon", "Sauromugue Champaign", "Castle Oztroja"],
+      "Castle Oztroja": ["Meriphataud Mountains"],
+      "Sauromugue Champaign": ["Meriphataud Mountains", "Rolanberry Fields", "Port Jeuno", "Garlaige Citadel"],
+      "Garlaige Citadel": ["Sauromugue Champaign"],
+      "Lower Jeuno": ["Upper Jeuno", "Port Jeuno", "Ru'Lude Gardens", "Rolanberry Fields"],
+      "Upper Jeuno": ["Lower Jeuno", "Port Jeuno", "Ru'Lude Gardens", "Batallia Downs"],
+      "Port Jeuno": ["Lower Jeuno", "Upper Jeuno", "Ru'Lude Gardens", "Sauromugue Champaign", "Qufim Island", "Kazham"],
+      "Ru'Lude Gardens": ["Lower Jeuno", "Upper Jeuno", "Port Jeuno"],
+      "Qufim Island": ["Port Jeuno", "Lower Delkfutt's Tower", "Behemoth's Dominion"],
+      "Lower Delkfutt's Tower": ["Qufim Island", "Upper Delkfutt's Tower"],
+      "Upper Delkfutt's Tower": ["Lower Delkfutt's Tower"],
+      "Kazham": ["Port Jeuno", "Yuhtunga Jungle"],
+      "Yuhtunga Jungle": ["Kazham", "Yhoator Jungle", "Sea Serpent Grotto"],
+      "Yhoator Jungle": ["Yuhtunga Jungle", "Temple of Uggalepih", "Ifrit's Cauldron"],
+      "Aht Urhgan Whitegate": ["Mhaura", "Wajaom Woodlands", "Bhaflau Thickets", "Nashmau"],
+      "Wajaom Woodlands": ["Aht Urhgan Whitegate", "Aydeewa Subterrane", "Halvung"],
+      "Bhaflau Thickets": ["Aht Urhgan Whitegate", "Alzadaal Undersea Ruins"],
+      "Nashmau": ["Aht Urhgan Whitegate", "Caedarva Mire"],
+      "Caedarva Mire": ["Nashmau", "Arrapago Reef", "Talacca Cove"],
+      "Norg": ["Sea Serpent Grotto"]
+    };
 
-    <div class="card">
-      <h2>Tandem Gear &amp; Material Sourcing Guide</h2>
-      <p>Filter crafted gear by combat job, craft discipline, or equip level so you never fall behind while leveling.</p>
-      <div class="filters">
-        <select id="filter-job">
-          <option value="ALL">All Combat Jobs</option>
-          <option value="THF">Thief (THF)</option>
-          <option value="WAR">Warrior (WAR)</option>
-          <option value="PLD">Paladin (PLD)</option>
-          <option value="RDM">Red Mage (RDM)</option>
-          <option value="NIN">Ninja (NIN)</option>
-          <option value="SAM">Samurai (SAM)</option>
-        </select>
-        <select id="filter-craft">
-          <option value="ALL">All Crafts</option>
-          <option value="Smithing">Smithing</option>
-          <option value="Leathercraft">Leathercraft</option>
-          <option value="Goldsmithing">Goldsmithing</option>
-          <option value="Clothcraft">Clothcraft</option>
-          <option value="Woodworking">Woodworking</option>
-        </select>
-        <select id="filter-tier">
-          <option value="ALL">All Level Tiers</option>
-          <option value="1-20">Levels 1–20</option>
-          <option value="21-40">Levels 21–40</option>
-          <option value="41-60">Levels 41–60</option>
-          <option value="61-75">Levels 61–75</option>
-        </select>
-      </div>
-      <div id="recipe-list"></div>
-    </div>
-  </section>
+    // --- Verified CatsEyeXI (ACE Era) Default Quests ---
+    const DEFAULT_QUESTS = [
+      { id: "cexi_digging_up_dirt", title: "Digging Up Dirt (BCNM Teleports)", category: "CatsEyeXI System Quests", min_level: 30, start_zone: "Lower Jeuno", start_npc: "Sebastian (I-7, Tenshodo)", zones_involved: ["Lower Jeuno", "Balga's Dais", "Waughroon Shrine", "Horlais Peak"], repeatable: false, prerequisites: ["Level 30", "Jeuno Fame Level 1"], steps: ["Talk to Sebastian at the Tenshodo front desk in Lower Jeuno (I-7).", "Visit Balga's Dais (Giddeus) BCNM room, interact with the hidden Dirt, and return to Sebastian.", "Visit Waughroon Shrine (Palborough Mines) BCNM room, interact with the hidden Dirt, and return to Sebastian.", "Visit Horlais Peak (Ghelsba) BCNM room, interact with the hidden Dirt, and return to Sebastian to unlock Domenic's BCNM teleports (J-7)."], rewards: ["Domenic BCNM Direct Teleports (Ghelsba, Horlais Peak, Waughroon Shrine, Balga's Dais, Qu'Bia Arena)"] },
+      { id: "cexi_up_up_and_away", title: "Up, Up and Away (Portalix Stronghold Teleports)", category: "CatsEyeXI System Quests", min_level: 30, start_zone: "Lower Jeuno", start_npc: "Portalix (Inside Muckvix's Junk Shop)", zones_involved: ["Lower Jeuno", "Meriphataud Mountains", "Pashhow Marshlands", "Jugner Forest"], repeatable: false, prerequisites: ["Level 30", "Jeuno Fame Level 1"], steps: ["Speak to Portalix inside Muckvix's Junk Shop in Lower Jeuno.", "Farm Seedspall Astrum from Yagudo in Meriphataud Mountains.", "Farm Seedspall Luna from Quadavs in Pashhow Marshlands and Seedspall Lux from Orcs in Jugner Forest.", "Trade all 3 Seedspalls to Portalix in Lower Jeuno to unlock Portalix & Mythrix Stronghold Teleports."], rewards: ["Access to Portalix & Mythrix Teleport Services (Beadeaux, Davoi, Castle Oztroja)"] },
+      { id: "cexi_featherweight", title: "Featherweight (Yagudo Arena Access)", category: "CatsEyeXI Content Quests", min_level: 50, start_zone: "Castle Oztroja", start_npc: "Yagudo Outlaw (2F North Courtyard)", zones_involved: ["Castle Oztroja", "Meriphataud Mountains"], repeatable: true, prerequisites: ["Level 50"], steps: ["Find the Yagudo Outlaw on the 2nd floor of the north courtyard in Castle Oztroja (F exit on Map 2).", "Trade him a 7-Knot Quipu and 13-Knot Quipu (one-time unlock cost) to unlock the Yagudo Arena.", "Trade 4x Silver Beastcoins to the Yagudo Outlaw (receives 500 Gil + Arena entry KI).", "Gather a party in Meriphataud Mountains (K-8) for the Lv.50 capped 3-NM arena fight and open the coffer."], rewards: ["Yagudo Arena Coffer Loot", "500 Gil"] },
+      { id: "cexi_rock_cooking", title: "Rock Cooking (Igneous Rock Appraisal)", category: "CatsEyeXI Content Quests", min_level: 50, start_zone: "Ifrit's Cauldron", start_npc: "Smolderoq", zones_involved: ["Ifrit's Cauldron"], repeatable: false, prerequisites: ["Level 50"], steps: ["Locate Smolderoq and examine the Dusty Footprint at (E-5).", "Trade 12x Beastcoin (one-time payment) to complete the quest.", "Smolderoq will now cook your Igneous Rocks to appraise gems inside (Obsidian, Garnet, Peridot, Sphene, Turquoise, Silver Ore)."], rewards: ["Smolderoq Igneous Rock Gem Appraisal"] },
+      { id: "tut_san_doria", title: "San d'Oria Tutorial Series", category: "Tutorials & RoE", min_level: 1, start_zone: "Southern San d'Oria", start_npc: "Alaune (G-10)", zones_involved: ["Southern San d'Oria", "Northern San d'Oria", "West Ronfaure"], repeatable: false, prerequisites: [], steps: ["Talk to Alaune in Southern San d'Oria (G-10), then get Signet from Aravoge, T.K.", "Return to Alaune for 6x Meat Jerky, reach Weapon Skill Lv.5 outside in West Ronfaure, use a WS, and return to Alaune.", "Examine the Auction House counter, return to Alaune, and trade Conquest Promotion Voucher to Aravoge, T.K. for an Empress Band.", "Reach Level 5, check Survival Guides in Northern San d'Oria (E-8) and West Ronfaure (G-9), and return to Alaune."], rewards: ["Meat Jerky", "Empress Band", "12x Saltena", "Echad Ring"] },
+      { id: "tut_bastok", title: "Bastok Tutorial Series", category: "Tutorials & RoE", min_level: 1, start_zone: "Bastok Markets", start_npc: "Gulldago (D-11)", zones_involved: ["Bastok Markets", "Bastok Mines", "North Gustaberg"], repeatable: false, prerequisites: [], steps: ["Talk to Gulldago in Bastok Markets (D-11), then get Signet from Rabid Wolf, I.M.", "Return to Gulldago for 6x Meat Jerky, reach Weapon Skill Lv.5 outside, use a WS, and return to Gulldago.", "Examine the Auction House counter, return to Gulldago, and trade Conquest Promotion Voucher for an Empress Band.", "Reach Level 5, check Survival Guides in Bastok Mines (I-9) and North Gustaberg (D-10), and return to Gulldago."], rewards: ["Meat Jerky", "Empress Band", "Raising Earring", "12x Saltena"] },
+      { id: "tut_windurst", "title": "Windurst Tutorial Series", "category": "Tutorials & RoE", min_level: 1, start_zone: "Windurst Woods", start_npc: "Selele (K-10)", zones_involved: ["Windurst Woods", "Port Windurst", "West Sarutabaruta"], repeatable: false, prerequisites: [], steps: ["Talk to Selele in Windurst Woods (K-10), then get Signet from Harara, W.W.", "Return to Selele for 6x Meat Jerky, reach Weapon Skill Lv.5 outside, use a WS, and return to Selele.", "Examine the Auction House counter, return to Selele, and trade Conquest Promotion Voucher for an Empress Band.", "Reach Level 5, check Survival Guides in Port Windurst (B-5) and West Sarutabaruta (H-6), and return to Selele."], rewards: ["Meat Jerky", "Empress Band", "12x Saltena"] },
+      { id: "roe_first_step", title: "First Step Forward (RoE Unlock)", category: "Tutorials & RoE", min_level: 1, start_zone: "Menu", start_npc: "Main Menu > Quests", zones_involved: ["Menu", "Southern San d'Oria", "Bastok Markets", "Windurst Woods"], repeatable: false, prerequisites: [], steps: ["Open Main Menu > Quests > Objective List > Tutorial > Basics and activate 'First Step Forward'.", "Speak to Rolandienne in Southern San d'Oria (G-10), Isakoth in Bastok Markets (E-11), or Fhelm Jobeizat in Windurst Woods (J-10)."], rewards: ["Sparks of Eminence (150k/wk Cap on CatsEyeXI)", "Copper A.M.A.N. Voucher"] },
+      { id: "subjob_selbina", title: "Elder Memories (Selbina Subjob Unlock)", category: "Core Progression", min_level: 18, start_zone: "Selbina", start_npc: "Isacio (G-10)", zones_involved: ["Selbina", "Valkurm Dunes", "Qufim Island"], repeatable: false, prerequisites: ["Level 18"], steps: ["Speak to Isacio in Selbina (G-10) at Level 18+.", "Trade a Crab Apron (from Snippers in Valkurm Dunes).", "Trade a Damselfly Worm (from Damselflies in Valkurm Dunes).", "Trade a Magicked Skull (from Ghoul/Skeletons at night in Valkurm Dunes/Gusgen Mines) to unlock your Support Job."], rewards: ["Support Job Unlock"] },
+      { id: "subjob_mhaura", title: "The Old Lady (Mhaura Subjob Unlock)", category: "Core Progression", min_level: 18, start_zone: "Mhaura", start_npc: "Vera (G-10)", zones_involved: ["Mhaura", "Buburimu Peninsula", "Tahrongi Canyon"], repeatable: false, prerequisites: ["Level 18"], steps: ["Speak to Vera in Mhaura (G-10) at Level 18+.", "Trade a Wild Rabbit Tail (from Mighty Rarabs in Buburimu Peninsula).", "Trade a Dalmatica/Dhalmel Saliva (from Bull Dhalmels in Buburimu Peninsula).", "Trade a Bloody Robe (from Bogys at night in Buburimu Peninsula) to unlock your Support Job."], rewards: ["Support Job Unlock"] },
+      { id: "chocobo_license", title: "Chocobo's Wounds (Chocobo License)", category: "Core Progression", min_level: 20, start_zone: "Upper Jeuno", start_npc: "Brutus (G-7)", zones_involved: ["Upper Jeuno"], repeatable: false, prerequisites: ["Level 20"], steps: ["Speak to Brutus in Upper Jeuno (G-7) at Level 20+ and talk to Osker.", "Feed the Chocobo 4x Gausebit Grass (wait 1 game day / 1 hour per feeding until it accepts them).", "Receive your Chocobo License."], rewards: ["Chocobo License"] },
+      { id: "kazham_pass", title: "Kazham Airship Pass", category: "Core Progression", min_level: 20, start_zone: "Port Jeuno", start_npc: "Guddal (H-8)", zones_involved: ["Port Jeuno", "Giddeus", "Palborough Mines", "Ghelsba Outpost"], repeatable: false, prerequisites: ["Level 20"], steps: ["Speak to Guddal in Port Jeuno (H-8).", "Trade 148,000 Gil OR trade 1x Giddeus Chest Key, 1x Palborough Chest Key, and 1x Ghelsba Chest Key to Guddal."], rewards: ["Airship Pass for Kazham"] },
+      { id: "limit_break_1", title: "In Defiant Challenge (Limit Break 1: Lv.55 Cap)", category: "Limit Breaks", min_level: 50, start_zone: "Ru'Lude Gardens", start_npc: "Maat (H-5)", zones_involved: ["Ru'Lude Gardens", "Crawlers' Nest", "Eldieme Necropolis", "Garlaige Citadel"], repeatable: false, prerequisites: ["Level 50"], steps: ["Speak to Maat in Ru'Lude Gardens (H-5) at Level 50.", "Obtain Exoray Mold in Crawlers' Nest, Bomb Coal in Garlaige Citadel, and Ancient Papyrus in The Eldieme Necropolis.", "Trade all 3 items to Maat to raise your level cap to 55."], rewards: ["Level 55 Cap"] },
+      { id: "limit_break_5", title: "Shattering Stars (Limit Break 5: Lv.75 Cap)", category: "Limit Breaks", min_level: 66, start_zone: "Ru'Lude Gardens", start_npc: "Maat (H-5)", zones_involved: ["Ru'Lude Gardens", "Horlais Peak", "Waughroon Shrine", "Balga's Dais", "Qu'Bia Arena"], repeatable: false, prerequisites: ["Level 66"], steps: ["Farm your job's Testimony from a Level 66–75 Beastman matching your job.", "Trade the Testimony to Maat in Ru'Lude Gardens (H-5) at Level 66+ to teleport to the BCNM arena.", "Defeat Maat (or survive for 5 minutes as WHM) and speak to Maat in Ru'Lude Gardens to unlock the Level 75 Cap."], rewards: ["Level 75 Cap", "Scroll of Instant Warp"] },
+      { id: "job_geo_cexi", title: "The Unnamed Way (CatsEyeXI Geomancer Unlock)", category: "Job Unlocks", min_level: 75, start_zone: "Windurst Waters", start_npc: "Master Lao (South Map, K-8)", zones_involved: ["Windurst Waters", "Ru'Lude Gardens"], repeatable: false, prerequisites: ["Level 75", "Windurst Fame Level 1"], steps: ["Reach Level 75 on at least one job.", "Speak to Master Lao in Windurst Waters (South Map, K-8) to flag 'The Unnamed Way'.", "Complete Master Lao's custom CatsEyeXI trial to receive the Dowser's Wand and unlock Geomancer (Sylvie in Ru'Lude Gardens H-5 opens her Geomancer Magic Shop)."], rewards: ["Geomancer Job Unlock", "Dowser's Wand", "Sylvie Geomancer Magic Shop Access (Ru'Lude Gardens H-5)"] },
+      { id: "job_run_cexi", title: "Runic Insurrection (CatsEyeXI Rune Fencer Unlock)", category: "Job Unlocks", min_level: 75, start_zone: "Bastok Markets", start_npc: "Octavien (F-10)", zones_involved: ["Bastok Markets"], repeatable: false, prerequisites: ["Level 75", "Bastok Fame Level 1"], steps: ["Reach Level 75 on at least one job.", "Speak to Octavien in Bastok Markets (F-10) to start 'Runic Insurrection'.", "Complete Octavien's custom CatsEyeXI quest to receive the Beorc Sword and unlock Rune Fencer."], rewards: ["Rune Fencer Job Unlock", "Beorc Sword"] },
+      { id: "job_pld", title: "A Squire's Test I & II + A Knight's Test (Paladin Unlock)", category: "Job Unlocks", min_level: 30, start_zone: "Southern San d'Oria", start_npc: "Balasiel (E-7)", zones_involved: ["Southern San d'Oria", "West Ronfaure", "Ordelle's Caves", "Davoi"], repeatable: false, prerequisites: ["Level 30"], steps: ["Trade a Revival Tree Root to Balasiel in Southern San d'Oria (E-7).", "Inspect the Stalagmite in Ordelle's Caves (H-9) for the Squire's Certificate and return to Balasiel.", "Accept A Knight's Test, inspect the Disused Well in Davoi (E-10) for the Knight's Soul, and return to Balasiel."], rewards: ["Paladin Job Unlock", "Squire's Sword"] },
+      { id: "job_drk", title: "Blade of Darkness (Dark Knight Unlock)", category: "Job Unlocks", min_level: 30, start_zone: "Bastok Mines", start_npc: "Gumbah (J-7)", zones_involved: ["Bastok Mines", "Zeruhn Mines", "Palborough Mines", "Beadeaux"], repeatable: false, prerequisites: ["Level 30"], steps: ["Speak to Gumbah in Bastok Mines (J-7), then enter Zeruhn Mines for a cutscene with Zeid and receive the Chaosbringer.", "Defeat 100 enemies using normal melee auto-attacks with Chaosbringer equipped (no WS or magic kills).", "Zone into Beadeaux from Pashhow Marshlands for a final cutscene."], rewards: ["Dark Knight Job Unlock", "Chaosbringer"] }
+    ];
 
-  <section id="trusts" class="panel">
-    <div class="card">
-      <h2>Recommended ACE Mode Trust Setups</h2>
-      <p>Choose your active job and toggle how many Trust slots you have unlocked (3 to 5) as you progress through Rhapsodies of Vana'diel.</p>
-      <div class="filters">
-        <select id="trust-job-select">
-          <option value="THF">Thief (Material Farming &amp; Fast Chains)</option>
-          <option value="PLD">Paladin (Sword &amp; Board Tanking)</option>
-          <option value="RDM">Red Mage (Magic Burst &amp; Hybrid Solo)</option>
-          <option value="WAR">Warrior / Ninja (Pure Melee Cleave)</option>
-          <option value="SAM">Samurai (Self-Skillchain Spam)</option>
-        </select>
-        <div class="slot-toggle-group" role="group" aria-label="Unlocked Trust Slots">
-          <button type="button" class="slot-toggle-btn" data-slots="3">3 Slots</button>
-          <button type="button" class="slot-toggle-btn" data-slots="4">4 Slots</button>
-          <button type="button" class="slot-toggle-btn active" data-slots="5">5 Slots</button>
-        </div>
-      </div>
-      <div id="trust-unlock-banner" class="slot-unlock-hint"></div>
-      <div id="trust-display"></div>
-    </div>
+    // --- Verified Default Recipes ---
+    const DEFAULT_RECIPES = [
+      { id: "rec_shihei", name: "Shihei", guild: "Woodworking", cap: 39, crystal: "Earth", subcrafts: "Alchemy (15)", ingredients: ["Bast Parchment", "Black Ink"], yield: 33, jobs: ["NIN"], slot: "Ranged / Ammo", type: "Consumable" },
+      { id: "rec_silent_oil", name: "Silent Oil", guild: "Alchemy", cap: 24, crystal: "Water", subcrafts: "", ingredients: ["Beeswax x2", "Slime Oil"], yield: 12, jobs: ["All Jobs"], slot: "Food / Consumable", type: "Consumable" },
+      { id: "rec_prism_powder", name: "Prism Powder", guild: "Alchemy", cap: 41, crystal: "Light", subcrafts: "", ingredients: ["Glass Fiber", "Dhalmel Saliva"], yield: 12, jobs: ["All Jobs"], slot: "Food / Consumable", type: "Consumable" },
+      { id: "rec_meat_mithkabob", name: "Meat Mithkabob", guild: "Cooking", cap: 38, crystal: "Fire", subcrafts: "", ingredients: ["Dhalmel Meat", "Wild Onion", "Mweya Plums", "Kazham Peppers"], yield: 6, jobs: ["WAR", "MNK", "THF", "PLD", "DRK", "BST", "SAM", "NIN", "DRG"], slot: "Food / Consumable", type: "Food" },
+      { id: "rec_haubergeon", name: "Haubergeon", guild: "Smithing", cap: 79, crystal: "Fire", subcrafts: "Leathercraft (32), Goldsmithing (28)", ingredients: ["Darksteel Sheet x2", "Tiger Leather", "Silk Cloth", "Gold Thread"], yield: 1, jobs: ["WAR", "PLD", "DRK", "BST", "SAM", "NIN"], slot: "Body", type: "Armor" },
+      { id: "rec_scorpion_harness", name: "Scorpion Harness", guild: "Bonecraft", cap: 88, crystal: "Wind", subcrafts: "Leathercraft (42)", ingredients: ["Scorpion Claw x2", "Scorpion Shell", "Carapace Harness"], yield: 1, jobs: ["WAR", "MNK", "RDM", "THF", "PLD", "DRK", "BST", "BRD", "RNG", "SAM", "NIN", "DRG", "BLU", "COR", "DNC", "RUN"], slot: "Body", type: "Armor" },
+      { id: "rec_optical_hat", name: "Optical Hat (Improvised)", guild: "Clothcraft", cap: 75, crystal: "Earth", subcrafts: "Goldsmithing (30)", ingredients: ["Coated Cloth", "Velvet Cloth", "Gold Thread", "Eye of the Storm"], yield: 1, jobs: ["All Jobs"], slot: "Head", type: "Armor" },
+      { id: "rec_vermillion_cloak", name: "Vermillion Cloak", guild: "Clothcraft", cap: 83, crystal: "Earth", subcrafts: "Gold (30)", ingredients: ["Rainbow Cloth x3", "Gold Thread x2"], yield: 1, jobs: ["WHM", "BLM", "RDM", "BRD", "SMN", "SCH", "GEO"], slot: "Body", type: "Armor" },
+      { id: "rec_bronze_harness", name: "Bronze Harness", guild: "Smithing", cap: 10, crystal: "Fire", subcrafts: "Leathercraft (3)", ingredients: ["Bronze Sheet x2", "Sheep Leather"], yield: 1, jobs: ["WAR", "MNK", "THF", "PLD", "DRK", "BST", "SAM", "NIN"], slot: "Body", type: "Armor" },
+      { id: "rec_scale_mail", name: "Scale Mail", guild: "Smithing", cap: 21, crystal: "Fire", subcrafts: "Leathercraft (6)", ingredients: ["Brass Sheet x2", "Bronze Sheet", "Sheep Leather"], yield: 1, jobs: ["WAR", "PLD", "DRK", "BST", "SAM", "NIN"], slot: "Body", type: "Armor" },
+      { id: "rec_beetle_harness", name: "Beetle Harness", guild: "Bonecraft", cap: 25, crystal: "Wind", subcrafts: "Leathercraft (8)", ingredients: ["Beetle Shell x2", "Sheep Leather", "Cuir Bouilli"], yield: 1, jobs: ["WAR", "MNK", "RDM", "THF", "PLD", "DRK", "BST", "RNG", "SAM", "NIN", "DRG"], slot: "Body", type: "Armor" },
+      { id: "rec_beetle_earring", name: "Beetle Earring +1", guild: "Bonecraft", cap: 23, crystal: "Wind", subcrafts: "Goldsmithing (5)", ingredients: ["Beetle Jaw", "Silver Earring"], yield: 1, jobs: ["All Jobs"], slot: "Ear", type: "Armor" },
+      { id: "rec_acid_bolt", name: "Acid Bolt", guild: "Alchemy", cap: 39, crystal: "Earth", subcrafts: "Woodworking (14), Smithing (18)", ingredients: ["Ash Lumber", "Acid Bolt Heads"], yield: 33, jobs: ["THF", "WAR", "RNG"], slot: "Ranged / Ammo", type: "Consumable" },
+      { id: "rec_bloody_bolt", name: "Bloody Bolt", guild: "Alchemy", cap: 55, crystal: "Earth", subcrafts: "Woodworking (20)", ingredients: ["Holly Lumber", "Bloody Bolt Heads"], yield: 33, jobs: ["THF", "RNG"], slot: "Ranged / Ammo", type: "Consumable" },
+      { id: "rec_eisenbrust", name: "Eisenbrust", guild: "Smithing", cap: 38, crystal: "Fire", subcrafts: "Leathercraft (12)", ingredients: ["Iron Sheet x2", "Iron Chain x2", "Sheep Leather"], yield: 1, jobs: ["WAR", "PLD", "DRK"], slot: "Body", type: "Armor" },
+      { id: "rec_brigandine", name: "Brigandine", guild: "Smithing", cap: 53, crystal: "Fire", subcrafts: "Clothcraft (21), Leathercraft (18)", ingredients: ["Steel Sheet x2", "Linen Cloth x2", "Dhalmel Leather"], yield: 1, jobs: ["WAR", "RDM", "THF", "PLD", "DRK", "BST", "BRD", "RNG", "SAM", "NIN", "DRG"], slot: "Body", type: "Armor" },
+      { id: "rec_sole_sushi", name: "Sole Sushi", guild: "Cooking", cap: 56, crystal: "Earth", subcrafts: "", ingredients: ["Black Sole", "Tarutaru Rice", "Rice Vinegar", "Distilled Water", "Wasabi"], yield: 4, jobs: ["All Jobs"], slot: "Food / Consumable", type: "Food" },
+      { id: "rec_melon_pie", name: "Melon Pie", guild: "Cooking", cap: 41, crystal: "Fire", subcrafts: "", ingredients: ["San d'Orian Flour", "Selbina Butter", "Maple Sugar", "Watermelon", "Bird Egg", "Rock Salt", "Distilled Water"], yield: 4, jobs: ["WHM", "BLM", "RDM", "PLD", "SMN", "SCH", "GEO"], slot: "Food / Consumable", type: "Food" },
+      { id: "rec_shinobi_tabi", name: "Shinobi-Tabi", guild: "Clothcraft", cap: 54, crystal: "Earth", subcrafts: "", ingredients: ["Grass Cloth", "Saruta Cotton x2"], yield: 33, jobs: ["NIN"], slot: "Ranged / Ammo", type: "Consumable" },
+      { id: "rec_uchitake", name: "Uchitake", guild: "Woodworking", cap: 33, crystal: "Earth", subcrafts: "Alchemy (12)", ingredients: ["Bamboo Stick", "Firesand", "Wisteria Lumber"], yield: 33, jobs: ["NIN"], slot: "Ranged / Ammo", type: "Consumable" }
+    ];
 
-    <div class="card">
-      <h2>Core Trusts to Unlock Early</h2>
-      <ul class="clean-list">
-        <li><strong>Valaineral (Tank):</strong> Unlocked via RoE tutorial quests. Uses Uriel Blade for massive low-to-mid level AoE damage and rock-solid hate.</li>
-        <li><strong>Ayame (Skillchain Opener):</strong> Unlocked via Bastok quest (Lv. 30+). Automatically opens weapon skills that chain with your last used WS.</li>
-        <li><strong>Apururu or Kupipi (Healer):</strong> Kupipi is free at start; Apururu (Unity) provides AoE cures, status removal, and self-refresh.</li>
-        <li><strong>Ulmia &amp; Joachim (Bards):</strong> Provide March (Haste) and Ballad (MP Refresh) songs to maximize attack speed and uptime.</li>
-        <li><strong>Shantotto II (Magic DPS):</strong> Available via login points/special vendors; magic bursts relentlessly on every skillchain.</li>
-      </ul>
-    </div>
-  </section>
+    const GUILDS_LIST = [
+      "Woodworking", "Smithing", "Goldsmithing", "Clothcraft",
+      "Leathercraft", "Bonecraft", "Alchemy", "Cooking"
+    ];
 
-  <section id="leveling" class="panel">
-    <div class="card">
-      <h2>Job Leveling Sequence Checklist</h2>
-      <p>Level in this order so each job supplies materials, subjobs, or hand-me-down gear for the next.</p>
-      <div id="job-checklist"></div>
-    </div>
+    const CRYSTALS_LIST = ["Fire", "Ice", "Wind", "Earth", "Lightning", "Water", "Light", "Dark"];
+    const JOBS_LIST = ["All Jobs", "WAR", "MNK", "WHM", "BLM", "RDM", "THF", "PLD", "DRK", "BST", "BRD", "RNG", "SAM", "NIN", "DRG", "SMN", "BLU", "COR", "PUP", "DNC", "SCH", "GEO", "RUN"];
+    const SLOTS_LIST = ["Main / Sub", "Ranged / Ammo", "Head", "Neck", "Ear", "Body", "Hands", "Ring", "Back", "Waist", "Legs", "Feet", "Food / Consumable", "Material / Component"];
 
-    <div class="card">
-      <h2>ACE Mode Leveling Camps &amp; Milestones</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Levels</th>
-            <th>Recommended Camps</th>
-            <th>Key Milestones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>1–10</strong></td>
-            <td>Starter Zones (Ronfaure / Gustaberg / Sarutabaruta)</td>
-            <td>Activate RoE objectives, unlock starter Trusts, buy Sparks weapons.</td>
-          </tr>
-          <tr>
-            <td><strong>10–20</strong></td>
-            <td>Valkurm Dunes / La Theine Plateau</td>
-            <td>Unlock Subjob at Lv. 18 (Selbina/Mhaura). Farm Sheep &amp; Lizard skins.</td>
-          </tr>
-          <tr>
-            <td><strong>20–30</strong></td>
-            <td>Qufim Island</td>
-            <td>At Lv. 30: Unlock Dancer (level to 25 for Spectral Jig), PLD, NIN, and SAM.</td>
-          </tr>
-          <tr>
-            <td><strong>30–50</strong></td>
-            <td>Crawler's Nest / Garlaige Citadel</td>
-            <td>Farm Raptor/Tiger hides &amp; Silk. Start AF1 weapon quests at Lv. 40.</td>
-          </tr>
-          <tr>
-            <td><strong>50–60</strong></td>
-            <td>Garlaige Citadel / Boyahda Tree</td>
-            <td>Complete Genkai 1 &amp; 2 Limit Breaks. Complete Artifact Armor (AF) quests.</td>
-          </tr>
-          <tr>
-            <td><strong>60–75</strong></td>
-            <td>Boyahda Tree / Kuftal Tunnel / Ru'Aun Gardens</td>
-            <td>Complete Genkai 3–5. Farm Sky elementals on THF for crystal clusters.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+    const DB_MASTER_VERSION = "cexi_master_suite_v2";
 
-  <section id="builds" class="panel">
-    <div class="card">
-      <h2>Dope Samurai (SAM) Blueprint</h2>
-      <ul class="clean-list">
-        <li><strong>Unlock Quest:</strong> Speak to Jaucribaix in Norg at Lv. 30+ (<em>Forge Your Destiny</em>). Use Dancer's Spectral Jig (Lv. 25) to sneak safely through Sea Serpent Grotto.</li>
-        <li><strong>Best Subjobs:</strong> <strong>/WAR</strong> for pure damage (Berserk, Warcry, Double Attack); <strong>/NIN</strong> for soloing NMs (Utsusemi shadows); <strong>/DNC</strong> for farming convenience.</li>
-        <li><strong>Skillchain Loop:</strong> Pair with Trust <strong>Ayame</strong> to spam <strong>Tachi: Yukikaze</strong> (60), <strong>Tachi: Gekko</strong> (65), and <strong>Tachi: Kasha</strong> (70) for nonstop Light skillchains.</li>
-        <li><strong>Level 75 Gear Goals:</strong> Hachiman set, Myochin Kabuto &amp; Domaru (AF), <strong>Hagun</strong> or custom <strong>Sasanuki +1</strong> (Smithing), <strong>Rajas Ring</strong> (CoP), Ochiudo's Kote, and Fuma Sune-Ate.</li>
-      </ul>
-    </div>
+    // --- 6-Job Progression & Crafting Guide Data (Strictly CatsEyeXI Content) ---
+    const GUIDE_JOBS = [
+      {
+        id: "THF",
+        stepNum: 1,
+        name: "1. Thief (THF)",
+        subtitle: "Loot & Treasure Hunter Engine",
+        subjobRec: "/WAR (Lv.18+) or /NIN (once leveled)",
+        whyOrder: "Leveling THF to 75 FIRST unlocks Treasure Hunter I (Lv.15) & Treasure Hunter II (Lv.45) (plus Thief's Knife / Assassin's Armlets for TH3–TH4). This triples your drop rates on hides, ores, silk, beetle shells, scorpion shells/claws, and testimonies so you can fund all 8 crafting guilds with zero AH dependency.",
+        craftFocus: "Bonecraft (Beetle/Scorpion Sets), Leathercraft (Hides/Cuir), Alchemy & Woodworking (Acid/Bloody/Sleep Bolts), Smithing (Daggers).",
+        keyUnlocks: ["Lv.15 Treasure Hunter I", "Lv.30 Sneak Attack + Trick Attack Combo", "Lv.45 Treasure Hunter II", "Lv.60 Assassin's Armlets (Dynamis) / Thief's Knife"]
+      },
+      {
+        id: "WAR",
+        stepNum: 2,
+        name: "2. Warrior (WAR)",
+        subtitle: "Mandatory /WAR Subjob & Frontline",
+        subjobRec: "/MNK (Lv.1–18), /THF (Lv.30–60), /SAM or /NIN (Lv.60–75)",
+        whyOrder: "Leveling WAR second immediately gives you the mandatory Lv.37 /WAR subjob (Provoke, Berserk, Defender, Double Attack) required by PLD, SAM, NIN, and solo THF. Because your THF already farmed ores and leathers, Smithing & Bonecraft will hand-me-down full Scale, Beetle, Eisenbrust, and Haubergeon sets.",
+        craftFocus: "Smithing (Bronze -> Scale -> Eisenbrust -> Brigandine -> Haubergeon, Axes/Great Axes), Cooking (Meat Mithkabobs & Sole Sushi).",
+        keyUnlocks: ["Lv.5 Provoke", "Lv.15 Berserk", "Lv.25 Double Attack Trait", "Lv.30 Warcry / Aggressor (Lv.45)"]
+      },
+      {
+        id: "PLD",
+        stepNum: 3,
+        name: "3. Paladin (PLD)",
+        subtitle: "Main Tank & Atonement / Cure Wall",
+        subjobRec: "/WAR (Lv.1–75) or /RDM & /NIN (Endgame Tanking)",
+        whyOrder: "Unlocked at Lv.30 via 'A Squire's Test' & 'A Knight's Test'. Shares 90% of its armor progression (Bronze, Scale, Eisenbrust, Brigandine, Gallant AF) directly with your just-leveled Warrior, saving huge inventory space and crafting materials.",
+        craftFocus: "Smithing (Heavy Plate Sets, Shields, Swords), Goldsmithing (Phalanx/Enmity Rings & Silver/Mythril Mail), Cooking (Defense/HP & MP Pies).",
+        keyUnlocks: ["Lv.30 Job Unlock (Southern San d'Oria)", "Lv.30 Holy Circle / Sentinel", "Lv.55 Rampart / Shield Mastery", "Lv.75 Chivalry & Atonement"]
+      },
+      {
+        id: "RDM",
+        stepNum: 4,
+        name: "4. Red Mage (RDM)",
+        subtitle: "Refresh / Fast Cast Engine & Solo God",
+        subjobRec: "/WHM or /BLM (Caster), /NIN or /WAR (Enspell Melee)",
+        whyOrder: "Leveling RDM fourth unlocks the powerhouse /RDM subjob for your Paladin (Fast Cast, Phalanx, Barspells, Stoneskin) and gives you an unkillable solo job for farming high-level NMs. Clothcraft and Goldsmithing (fed by THF silk/velvet/rainbow cloth drops) supply your entire caster wardrobe.",
+        craftFocus: "Clothcraft (Linen/Wool/Velvet/Vermillion Cloak), Goldsmithing (Jeweled/Electrum Rings & Torque), Alchemy (Silent Oil & Prism Powder), Cooking (Melon Pies).",
+        keyUnlocks: ["Lv.15 Fast Cast I", "Lv.33 Phalanx", "Lv.40 Convert", "Lv.41 Refresh (Massive Party/Trust Multiplier)"]
+      },
+      {
+        id: "SAM",
+        stepNum: 5,
+        name: "5. Samurai (SAM)",
+        subtitle: "2H Skillchain King & /SAM Subjob",
+        subjobRec: "/WAR (Lv.1–75) or /THF (Sneak Attack WS)",
+        whyOrder: "Unlocked at Lv.30 in Norg ('Forge Your Destiny' — use your THF/RDM to easily kill the Forger & Guardian Treant NMs). Provides the elite /SAM subjob (Meditate, Store TP, Hasso, Seigan + Third Eye) for your Warrior and Thief while reusing your Warrior's Beetle, Brigandine, and Haubergeon sets.",
+        craftFocus: "Smithing (Great Katanas, Haubergeon), Bonecraft (Beetle/Carapace/Scorpion Harness), Cooking (Sole Sushi / Meat Mithkabobs).",
+        keyUnlocks: ["Lv.30 Meditate (Instant TP)", "Lv.25 Hasso & Lv.35 Seigan", "Lv.60Hagakure / Tachi: Gekko & Kasha", "Lv.75 Soboro Sukehiro / Mythic"]
+      },
+      {
+        id: "NIN",
+        stepNum: 6,
+        name: "6. Ninja (NIN)",
+        subtitle: "Utsusemi Shadow Tank, Dual Wield & Free Tools",
+        subjobRec: "/WAR (Lv.1–75) or /RDM (Enmity/Fast Cast)",
+        whyOrder: "Saved for #6 so your Woodworking (39+), Clothcraft (54+), and Alchemy (39+) are already leveled! Instead of going broke buying Shihei, Shinobi-Tabi, and Elemental Wheel tools on the AH, you craft 33-stack/99-stack tools for pennies and unlock the game-changing /NIN subjob (Dual Wield + Utsusemi) for THF, WAR, SAM, and RDM.",
+        craftFocus: "Woodworking (Shihei Lv.39, Uchitake Lv.33, Kaginawa), Clothcraft (Shinobi-Tabi Lv.54), Alchemy (Black Ink, Firesand), Smithing (Katanas).",
+        keyUnlocks: ["Lv.10 Dual Wield I (Lv.25 II, Lv.45 III)", "Lv.12 Utsusemi: Ichi (Korroloka Leech Quest)", "Lv.37 Utsusemi: Ni", "Lv.40 Elemental Wheel Ninjutsu"]
+      },
+      {
+        id: "ALL",
+        stepNum: 7,
+        name: "All 6 Jobs Combined",
+        subtitle: "Master Shared Gear & Crafting Synergy",
+        subjobRec: "Full Subjob Matrix (/WAR, /THF, /RDM, /SAM, /NIN)",
+        whyOrder: "Displays the complete unified gear pipeline so you can craft each bracket's armor set once, pass it across THF -> WAR -> PLD -> RDM -> SAM -> NIN, and store sets cleanly in your CatsEyeXI Mog Wardrobes.",
+        craftFocus: "All 8 Guilds synchronized with THF Treasure Hunter farming.",
+        keyUnlocks: ["80-Slot Base Bag + Mog Wardrobes", "5 Simultaneous Trusts (RoV 2-13)", "RoV 2-30 Trust Refresh+1 & Attack Bonus"]
+      }
+    ];
 
-    <div class="card">
-      <h2>Epic Sword &amp; Board Paladin (PLD) Blueprint</h2>
-      <ul class="clean-list">
-        <li><strong>Unlock Quest:</strong> Speak to Balasiel in Southern San d'Oria at Lv. 30+ (<em>A Knight's Test</em>).</li>
-        <li><strong>Why PLD Rules Sword &amp; Board:</strong> A+ Shield skill, <strong>Shield Mastery</strong> (prevents spell interruption + gives TP on blocks), Flash, Sentinel, Rampart, and Cure IV.</li>
-        <li><strong>Best Subjobs:</strong> <strong>/WAR</strong> for party tanking (Provoke, Defender); <strong>/NIN</strong> for soloing hard bosses (Utsusemi); <strong>/RDM</strong> for Phalanx, Stoneskin, and Fast Cast.</li>
-        <li><strong>Level 75 Gear Goals:</strong> Koenig / Adaman Cuirass (Smithing), Hauteclaire or <strong>Excalibur</strong> (100 Smithing Relic Voucher), and <strong>Aegis</strong> or Ochain shield.</li>
-      </ul>
-    </div>
-  </section>
+    const GUIDE_TRUST_SETUPS = {
+      THF: {
+        roleNote: "THF needs a Tank Trust with strong AoE hate so you can stand behind the mob to land Sneak Attack (Lv.15) and Trick Attack (Lv.30 through your Tank) plus Ayame at 5 slots to open Skillchains for Viper Bite / Shark Bite / Dancing Edge.",
+        slots: {
+          3: [
+            { name: "Valaineral (or Curilla)", role: "Tank (AoE Flash/Uriel Blade)", unlock: "RoV 1-6 Cipher / San d'Oria Rank 3" },
+            { name: "Koru-Moru (or Joachim)", role: "Haste II / Dia III / Support", unlock: "RoV / Curio Vendor Moogle / Sparks" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer & Paralyna/Erase", unlock: "Windurst Lv.5 Starter Trust / Unity" }
+          ],
+          4: [
+            { name: "Valaineral (or Curilla)", role: "Tank (Holds Hate for SA/TA)", unlock: "RoV 1-6 Cipher / San d'Oria Rank 3" },
+            { name: "Koru-Moru", role: "Haste II / Refresh II / Dia III", unlock: "RoV Cipher / Curio Moogle" },
+            { name: "Qultada (or Joachim)", role: "Corsair's EXP Roll + Chaos Roll", unlock: "RoV / Login / Curio Moogle" },
+            { name: "Kupipi (or Yoran-Oran)", role: "Main Healer & Status Removal", unlock: "Lv.5 Starter Trust" }
+          ],
+          5: [
+            { name: "Valaineral", role: "Main Tank (Stand behind for Trick Attack)", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Skillchain Opener (Opens for your Dagger WS!)", unlock: "Bastok Rank 3 Trust" },
+            { name: "Koru-Moru", role: "Haste II / Dia III / Refresh II", unlock: "RoV Cipher / Curio Moogle" },
+            { name: "Qultada (or Ulmia)", role: "EXP Roll + Attack Roll / Double March", unlock: "RoV / Curio Moogle" },
+            { name: "Kupipi (or Apururu)", role: "Dedicated WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ]
+        }
+      },
+      PLD: {
+        roleNote: "On Paladin, YOU are the main tank! Drop tank Trusts so nobody steals your hate (allowing Shield Mastery TP gain & Chivalry) and stack pure Haste, March, Refresh, and a Skillchain partner.",
+        slots: {
+          3: [
+            { name: "Koru-Moru", role: "Refresh II & Haste II on You", unlock: "RoV Cipher / Curio Moogle" },
+            { name: "Joachim (or Ulmia)", role: "Victory March + Ballad (MP Regen)", unlock: "Lower Jeuno / RoV Cipher" },
+            { name: "Kupipi (or Apururu)", role: "Backup Cure & Status Removal", unlock: "Lv.5 Starter Trust" }
+          ],
+          4: [
+            { name: "Koru-Moru", role: "Refresh II / Haste II / Phalanx II", unlock: "RoV Cipher / Curio Moogle" },
+            { name: "Joachim", role: "Double March / Mage's Ballad", unlock: "Lower Jeuno Trust Quest" },
+            { name: "Qultada", role: "Corsair's EXP Roll + Evoker's/Chaos Roll", unlock: "RoV / Curio Moogle" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          5: [
+            { name: "Koru-Moru", role: "Refresh II / Haste II / Dia III", unlock: "RoV Cipher" },
+            { name: "Joachim", role: "March + Ballad + Elegy", unlock: "Lower Jeuno Trust Quest" },
+            { name: "Ulmia (or Qultada)", role: "Double March / EXP + Attack Rolls", unlock: "RoV / CoP Progression" },
+            { name: "Ayame (or Zeid II)", role: "Opens Skillchains for Vorpal/Savage Blade", unlock: "Bastok Rank 3 / RoV 1-18" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ]
+        }
+      },
+      RDM: {
+        roleNote: "Red Mage can level as an Enspell frontliner or a backline caster/nuker. Use Valaineral to hold AoE hate while Shantotto II magic bursts off melee skillchains.",
+        slots: {
+          3: [
+            { name: "Valaineral", role: "AoE Tank & Uriel Blade", unlock: "RoV 1-6 Cipher" },
+            { name: "Shantotto II (or Zeid II)", role: "Tier-1 Magic Burst / Stun DD", unlock: "RoV / Login / Curio Moogle" },
+            { name: "Kupipi", role: "Main Healer (Saves your MP for Enfeebles/Nukes)", unlock: "Lv.5 Starter Trust" }
+          ],
+          4: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame (or Zeid II)", role: "Skillchain Closer/Opener", unlock: "Bastok Rank 3 / RoV 1-18" },
+            { name: "Shantotto II (or Qultada)", role: "Double Magic Burst / EXP Roll", unlock: "RoV / Curio Moogle" },
+            { name: "Kupipi (or Apururu)", role: "Main Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          5: [
+            { name: "Valaineral", role: "Main Tank", unlock: "RoV 1-6 Cipher" },
+            { name: "Ayame", role: "Skillchain Opener", unlock: "Bastok Rank 3" },
+            { name: "Zeid II (or Semih Lafihna)", role: "Skillchain Closer", unlock: "RoV 1-18 / Rank 6" },
+            { name: "Shantotto II (or Qultada)", role: "Magic Burst / EXP Roll", unlock: "RoV / Curio Moogle" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ]
+        }
+      },
+      DD: {
+        roleNote: "For WAR, SAM, and NIN: Stack Haste II + Double March + Chaos/Corsair Roll so your delay drops to the cap, and use Ayame to open or close Light/Darkness skillchains.",
+        slots: {
+          3: [
+            { name: "Valaineral (or AAHM)", role: "Tank (or swap to Joachim if tanking on WAR/NIN)", unlock: "RoV 1-6 Cipher" },
+            { name: "Koru-Moru", role: "Haste II / Dia III", unlock: "RoV Cipher" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          4: [
+            { name: "Valaineral (or Ayame)", role: "Tank or Skillchain Opener", unlock: "RoV 1-6 / Bastok Rank 3" },
+            { name: "Koru-Moru", role: "Haste II / Dia III", unlock: "RoV Cipher" },
+            { name: "Qultada (or Joachim)", role: "EXP Roll + Chaos Roll / March", unlock: "RoV / Lower Jeuno" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ],
+          5: [
+            { name: "Valaineral (or Ulmia)", role: "Tank (or Double March when tanking yourself)", unlock: "RoV 1-6 / CoP" },
+            { name: "Ayame", role: "Opens Skillchains for Raging Rush / Gekko / Jin", unlock: "Bastok Rank 3" },
+            { name: "Koru-Moru", role: "Haste II / Dia III / Refresh II", unlock: "RoV Cipher" },
+            { name: "Qultada", role: "Corsair's EXP Roll + Chaos Roll", unlock: "RoV / Curio Moogle" },
+            { name: "Kupipi (or Apururu)", role: "WHM Healer", unlock: "Lv.5 Starter Trust" }
+          ]
+        }
+      }
+    };
 
-  <section id="storage" class="panel">
-    <div class="card">
-      <h2>Inventory &amp; Storage Expansion Guide</h2>
-      <p>FFXI does not have wearable bags. Expand your carrying capacity using these quests and storage commands:</p>
-      <ul class="clean-list">
-        <li><strong>Gobbiebag Quests (30 → 80 Slots):</strong> Visit Bluffnix in Lower Jeuno (H-9). Trade 4 crafted materials per tier (or 1 <strong>Goblin Stew 880</strong>) with enough Jeuno fame.</li>
-        <li><strong>Mog Sack (<code>/sack</code>):</strong> Buy from an Artisan Moogle for 9,980 gil. Talk to the Artisan Moogle again after each Gobbiebag upgrade to sync its size up to 80 slots.</li>
-        <li><strong>Mog Satchel (<code>/satchel</code>) &amp; Mog Case (<code>/case</code>):</strong> Accessible anywhere in the field. Satchel mirrors Gobbiebag size; Case starts at 80 slots.</li>
-        <li><strong>Mog Wardrobes (<code>/wardrobe</code>):</strong> 80-slot gear-only bags. You can equip gear directly from Wardrobes without moving it to your main inventory.</li>
-        <li><strong>Porter Moogles:</strong> Trade full Artifact/Relic armor sets + a Storage Slip to store 5 pieces inside 1 inventory slot.</li>
-        <li><strong>CatsEyeXI Mog Vault (Lv. 75):</strong> Custom server system that swaps entire Wardrobes, Sacks, or Cases into extradimensional storage for a small gil fee.</li>
-      </ul>
-    </div>
-  </section>
-</main>
+    const GUIDE_BRACKETS = [
+      {
+        id: "b_1_10",
+        range: "Lv. 1 – 10",
+        title: "Starter Zones & Nation Tutorials",
+        zones: "West/East Ronfaure, North/South Gustaberg, East/West Sarutabaruta",
+        cexiNotes: "Complete your Nation Tutorial Series (Alaune / Gulldago / Selele) for a free Empress Band, 12x Saltena, and Echad Ring. At Lv.5, unlock your first 3 Trusts and trigger RoV 1-1. At Lv.8, join Daily Tier 1 Allied Incursions!",
+        craftTargets: [
+          "Smithing 0 ➔ 10 (Bronze Ingots, Bronze Sheets, Bronze Scales)",
+          "Leathercraft 0 ➔ 10 (Sheep Wool, Sheep Leather from Ronfaure/Konschtat Sheep)",
+          "Woodworking 0 ➔ 10 (Arrowwood/Ash Lumber for Bolts)",
+          "Bonecraft 0 ➔ 10 (Bone Chips from night skeletons)"
+        ],
+        jobGear: {
+          THF: ["Bronze Knife / Wax Sword (+1)", "Bronze Harness Set (Lv.7)", "Crossbow + Bone/Bronze Bolts"],
+          WAR: ["Bronze Axe / Wax Sword (+1)", "Bronze Harness Set (Lv.7)", "Selbina Milk / Meat Jerky"],
+          PLD: ["(Unlocks at Lv.30 — Save your WAR Bronze Harness Set in Mog Wardrobe!)"],
+          RDM: ["Wax Sword / Ash Club", "Freesword's / Linen Robe Set", "Melon Juice"],
+          SAM: ["(Unlocks at Lv.30 — Save your WAR Bronze Set)"],
+          NIN: ["(Unlocks at Lv.30 — Farm Beehive Chips & Moko Grass now with THF!)"]
+        },
+        cartRecipes: ["rec_bronze_harness"]
+      },
+      {
+        id: "b_10_20",
+        range: "Lv. 10 – 20",
+        title: "Valkurm Dunes, Subjob Unlocks & Goblin Ventures",
+        zones: "La Theine Plateau, Konschtat Highlands, Tahrongi Canyon (10–14) ➔ Valkurm Dunes / Buburimu Peninsula (14–20)",
+        cexiNotes: "At Lv.15, THF unlocks Treasure Hunter I! Register at the Goblin Venture Guild (5,000 Gil) to run daily !ventures. At Lv.18, use THF Treasure Hunter I to farm your Subjob items (Crab Apron, Damselfly Worm, Magicked Skull in Valkurm) in minutes.",
+        craftTargets: [
+          "Smithing 10 ➔ 22 (Brass Ingots/Sheets -> Scale Mail Set)",
+          "Bonecraft 10 ➔ 20 (Bone Subligar, Bone Harness, Beetle Rings)",
+          "Cooking 0 ➔ 25 (Selbina Butter, Grilled Hare, Meat Jerky)",
+          "Woodworking 10 ➔ 20 (Holly Lumber for Bolts)"
+        ],
+        jobGear: {
+          THF: ["Knife / Brass Dagger (+1)", "Bone Harness Set (Lv.16)", "Power Crossbow + Acid/Bone Bolts"],
+          WAR: ["Brass Axe / Great Axe", "Scale Mail Set (Lv.18 — Shared with PLD)", "Bone Hairpin"],
+          PLD: ["Reuses WAR's Lv.18 Scale Mail Set + Mahogany/Elm Shield"],
+          RDM: ["Cotton Tunic /Baron's Set", "Silver Hairpin", "Selbina Milk / Melon Pie"],
+          SAM: ["Reuses WAR's Lv.16 Bone / Lv.18 Scale Set + Tachi"],
+          NIN: ["Lv.12 Utsusemi: Ichi (Korroloka Tunnel Quest)", "Reuses THF Bone Harness Set"]
+        },
+        cartRecipes: ["rec_scale_mail"]
+      },
+      {
+        id: "b_20_30",
+        range: "Lv. 20 – 30",
+        title: "Qufim Island, Beetle Armor Power Spike & Job Unlocks",
+        zones: "Qufim Island, Korroloka Tunnel (20–25) ➔ Yuhtunga Jungle / Battalia Downs (25–30)",
+        cexiNotes: "At Lv.20, get your Chocobo License in Upper Jeuno. Complete Nation Mission 2-3 (Dragon BCNM) for Rank 3, then immediately complete RoV 1-6 for Rhapsody in White (Unlocks your 4th Simultaneous Trust Slot!). At Lv.30, unlock PLD, SAM, and NIN using your THF!",
+        craftTargets: [
+          "Bonecraft 20 ➔ 30 (Beetle Harness +1 Set & Beetle Earring +1 x2 using Carpenter's Landing/Jungle Beetle Shells/Jaws)",
+          "Alchemy 0 ➔ 39 (Beeswax -> Silent Oil Lv.24, Acid Bolt Heads -> Acid Bolts Lv.39)",
+          "Woodworking 20 ➔ 35 (Uchitake Lv.33 & Ash Lumber)",
+          "Cooking 25 ➔ 40 (Meat Mithkabobs Lv.38)"
+        ],
+        jobGear: {
+          THF: ["Mercenary's Knife / Platoon Dagger", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1 (+6 ATK)", "Acid Bolts (Def Down proc!)"],
+          WAR: ["Platoon Great Axe / Centurion's Axe", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1", "Meat Mithkabobs"],
+          PLD: ["Centurion's Sword + Kite Shield", "Beetle Harness +1 Set (Lv.21) ➔ Eisenbrust Set (Lv.29)"],
+          RDM: ["Seer's Tunic Set (Lv.29)", "Beetle Earring +1 (for Enspell melee)", "Melon Pies"],
+          SAM: ["Mumeito / Platoon Tachi", "Beetle Harness +1 Set (Lv.21)", "2x Beetle Earring +1"],
+          NIN: ["Dual Wield II (Lv.25)", "Beetle Harness +1 Set (Lv.21)", "Self-Crafted Uchitake (Woodworking Lv.33)"]
+        },
+        cartRecipes: ["rec_beetle_harness", "rec_beetle_earring", "rec_silent_oil", "rec_meat_mithkabob", "rec_uchitake"]
+      },
+      {
+        id: "b_30_40",
+        range: "Lv. 30 – 40",
+        title: "Garlaige Citadel, Crawlers' Nest & Shihei Self-Sufficiency",
+        zones: "Garlaige Citadel (Bats/Beetles 30–37) ➔ Crawlers' Nest / Eastern Altepa Desert (36–40)",
+        cexiNotes: "At Lv.30, unlock Sebastian/Domenic BCNM Teleports ('Digging Up Dirt') and Portalix Stronghold Teleports ('Up, Up and Away') in Lower Jeuno. THF gets Sneak Attack + Trick Attack combo at Lv.30 and Viper Bite at Lv.33!",
+        craftTargets: [
+          "Woodworking 35 ➔ 41 (Shihei Lv.39 — Bast Parchment + Black Ink = 33x tools per craft!)",
+          "Smithing 22 ➔ 40 (Iron Sheets -> Eisenbrust Set Lv.29 / Kampfplatte)",
+          "Alchemy 39 ➔ 45 (Black Ink, Prism Powder Lv.41)",
+          "Clothcraft 20 ➔ 40 (Linen Cloth, Velvet Cloth)"
+        ],
+        jobGear: {
+          THF: ["Federation Kris / Hornetneedle", "RSE Set / Noct Doublet Set", "Acid Bolts + Shihei (once /NIN)"],
+          WAR: ["Heavy Axe / Voulge", "Eisenbrust Set (Lv.29) / Centurion's Scale Mail (Lv.30)", "Rajas Ring (CoP)"],
+          PLD: ["Eisenbrust Set (Lv.29 — Huge DEF spike for tanking)", "Holy Shield / Kite Shield"],
+          RDM: ["Seer's Set + Glamor Jupon", "Enhancing/Enfeebling Torque", "Melon Pies"],
+          SAM: ["uchigatana +1 / Jujitsu Gi (Lv.37)", "Centurion's Scale Set"],
+          NIN: ["Lv.37 Utsusemi: Ni (Game Changer!)", "Self-Crafted Shihei (Woodworking Lv.39)", "Jujitsu Gi"]
+        },
+        cartRecipes: ["rec_shihei", "rec_acid_bolt", "rec_eisenbrust", "rec_prism_powder", "rec_melon_pie"]
+      },
+      {
+        id: "b_40_50",
+        range: "Lv. 40 – 50",
+        title: "Crawlers' Nest, Gustav Tunnel & Treasure Hunter II",
+        zones: "Crawlers' Nest (Worker Crawlers/Beetles 40–46) ➔ Gustav Tunnel / Escha/Wajaom / Garlaige Basement (46–50)",
+        cexiNotes: "At Lv.45, THF unlocks Treasure Hunter II! Use THF Lv.45+ in Maze of Shakhrami / Crawlers' Nest to farm Scorpion Shells, Scorpion Claws, Silk Thread, and Gold Beastcoins. At Lv.50, complete Limit Break 1 (Exoray Mold, Bomb Coal, Ancient Papyrus) and unlock your AF1 Weapons!",
+        craftTargets: [
+          "Smithing 40 ➔ 55 (Steel Ingots/Sheets -> Brigandine Lv.45)",
+          "Clothcraft 40 ➔ 55 (Velvet/Silk Cloth, Shinobi-Tabi Lv.54)",
+          "Cooking 40 ➔ 56 (Sole Sushi Lv.56 for accuracy on IT mobs)",
+          "Alchemy 45 ➔ 56 (Bloody Bolts Lv.55 — HP Drain makes THF/WAR unstoppable)"
+        ],
+        jobGear: {
+          THF: ["Bone Knife +1 / Beestinger", "Brigandine (Lv.45 — Shared across THF/WAR/PLD/RDM/SAM/NIN!)", "Bloody Bolts + Acid Bolts"],
+          WAR: ["Viking Axe / Barbaroi Axe", "Brigandine (Lv.45)", "Sole Sushi / Meat Mithkabob"],
+          PLD: ["Honor Sword (AF1)", "Brigandine (Lv.45) + Steel Scale Set", "Buckler / Knight's Shield"],
+          RDM: ["Fencing Degen (AF1) + Brigandine (for Melee) or Velvet Robe", "Refresh (Lv.41!)"],
+          SAM: ["Magoroku (AF1)", "Brigandine (Lv.45)", "Sole Sushi"],
+          NIN: ["Anju & Zushio (AF1)", "Brigandine (Lv.45)", "Elemental Wheel Tools + Shinobi-Tabi"]
+        },
+        cartRecipes: ["rec_brigandine", "rec_bloody_bolt", "rec_sole_sushi", "rec_shinobi_tabi"]
+      },
+      {
+        id: "b_50_60",
+        range: "Lv. 50 – 60",
+        title: "Wajaom Woodlands, Bhaflau Thickets, AF Armor & Scorpion Harness",
+        zones: "Wajaom Woodlands / Bhaflau Thickets (Lesser Colibri 50–58) ➔ Quicksand Caves / Kuftal Tunnel (56–60)",
+        cexiNotes: "Advance Nation Rank to 6 (Shadow Lord) and Chains of Promathia / ToAU to unlock RoV 2-13 (Rhapsody in Crimson = 5th Simultaneous Trust Slot!). Collect all 6 jobs' Artifact (AF1–AF3) armor coffers using THF to pick coffer locks or farm keys.",
+        craftTargets: [
+          "Bonecraft 50 ➔ 88 (Carapace Harness -> Scorpion Harness Lv.57!)",
+          "Smithing 55 ➔ 80 (Darksteel Sheets -> Haubergeon Lv.59!)",
+          "Clothcraft 55 ➔ 83 (Rainbow Cloth -> Vermillion Cloak Lv.59!)"
+        ],
+        jobGear: {
+          THF: ["Rogue's Set (AF) + Scorpion Harness (Lv.57 — +10 ACC / +10 EVA)", "Dancing Edge (Lv.60)"],
+          WAR: ["Fighter's Set (AF) + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)", "Raging Rush (Lv.60)"],
+          PLD: ["Gallant Set (AF — Head/Body/Legs/Hands) + Royal Knight's Chainmail (Lv.55)"],
+          RDM: ["Warlock's Chapeau (AF Head — Fast Cast!) + Vermillion Cloak (Lv.59 — Refresh +1/tick)"],
+          SAM: ["Myochin Set (AF) + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)", "Tachi: Yukikaze/Gekko"],
+          NIN: ["Ninja Tekko/Kyahan (AF) + Scorpion Harness (Lv.57) ➔ Haubergeon (Lv.59)"]
+        },
+        cartRecipes: ["rec_scorpion_harness", "rec_haubergeon", "rec_vermillion_cloak"]
+      },
+      {
+        id: "b_60_75",
+        range: "Lv. 60 – 75",
+        title: "Endgame Push, Maat Limit Break 5, EVWS & CatsEyeXI Unlocks",
+        zones: "Bhaflau Thickets (Colibri 60–65) ➔ Mire / Aydeewa / Ru'Aun Gardens (Sky) / Bibiki Bay / KRT (65–75)",
+        cexiNotes: "At Lv.60, complete CatsEyeXI's 'Broken Bones' quest in Selbina/Gustav Tunnel to unlock custom Gustav Mining (drops Lv.75 spells & Scrolls!). At Lv.65, unlock Dynamis (1-hour zone cooldown on CatsEyeXI) to farm THF Assassin's Armlets (TH+1) first! Complete RoV 2-30 ('The Decisive Heroine') so all your Trusts gain Refresh+1 and Attack/Acc buffs.",
+        craftTargets: [
+          "Smithing 80 ➔ 100+ (Haubergeon +1, Thick Armor, Darksteel/Adaman Gear)",
+          "Bonecraft 88 ➔ 100+ (Scorpion Harness +1, Dragon Harness)",
+          "Clothcraft 83 ➔ 100+ (Errant/Mahatma Houpelande, Cursed Dalmatica)",
+          "Goldsmithing & Alchemy 75 ➔ 100+ (Endgame Rings, Panacea, Icarus Wings)"
+        ],
+        jobGear: {
+          THF: ["Thief's Knife + Assassin's Armlets (TH4!)", "Homam / Hecatomb / SH+1", "Evisceration (EVWS) & Shark Bite"],
+          WAR: ["Byakko's Haidate + Haubergeon +1", "Maneater / Woodville's Axe / Bravura", "Steel Cyclone & Decimation (EVWS)"],
+          PLD: ["Koenig / Valor / Homam Set", "Joyeuse / Hauteclaire / Aegis / Excalibur", "Savage Blade (EVWS) & Atonement"],
+          RDM: ["Duelist's Chapeau (Dynamis Refresh+Fast Cast) + Dalmatica", "Joyeuse + Genbu's Shield", "Savage Blade (EVWS)"],
+          SAM: ["Haubergeon +1 + Byakko's Haidate", "Hagun / Soboro Sukehiro / Amanomurakumo", "Tachi: Kasha (EVWS)"],
+          NIN: ["Haubergeon +1 + Koga Tekko + Byakko's Haidate", "Senjuinrikio + Perdu Blade", "Blade: Ku (EVWS) & Blade: Jin"]
+        },
+        cartRecipes: ["rec_haubergeon", "rec_scorpion_harness", "rec_optical_hat", "rec_shihei", "rec_sole_sushi"]
+      }
+    ];
 
-<script>
-  const recipes = [
-    {
-      name: "Leather Armor Set (Lv. 7)",
-      craft: "Leathercraft",
-      skillReq: 10,
-      tier: "1-20",
-      jobs: ["THF", "WAR", "PLD", "NIN", "RDM"],
-      source: "Farm Sheepskins from Sheep in La Theine Plateau / Konschtat Highlands + Dark/Wind Crystals."
-    },
-    {
-      name: "Bronze / Brass Daggers & Spatha (Lv. 1–15)",
-      craft: "Smithing",
-      skillReq: 12,
-      tier: "1-20",
-      jobs: ["THF", "PLD", "RDM", "WAR"],
-      source: "Farm Quadavs in Konschtat / Pashhow for Bronze/Brass gear to desynthesize, or buy Copper/Tin ore at guild."
-    },
-    {
-      name: "Copper / Brass Rings & Earrings (Lv. 1–18)",
-      craft: "Goldsmithing",
-      skillReq: 15,
-      tier: "1-20",
-      jobs: ["THF", "WAR", "PLD", "RDM", "NIN", "SAM"],
-      source: "Buy Copper/Zinc ores from Goldsmithing Guild in Bastok Markets; farm Fire/Wind crystals via Signet."
-    },
-    {
-      name: "Lizard Armor Set (Lv. 17) & Brass Scale Mail (Lv. 16)",
-      craft: "Leathercraft",
-      skillReq: 18,
-      tier: "1-20",
-      jobs: ["THF", "WAR", "PLD", "NIN"],
-      source: "Farm Hill Lizards in Valkurm Dunes for Lizard Skins while leveling 10–20."
-    },
-    {
-      name: "Cotton Doublet Set (Lv. 18)",
-      craft: "Clothcraft",
-      skillReq: 18,
-      tier: "1-20",
-      jobs: ["RDM"],
-      source: "Farm Cotton Bolls from Mandragoras/Crawlers or buy Cotton Thread at Windurst Weavers' Guild."
-    },
-    {
-      name: "Chainmail Set (Lv. 24) & Kite / Brass Shields",
-      craft: "Smithing",
-      skillReq: 28,
-      tier: "21-40",
-      jobs: ["WAR", "PLD"],
-      source: "Mine Iron Ore in Zeruhn Mines / Gusgen Mines or desynthesize Goblin/Quadav drops in Qufim."
-    },
-    {
-      name: "Studded Leather (Lv. 20) & Cuir Armor Set (Lv. 29)",
-      craft: "Leathercraft",
-      skillReq: 32,
-      tier: "21-40",
-      jobs: ["THF", "WAR", "NIN"],
-      source: "Farm Dhalmel Hides in Buburimu Peninsula / Tahrongi Canyon and Sheep/Lizard leathers."
-    },
-    {
-      name: "Velvet Robe Set (Lv. 32) & Shinobi Gi",
-      craft: "Clothcraft",
-      skillReq: 38,
-      tier: "21-40",
-      jobs: ["RDM", "NIN"],
-      source: "Farm Crawlers in Maze of Shakhrami / Crawler's Nest for Silk Threads; buy Velvet/Wool mats at guild."
-    },
-    {
-      name: "Eisenplate Set (Lv. 36) & Centurion's Sword / Kunai",
-      craft: "Smithing",
-      skillReq: 42,
-      tier: "21-40",
-      jobs: ["PLD", "WAR", "NIN", "RDM"],
-      source: "Smelt Steel Ingots (Iron Ore + Bomb Ash from Gusgen Mines); check Bastok/San d'Oria Smithing guilds."
-    },
-    {
-      name: "Raptor Armor Set (Lv. 38)",
-      craft: "Leathercraft",
-      skillReq: 42,
-      tier: "21-40",
-      jobs: ["THF", "WAR", "NIN"],
-      source: "Farm Raptors in Jugner Forest and Meriphataud Mountains for Raptor Skins."
-    },
-    {
-      name: "Mythril Rings (Lv. 36) & Silver/Mythril Hairpins",
-      craft: "Goldsmithing",
-      skillReq: 40,
-      tier: "21-40",
-      jobs: ["THF", "WAR", "PLD", "RDM", "NIN", "SAM"],
-      source: "Farm Quadavs in Beadeaux for Mythril Beastcoins/Ores to smelt Mythril Ingots."
-    },
-    {
-      name: "Brigandine (Lv. 45 Body — All 5 Jobs!)",
-      craft: "Leathercraft",
-      skillReq: 52,
-      tier: "41-60",
-      jobs: ["THF", "WAR", "PLD", "RDM", "NIN"],
-      source: "Farm Ram Skins (La Theine/Konschtat Rams) + Silk Cloth (Crawler's Nest) + Darksteel/Silver."
-    },
-    {
-      name: "Darksteel Armor (Lv. 55) & Darksteel Weapons/Shields",
-      craft: "Smithing",
-      skillReq: 62,
-      tier: "41-60",
-      jobs: ["WAR", "PLD", "THF", "NIN"],
-      source: "Farm Quadavs in Beadeaux or mine Darksteel Ore in Gusgen/Ifrit's Cauldron."
-    },
-    {
-      name: "Sniper's Rings (Lv. 50 Accuracy Rings)",
-      craft: "Goldsmithing",
-      skillReq: 58,
-      tier: "41-60",
-      jobs: ["THF", "WAR", "PLD", "NIN", "SAM"],
-      source: "Farm Horn/Bone materials and Silver/Mythril Ingots; essential accuracy boost for all melee jobs."
-    },
-    {
-      name: "Haubergeon (Lv. 59) & Hauberk (Lv. 69)",
-      craft: "Smithing",
-      skillReq: 78,
-      tier: "61-75",
-      jobs: ["WAR", "NIN", "PLD", "SAM"],
-      source: "Requires Darksteel Sheets/Ingots + High-end Leather straps. Best-in-slot melee accuracy/attack body."
-    },
-    {
-      name: "Dusk Gloves & Trousers (Lv. 72 Haste Gear)",
-      craft: "Leathercraft",
-      skillReq: 70,
-      tier: "61-75",
-      jobs: ["THF", "WAR", "PLD", "NIN", "SAM"],
-      source: "Farm Behemoth/Coeurl hides and high-tier leathers; top Haste gear for Lv. 75 melee."
-    },
-    {
-      name: "Errant Houppelande (Lv. 72) & Prism Cape (Lv. 71)",
-      craft: "Clothcraft",
-      skillReq: 70,
-      tier: "61-75",
-      jobs: ["RDM"],
-      source: "Craft Rainbow Cloth (Spider Webs from Boyahda Tree/Kuftpig) and Silk Cloth."
-    },
-    {
-      name: "Adaman Cuirass / Koenig Armor & Sasanuki +1 (Lv. 73–75)",
-      craft: "Smithing",
-      skillReq: 95,
-      tier: "61-75",
-      jobs: ["PLD", "WAR", "SAM"],
-      source: "Farm Sky/Endgame ores & clusters on THF. Reaching 100 Smithing grants your free Relic Weapon Voucher!"
+    // --- Unified App State ---
+    const appState = {
+      activeTab: 'quests', // 'quests', 'guide', 'crafting', 'cart', 'scraper', 'backup'
+      questSubMode: 'log', // 'log', 'route'
+      scraperMode: 'quest', // 'quest', 'craft'
+      guideSelectedJob: 'THF', // 'THF', 'WAR', 'PLD', 'RDM', 'SAM', 'NIN', 'ALL'
+      guideTrustCount: 3, // 3, 4, 5
+      guideProgress: {}, // milestoneKey -> boolean
+      playerLevel: 75,
+      hideOverLevel: true,
+      hideLocked: false,
+      questSearch: '',
+      questCategory: 'All',
+      questZone: 'All',
+      questStatus: 'All',
+      userCurrentZone: "Southern San d'Oria",
+      expandedQuests: {},
+      craftSearch: '',
+      craftGuild: 'All',
+      craftCrystal: 'All',
+      craftJob: 'All',
+      craftSlot: 'All',
+      guildLevels: {
+        Woodworking: 0, Smithing: 0, Goldsmithing: 0, Clothcraft: 0,
+        Leathercraft: 0, Bonecraft: 0, Alchemy: 0, Cooking: 0
+      },
+      quests: [],
+      userProgress: {},
+      recipes: [],
+      cart: {}, // recipeId -> quantity
+      checkedMaterials: {} // itemKey -> boolean
+    };
+
+    // --- State Persistence ---
+    function loadMasterStorage() {
+      try {
+        const savedVer = localStorage.getItem('cexi_suite_ver');
+        const savedQuests = localStorage.getItem('cexi_suite_quests');
+        const savedRecipes = localStorage.getItem('cexi_suite_recipes');
+
+        if (savedQuests && savedVer === DB_MASTER_VERSION) {
+          appState.quests = JSON.parse(savedQuests);
+        } else {
+          appState.quests = [...DEFAULT_QUESTS];
+          localStorage.setItem('cexi_suite_quests', JSON.stringify(appState.quests));
+        }
+
+        if (savedRecipes && savedVer === DB_MASTER_VERSION) {
+          appState.recipes = JSON.parse(savedRecipes);
+        } else {
+          appState.recipes = [...DEFAULT_RECIPES];
+          localStorage.setItem('cexi_suite_recipes', JSON.stringify(appState.recipes));
+        }
+
+        localStorage.setItem('cexi_suite_ver', DB_MASTER_VERSION);
+      } catch (e) {
+        appState.quests = [...DEFAULT_QUESTS];
+        appState.recipes = [...DEFAULT_RECIPES];
+      }
+
+      try {
+        const savedProgress = localStorage.getItem('cexi_suite_progress');
+        appState.userProgress = savedProgress ? JSON.parse(savedProgress) : {};
+      } catch (e) { appState.userProgress = {}; }
+
+      try {
+        const savedLevels = localStorage.getItem('cexi_suite_guild_levels');
+        if (savedLevels) appState.guildLevels = { ...appState.guildLevels, ...JSON.parse(savedLevels) };
+      } catch (e) {}
+
+      try {
+        const savedCart = localStorage.getItem('cexi_suite_cart');
+        appState.cart = savedCart ? JSON.parse(savedCart) : {};
+      } catch (e) { appState.cart = {}; }
+
+      try {
+        const savedLv = parseInt(localStorage.getItem('cexi_suite_player_level'), 10);
+        if (!isNaN(savedLv) && savedLv >= 1 && savedLv <= 75) appState.playerLevel = savedLv;
+      } catch (e) {}
+
+      try {
+        const savedGuide = localStorage.getItem('cexi_guide_progress');
+        appState.guideProgress = savedGuide ? JSON.parse(savedGuide) : {};
+      } catch (e) { appState.guideProgress = {}; }
     }
-  ];
 
-  const trustSetups = {
-    THF: {
-      title: "Thief (THF/WAR or THF/DNC) — Fast Chains & Material Farming",
-      slots: [
-        { role: "Slot 1 (Tank)", name: "Valaineral" },
-        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
-        { role: "Slot 3 (Haste/Support)", name: "Ulmia" },
-        { role: "Slot 4 (Magic Burst)", name: "Shantotto II" },
-        { role: "Slot 5 (Skillchain/DPS)", name: "Ayame / Zeid II" }
-      ],
-      notes: {
-        3: "With 3 slots, run Tank + Healer + Bard. Use Trick Attack onto Valaineral to lock hate while Ulmia keeps March haste active for fast kills.",
-        4: "Adding Shantotto II in Slot 4 adds massive magic burst damage whenever you or Valaineral open a skillchain.",
-        5: "With all 5 slots, Ayame opens skillchains that you close with Sneak/Trick Attack WS, letting Shantotto II Magic Burst every single fight."
-      }
-    },
-    PLD: {
-      title: "Paladin (PLD/WAR or PLD/NIN) — Sword & Board Tanking",
-      slots: [
-        { role: "Slot 1 (Healer)", name: "Apururu / Kupipi" },
-        { role: "Slot 2 (Refresh/Haste)", name: "Ulmia" },
-        { role: "Slot 3 (Magic Burst)", name: "Shantotto II" },
-        { role: "Slot 4 (Skillchain DPS)", name: "Ayame" },
-        { role: "Slot 5 (Refresh/Debuff)", name: "King of Hearts / Joachim" }
-      ],
-      notes: {
-        3: "Since YOU are the Sword & Board tank, skip Valaineral. Run Healer + Bard (Ballad/March) + Shantotto II for steady MP and damage.",
-        4: "Adding Ayame in Slot 4 creates a skillchain loop with your Sword weapon skills so Shantotto II can Magic Burst consistently.",
-        5: "Adding King of Hearts or Joachim in Slot 5 gives you double MP Refresh and Haste II/March so your MP never runs dry while tanking."
-      }
-    },
-    RDM: {
-      title: "Red Mage (RDM/NIN or RDM/BLM) — Hybrid Melee & Magic Burst",
-      slots: [
-        { role: "Slot 1 (Tank)", name: "Valaineral" },
-        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
-        { role: "Slot 3 (Magic Burst)", name: "Shantotto II" },
-        { role: "Slot 4 (Haste/Support)", name: "Ulmia" },
-        { role: "Slot 5 (Skillchain Opener)", name: "Ayame" }
-      ],
-      notes: {
-        3: "With 3 slots, you supply Haste and Refresh yourself while Valaineral tanks, Kupipi/Apururu heals, and Shantotto II nukes.",
-        4: "Adding Ulmia frees up your MP by covering Haste songs so you can focus on enfeebling and meleeing.",
-        5: "With all 5 slots, Ayame opens weapon skills for you to close, letting both you and Shantotto II Magic Burst together."
-      }
-    },
-    WAR: {
-      title: "Warrior (WAR/NIN) & Ninja (NIN/WAR) — Melee Blenders",
-      slots: [
-        { role: "Slot 1 (Tank)", name: "Valaineral" },
-        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
-        { role: "Slot 3 (Haste Support)", name: "Ulmia" },
-        { role: "Slot 4 (Magic Burst)", name: "Shantotto II" },
-        { role: "Slot 5 (2nd Support)", name: "Joachim / Koru-Moru" }
-      ],
-      notes: {
-        3: "With 3 slots, Valaineral holds AoE hate while Ulmia boosts your melee swing speed with March.",
-        4: "Adding Shantotto II turns every Great Axe or Katana weapon skill into huge magic burst spikes.",
-        5: "Adding a second support (Joachim or Koru-Moru) pushes your Haste near cap for nonstop XP chains."
-      }
-    },
-    SAM: {
-      title: "Samurai (SAM/WAR) — Nonstop Light Skillchain Spam",
-      slots: [
-        { role: "Slot 1 (Tank)", name: "Valaineral" },
-        { role: "Slot 2 (Healer)", name: "Apururu / Kupipi" },
-        { role: "Slot 3 (Skillchain Partner)", name: "Ayame" },
-        { role: "Slot 4 (Magic Burst)", name: "Shantotto II" },
-        { role: "Slot 5 (Haste Support)", name: "Ulmia" }
-      ],
-      notes: {
-        3: "With 3 slots, bring Ayame alongside Tank + Healer so you can immediately spam self-skillchains using Meditate.",
-        4: "Adding Shantotto II in Slot 4 lets her Magic Burst off every Light skillchain you and Ayame create.",
-        5: "Adding Ulmia in Slot 5 accelerates your TP gain even further for back-to-back Tachi: Gekko / Kasha chains."
+    function saveMasterState() {
+      try {
+        localStorage.setItem('cexi_suite_quests', JSON.stringify(appState.quests));
+        localStorage.setItem('cexi_suite_progress', JSON.stringify(appState.userProgress));
+        localStorage.setItem('cexi_suite_recipes', JSON.stringify(appState.recipes));
+        localStorage.setItem('cexi_suite_guild_levels', JSON.stringify(appState.guildLevels));
+        localStorage.setItem('cexi_suite_cart', JSON.stringify(appState.cart));
+        localStorage.setItem('cexi_suite_player_level', String(appState.playerLevel));
+        localStorage.setItem('cexi_guide_progress', JSON.stringify(appState.guideProgress));
+        localStorage.setItem('cexi_suite_ver', DB_MASTER_VERSION);
+      } catch (e) {
+        console.warn("Storage save error", e);
       }
     }
-  };
 
-  const slotUnlockInfo = {
-    3: "<strong>3 Trust Slots (Default Start):</strong> Available immediately after completing the basic Trust tutorial quests in your starting nation.",
-    4: "<strong>4 Trust Slots Unlocked:</strong> Reach <em>Rhapsodies of Vana'diel</em> Chapter 1, Mission 12 ("The Lion's Roar") and receive the "Rhapsody in White" key item.",
-    5: "<strong>5 Trust Slots Unlocked (Max on CatsEyeXI):</strong> Reach <em>Rhapsodies of Vana'diel</em> Chapter 2, Mission 18 ("A Path Untraveled") and receive the "Rhapsody in Umber" key item."
-  };
-
-  const levelingOrder = [
-    { id: "job-thf", title: "1. Thief (1 → 75)", desc: "Primary loot/crystal/hide farmer with Treasure Hunter. Unlock subjob at 18 and Dancer at 30." },
-    { id: "job-war", title: "2. Warrior (1 → 75)", desc: "Essential subjob for THF and PLD (Provoke/Defender). Reuses THF Leather/Scale/Chainmail sets." },
-    { id: "job-nin", title: "3. Ninja (30 → 75)", desc: "Unlocks Utsusemi shadows for soloing NMs on PLD, SAM, THF, and RDM." },
-    { id: "job-pld", title: "4. Paladin (30 → 75)", desc: "Your main Sword & Board tank, fully supplied by your Smithing & Goldsmithing crafts." },
-    { id: "job-rdm", title: "5. Red Mage (1 → 75)", desc: "Leveled last once THF & Sparks have funded all magic scrolls and Clothcraft gear." },
-    { id: "job-sam", title: "Bonus: Samurai (30 → 75)", desc: "Unlock in Norg at 30+; pairs with Smithing Great Katanas (Sasanuki) and /WAR subjob." }
-  ];
-
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById(btn.dataset.tab).classList.add("active");
-    });
-  });
-
-  const crafts = ["smithing", "leathercraft", "goldsmithing", "clothcraft", "woodworking"];
-  const skills = {};
-
-  crafts.forEach(c => {
-    const input = document.getElementById(`skill-${c}`);
-    const saved = localStorage.getItem(`cexi_skill_${c}`);
-    if (saved !== null) input.value = saved;
-    skills[c] = parseInt(input.value, 10) || 0;
-
-    input.addEventListener("input", () => {
-      const val = Math.max(0, Math.min(parseInt(input.max, 10), parseInt(input.value, 10) || 0));
-      skills[c] = val;
-      localStorage.setItem(`cexi_skill_${c}`, val);
-      renderRecipes();
-    });
-  });
-
-  function renderRecipes() {
-    const jobFilter = document.getElementById("filter-job").value;
-    const craftFilter = document.getElementById("filter-craft").value;
-    const tierFilter = document.getElementById("filter-tier").value;
-    const container = document.getElementById("recipe-list");
-
-    const filtered = recipes.filter(r => {
-      if (jobFilter !== "ALL" && !r.jobs.includes(jobFilter)) return false;
-      if (craftFilter !== "ALL" && r.craft !== craftFilter) return false;
-      if (tierFilter !== "ALL" && r.tier !== tierFilter) return false;
-      return true;
-    });
-
-    if (filtered.length === 0) {
-      container.innerHTML = `<p>No gear recipes match your current filter selection.</p>`;
-      return;
+    // --- Utilities ---
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
-    container.innerHTML = filtered.map(r => {
-      const userSkill = skills[r.craft.toLowerCase()] || 0;
-      const isReady = userSkill >= r.skillReq - 5;
-      const statusBadge = isReady
-        ? `<span class="badge badge-green">Ready to Craft (Skill ${r.skillReq})</span>`
-        : `<span class="badge badge-gold">Req: ${r.craft} ${r.skillReq}</span>`;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => el.classList.add('hidden'), 2800);
+    }
 
-      return `
-        <div class="recipe-item ${isReady ? "ready" : ""}">
-          <div class="recipe-header">
-            <span class="recipe-title">${r.name}</span>
-            <div>${statusBadge}</div>
+    function getQuestMinLevel(quest) {
+      if (typeof quest.min_level === 'number') return quest.min_level;
+      if (Array.isArray(quest.prerequisites)) {
+        for (const p of quest.prerequisites) {
+          const m = String(p).match(/Level\s+(\d+)/i);
+          if (m) return parseInt(m[1], 10);
+        }
+      }
+      return 1;
+    }
+
+    function checkQuestPrereqs(quest) {
+      const minLvl = getQuestMinLevel(quest);
+      const isTooHighLevel = appState.playerLevel < minLvl;
+      const missingQuests = [];
+      if (Array.isArray(quest.prerequisites)) {
+        for (const prereq of quest.prerequisites) {
+          const reqQuest = appState.quests.find(q => q.id === prereq || q.title.toLowerCase() === String(prereq).toLowerCase());
+          if (reqQuest) {
+            const prog = appState.userProgress[reqQuest.id];
+            if (!prog || prog.status !== 'Completed') {
+              missingQuests.push(reqQuest.title);
+            }
+          }
+        }
+      }
+      return { isLocked: missingQuests.length > 0 || isTooHighLevel, isTooHighLevel, minLvl, missingQuests };
+    }
+
+    function getZoneDistance(fromZone, toZone) {
+      if (!fromZone || !toZone || fromZone === toZone) return 0;
+      if (fromZone === 'Menu' || toZone === 'Menu' || fromZone === 'Varies by Nation' || toZone === 'Varies by Nation') return 0;
+      const queue = [[fromZone, 0]];
+      const visited = new Set([fromZone]);
+      while (queue.length > 0) {
+        const [curr, dist] = queue.shift();
+        if (curr === toZone) return dist;
+        const neighbors = ZONE_GRAPH[curr] || [];
+        for (const n of neighbors) {
+          if (!visited.has(n)) {
+            visited.add(n);
+            queue.push([n, dist + 1]);
+          }
+        }
+      }
+      return 12;
+    }
+
+    function resolveStepZone(quest, stepText) {
+      if (!stepText) return quest.start_zone || 'Unknown';
+      const lower = stepText.toLowerCase();
+      const candidates = Array.from(new Set([
+        ...(quest.zones_involved || []),
+        quest.start_zone,
+        ...Object.keys(ZONE_GRAPH)
+      ])).filter(Boolean).sort((a, b) => b.length - a.length);
+      for (const z of candidates) {
+        if (z !== 'Menu' && z !== 'Varies by Nation' && lower.includes(z.toLowerCase())) return z;
+      }
+      return quest.start_zone || 'Unknown';
+    }
+
+    // --- UI Renderers ---
+    function renderGuildLevels() {
+      const container = document.getElementById('guild-levels-grid');
+      container.innerHTML = GUILDS_LIST.map(guild => {
+        const lvl = appState.guildLevels[guild] || 0;
+        return `
+          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-center hover:border-amber-600/50 transition">
+            <span class="text-[11px] font-semibold text-slate-400 block truncate">${guild}</span>
+            <input type="number" min="0" max="110" value="${lvl}" data-guild="${guild}" class="guild-lvl-input w-14 text-center bg-slate-900 border border-slate-700 rounded px-1 py-0.5 mt-1 text-sm font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-400" />
           </div>
-          <div class="recipe-meta">
-            <strong>Jobs:</strong> ${r.jobs.join(", ")} &bull; <strong>Tier:</strong> Lv. ${r.tier}
-          </div>
-          <div class="recipe-source">
-            <strong>Materials &amp; Farming:</strong> ${r.source}
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
+        `;
+      }).join('');
+    }
 
-  document.getElementById("filter-job").addEventListener("change", renderRecipes);
-  document.getElementById("filter-craft").addEventListener("change", renderRecipes);
-  document.getElementById("filter-tier").addEventListener("change", renderRecipes);
-  renderRecipes();
+    function renderQuestsView() {
+      const isRoute = appState.questSubMode === 'route';
+      document.getElementById('quest-filter-bar').style.display = isRoute ? 'none' : 'block';
+      document.getElementById('quest-list-container').style.display = isRoute ? 'none' : 'block';
+      document.getElementById('quest-route-container').style.display = isRoute ? 'block' : 'none';
 
-  let activeTrustSlots = parseInt(localStorage.getItem("cexi_trust_slots"), 10) || 5;
+      document.getElementById('btn-quest-sub-log').className = !isRoute
+        ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-slate-950 shadow'
+        : 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200';
+      document.getElementById('btn-quest-sub-route').className = isRoute
+        ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-slate-950 shadow'
+        : 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200';
 
-  function updateSlotButtons() {
-    document.querySelectorAll(".slot-toggle-btn").forEach(btn => {
-      const count = parseInt(btn.dataset.slots, 10);
-      btn.classList.toggle("active", count === activeTrustSlots);
-    });
-  }
+      if (isRoute) {
+        renderRouteOptimizer();
+        return;
+      }
 
-  document.querySelectorAll(".slot-toggle-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      activeTrustSlots = parseInt(btn.dataset.slots, 10);
-      localStorage.setItem("cexi_trust_slots", activeTrustSlots);
-      updateSlotButtons();
-      renderTrusts();
-    });
-  });
+      // Filter quests
+      const searchLower = appState.questSearch.toLowerCase();
+      const filtered = appState.quests.filter(q => {
+        const prog = appState.userProgress[q.id] || { status: 'Not Started', step: -1 };
+        const lock = checkQuestPrereqs(q);
+        if (appState.hideOverLevel && lock.isTooHighLevel && prog.status === 'Not Started') return false;
+        if (appState.hideLocked && lock.isLocked && prog.status !== 'Completed') return false;
+        const matchesSearch = !searchLower || q.title.toLowerCase().includes(searchLower) || (q.start_zone && q.start_zone.toLowerCase().includes(searchLower)) || (q.category && q.category.toLowerCase().includes(searchLower));
+        const matchesCat = appState.questCategory === 'All' || q.category === appState.questCategory;
+        const matchesZone = appState.questZone === 'All' || q.start_zone === appState.questZone || (Array.isArray(q.zones_involved) && q.zones_involved.includes(appState.questZone));
+        const matchesStatus = appState.questStatus === 'All' || prog.status === appState.questStatus;
+        return matchesSearch && matchesCat && matchesZone && matchesStatus;
+      });
 
-  function renderTrusts() {
-    const job = document.getElementById("trust-job-select").value;
-    const data = trustSetups[job];
-    const container = document.getElementById("trust-display");
-    const banner = document.getElementById("trust-unlock-banner");
+      document.getElementById('quest-filtered-count').textContent = filtered.length;
+      const container = document.getElementById('quest-list-container');
 
-    banner.innerHTML = slotUnlockInfo[activeTrustSlots];
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-10 text-center bg-slate-900/30 rounded-xl border border-dashed border-slate-800 text-slate-400 text-sm">No quests match your current filters.</div>`;
+        return;
+      }
 
-    container.innerHTML = `
-      <h3>${data.title} (${activeTrustSlots} Active Trusts)</h3>
-      <div class="trust-slots">
-        ${data.slots.map((s, index) => {
-          const isUnlocked = index < activeTrustSlots;
-          return `
-            <div class="trust-slot ${isUnlocked ? "" : "locked"}">
-              <div class="trust-role">${isUnlocked ? s.role : `Locked (Slot ${index + 1})`}</div>
-              <div class="trust-name">${isUnlocked ? s.name : "Unlock via RoV"}</div>
+      container.innerHTML = filtered.map(quest => {
+        const prog = appState.userProgress[quest.id] || { status: 'Not Started', step: -1 };
+        const lock = checkQuestPrereqs(quest);
+        const isCompleted = prog.status === 'Completed';
+        const isInProgress = prog.status === 'In Progress';
+        const isLocked = lock.isLocked && !isCompleted;
+        const isExpanded = !!appState.expandedQuests[quest.id];
+
+        let borderClass = 'border-slate-800 hover:border-slate-600';
+        if (isCompleted) borderClass = 'border-emerald-800/60 bg-emerald-950/20';
+        else if (isLocked) borderClass = 'border-rose-950/70 bg-rose-950/10 opacity-75';
+        else if (isInProgress) borderClass = 'border-amber-700/60 bg-amber-950/15';
+
+        const titleColor = isCompleted ? 'text-emerald-400' : isLocked ? 'text-slate-400' : 'text-slate-100';
+
+        let expandedContent = '';
+        if (isExpanded) {
+          const stepsHtml = (quest.steps || []).map((step, idx) => {
+            const isDone = isCompleted || idx <= prog.step;
+            const isCurr = isInProgress && idx === prog.step + 1;
+            return `
+              <div class="quest-step-row flex items-start gap-2.5 p-2 rounded-lg cursor-pointer ${isCurr ? 'bg-indigo-950/60 border border-indigo-700/60 text-indigo-100' : isDone ? 'opacity-55 text-slate-500 bg-slate-950/40 line-through' : 'text-slate-300 bg-slate-950/30'}" data-quest-id="${quest.id}" data-step-idx="${idx}">
+                <span class="w-5 h-5 rounded-full flex items-center justify-center font-mono text-xs border ${isDone ? 'bg-emerald-900/80 border-emerald-600 text-emerald-400' : isCurr ? 'bg-indigo-900 border-indigo-400 text-indigo-200' : 'border-slate-700 text-slate-400'}">${isDone ? '✓' : idx + 1}</span>
+                <span class="text-xs sm:text-sm flex-1">${escapeHtml(step)}</span>
+              </div>
+            `;
+          }).join('');
+
+          expandedContent = `
+            <div class="mt-3 pt-3 border-t border-slate-800 space-y-3">
+              <div class="text-xs bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex flex-wrap gap-x-4 gap-y-1">
+                <div><span class="text-slate-500">NPC:</span> <strong class="text-amber-400">${escapeHtml(quest.start_npc || 'NPC')}</strong></div>
+                <div><span class="text-slate-500">Zone:</span> <span class="text-slate-300">${escapeHtml(quest.start_zone)}</span></div>
+                ${quest.zones_involved ? `<div><span class="text-slate-500">Involves:</span> <span class="text-slate-400">${escapeHtml(quest.zones_involved.join(', '))}</span></div>` : ''}
+              </div>
+              ${quest.prerequisites && quest.prerequisites.length > 0 ? `<div class="text-xs text-rose-300 bg-rose-950/30 p-2 rounded border border-rose-900/50"><strong>Prerequisites:</strong> ${escapeHtml(quest.prerequisites.join(', '))}</div>` : ''}
+              ${quest.rewards && quest.rewards.length > 0 ? `<div class="text-xs text-amber-300 bg-amber-950/30 p-2 rounded border border-amber-900/50"><strong>Rewards:</strong> ${escapeHtml(quest.rewards.join(', '))}</div>` : ''}
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <span>Walkthrough Checklist</span>
+                  ${prog.step >= 0 ? `<button type="button" class="quest-reset-steps text-amber-400 hover:underline" data-quest-id="${quest.id}">Reset Steps</button>` : ''}
+                </div>
+                ${stepsHtml}
+              </div>
             </div>
           `;
-        }).join("")}
-      </div>
-      <p style="margin-top:0.6rem; color: var(--text);">${data.notes[activeTrustSlots]}</p>
-    `;
-  }
+        }
 
-  updateSlotButtons();
-  document.getElementById("trust-job-select").addEventListener("change", renderTrusts);
-  renderTrusts();
+        return `
+          <div class="bg-slate-900/70 border rounded-xl p-4 sm:p-5 transition ${borderClass}">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-base sm:text-lg font-serif font-bold ${titleColor}">${escapeHtml(quest.title)}</h3>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-amber-950 text-amber-300 border border-amber-800">Lv. ${lock.minLvl}+</span>
+                  <span class="px-2 py-0.5 rounded-full text-xs bg-indigo-950 text-indigo-300 border border-indigo-900">${escapeHtml(quest.category)}</span>
+                  ${lock.isTooHighLevel ? `<span class="text-[11px] bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded">🔒 Needs Lv.${lock.minLvl}</span>` : ''}
+                </div>
+                <div class="text-xs text-slate-400 mt-1">Start: ${escapeHtml(quest.start_zone)} (${escapeHtml(quest.start_npc)})</div>
+              </div>
 
-  function renderChecklist() {
-    const container = document.getElementById("job-checklist");
-    container.innerHTML = levelingOrder.map(item => {
-      const checked = localStorage.getItem(`cexi_check_${item.id}`) === "true";
-      return `
-        <label class="check-row ${checked ? "done" : ""}">
-          <input type="checkbox" data-id="${item.id}" ${checked ? "checked" : ""} />
-          <div>
-            <div class="check-title" style="font-weight:700; font-size:0.95rem;">${item.title}</div>
-            <div style="font-size:0.83rem; color:var(--muted);">${item.desc}</div>
+              <div class="flex flex-col items-end gap-2 shrink-0">
+                <select class="quest-status-select text-xs sm:text-sm rounded-lg px-2.5 py-1.5 border font-semibold outline-none bg-slate-800 text-slate-200 border-slate-700" data-quest-id="${quest.id}">
+                  <option value="Not Started" ${prog.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
+                  <option value="In Progress" ${prog.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                  <option value="Completed" ${prog.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                </select>
+                <button type="button" class="quest-toggle-guide text-[11px] uppercase font-bold tracking-wider bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded border border-slate-700" data-quest-id="${quest.id}">
+                  ${isExpanded ? 'Close ▲' : 'Guide ▼'}
+                </button>
+              </div>
+            </div>
+            ${expandedContent}
           </div>
-        </label>
-      `;
-    }).join("");
+        `;
+      }).join('');
+    }
 
-    container.querySelectorAll("input[type='checkbox']").forEach(cb => {
-      cb.addEventListener("change", () => {
-        localStorage.setItem(`cexi_check_${cb.dataset.id}`, cb.checked);
-        renderChecklist();
+    function renderRouteOptimizer() {
+      const container = document.getElementById('route-optimizer-phases');
+      const pending = appState.quests.filter(q => (appState.userProgress[q.id]?.status || 'Not Started') !== 'Completed');
+
+      if (pending.length === 0) {
+        container.innerHTML = `<div class="p-10 text-center bg-slate-900/30 rounded-xl border border-dashed border-slate-800 text-slate-400">All quests completed!</div>`;
+        return;
+      }
+
+      // Phase 1: Pickups
+      const pickups = pending.filter(q => {
+        const prog = appState.userProgress[q.id] || { status: 'Not Started', step: -1 };
+        const lock = checkQuestPrereqs(q);
+        return prog.status === 'Not Started' && !lock.isLocked;
       });
-    });
-  }
 
-  renderChecklist();
-</script>
+      const pickupClusters = {};
+      pickups.forEach(q => {
+        const z = q.start_zone || 'Unknown';
+        if (!pickupClusters[z]) pickupClusters[z] = [];
+        pickupClusters[z].push(q);
+      });
+
+      const sortedPickupZones = Object.keys(pickupClusters).sort((a, b) => getZoneDistance(appState.userCurrentZone, a) - getZoneDistance(appState.userCurrentZone, b));
+
+      // Phase 2: Active field steps
+      const active = pending.filter(q => (appState.userProgress[q.id]?.status || 'Not Started') === 'In Progress');
+      const fieldMap = {};
+      active.forEach(q => {
+        const prog = appState.userProgress[q.id] || { status: 'In Progress', step: -1 };
+        const currStep = (prog.step !== undefined ? prog.step : -1) + 1;
+        const total = q.steps ? q.steps.length : 1;
+        if (currStep < total) {
+          const stepDesc = q.steps[currStep] || 'Complete step.';
+          const tz = resolveStepZone(q, stepDesc);
+          if (!fieldMap[tz]) fieldMap[tz] = [];
+          fieldMap[tz].push({ questId: q.id, title: q.title, stepDesc, currStep, total });
+        }
+      });
+
+      // Phase 3: Ready for turn in
+      const turnIns = active.filter(q => {
+        const prog = appState.userProgress[q.id] || { status: 'In Progress', step: -1 };
+        const currStep = (prog.step !== undefined ? prog.step : -1) + 1;
+        return currStep >= (q.steps ? q.steps.length : 1);
+      });
+
+      container.innerHTML = `
+        <!-- Phase 1 -->
+        <div class="bg-indigo-950/20 border border-indigo-900/40 p-4 rounded-xl space-y-3">
+          <h3 class="text-sm font-serif font-bold text-indigo-300">Phase 1: Available Pickups near ${escapeHtml(appState.userCurrentZone)}</h3>
+          ${sortedPickupZones.length === 0 ? '<p class="text-xs text-slate-500 italic">No unaccepted pickups available right now.</p>' : sortedPickupZones.map(z => `
+            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-amber-300">
+                <span>📍 ${escapeHtml(z)}</span>
+                <span class="text-slate-400 font-normal">${getZoneDistance(appState.userCurrentZone, z)} zone hops away</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                ${pickupClusters[z].map(q => `
+                  <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex items-center justify-between gap-2">
+                    <span class="text-xs font-semibold text-slate-200 truncate">${escapeHtml(q.title)}</span>
+                    <button type="button" class="route-accept-btn text-xs bg-indigo-900 hover:bg-indigo-800 text-indigo-100 px-2.5 py-1 rounded" data-quest-id="${q.id}">Accept</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="bg-amber-950/20 border border-amber-900/40 p-4 rounded-xl space-y-3">
+          <h3 class="text-sm font-serif font-bold text-amber-300">Phase 2: Active Field Steps (Batched by Zone)</h3>
+          ${Object.keys(fieldMap).length === 0 ? '<p class="text-xs text-slate-500 italic">No active field steps remaining.</p>' : Object.keys(fieldMap).map((z, idx) => `
+            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 space-y-2">
+              <span class="text-xs font-bold text-amber-400 block">${idx + 1}. Zone: ${escapeHtml(z)} (${fieldMap[z].length} objective)</span>
+              ${fieldMap[z].map(task => `
+                <div class="bg-slate-950 p-2.5 rounded border border-slate-800 flex items-start justify-between gap-3">
+                  <div>
+                    <div class="text-xs font-bold text-slate-200">${escapeHtml(task.title)} <span class="text-slate-500 font-normal">(Step ${task.currStep + 1}/${task.total})</span></div>
+                    <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(task.stepDesc)}</div>
+                  </div>
+                  <button type="button" class="route-step-done-btn text-xs bg-amber-800 hover:bg-amber-700 text-amber-100 px-2.5 py-1 rounded shrink-0 font-semibold" data-quest-id="${task.questId}" data-step-idx="${task.currStep}">Done</button>
+                </div>
+              `).join('')}
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="bg-emerald-950/20 border border-emerald-900/40 p-4 rounded-xl space-y-3">
+          <h3 class="text-sm font-serif font-bold text-emerald-300">Phase 3: Turn In & Claim Rewards</h3>
+          ${turnIns.length === 0 ? '<p class="text-xs text-slate-500 italic">No quests ready for turn-in yet.</p>' : `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              ${turnIns.map(q => `
+                <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 flex items-center justify-between gap-3">
+                  <div>
+                    <div class="text-xs font-bold text-slate-200">${escapeHtml(q.title)}</div>
+                    <div class="text-[11px] text-slate-400 mt-0.5">Turn in to <span class="text-amber-400">${escapeHtml(q.start_npc)}</span> in ${escapeHtml(q.start_zone)}</div>
+                  </div>
+                  <button type="button" class="route-turnin-btn text-xs bg-emerald-800 hover:bg-emerald-700 text-emerald-100 px-3 py-1.5 rounded font-bold" data-quest-id="${q.id}">✓ Complete</button>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderRecipesView() {
+      const search = appState.craftSearch.toLowerCase();
+      const filtered = appState.recipes.filter(rec => {
+        const matchesSearch = !search || rec.name.toLowerCase().includes(search) || (rec.ingredients && rec.ingredients.some(i => i.toLowerCase().includes(search)));
+        const matchesGuild = appState.craftGuild === 'All' || rec.guild === appState.craftGuild;
+        const matchesCrystal = appState.craftCrystal === 'All' || rec.crystal === appState.craftCrystal;
+        const matchesJob = appState.craftJob === 'All' || !rec.jobs || rec.jobs.includes('All Jobs') || rec.jobs.includes(appState.craftJob);
+        const matchesSlot = appState.craftSlot === 'All' || rec.slot === appState.craftSlot;
+        return matchesSearch && matchesGuild && matchesCrystal && matchesJob && matchesSlot;
+      });
+
+      const container = document.getElementById('recipe-list-container');
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-10 text-center bg-slate-900/30 rounded-xl border border-dashed border-slate-800 text-slate-400 text-sm">No synthesis recipes found. Try the Scraper tab to pull more!</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(rec => {
+        const userGuildLvl = appState.guildLevels[rec.guild] || 0;
+        const diff = userGuildLvl - rec.cap;
+        let diffBadge = '';
+        if (diff < -15) diffBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950 text-rose-300 border border-rose-800">Impossible (${diff})</span>`;
+        else if (diff < 0) diffBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-800">Skill Up Range (${diff})</span>`;
+        else if (diff <= 10) diffBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">Optimal (+${diff})</span>`;
+        else diffBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">Capped (+${diff})</span>`;
+
+        const inCartQty = appState.cart[rec.id] || 0;
+
+        return `
+          <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1.5 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-base sm:text-lg font-serif font-bold text-amber-100">${escapeHtml(rec.name)}</h3>
+                <span class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-indigo-950 text-indigo-300 border border-indigo-900">${rec.guild} Lv.${rec.cap}</span>
+                <span class="px-2 py-0.5 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">🔮 ${rec.crystal}</span>
+                ${diffBadge}
+              </div>
+
+              ${rec.subcrafts ? `<div class="text-xs text-slate-400"><span class="text-slate-500">Subcrafts:</span> ${escapeHtml(rec.subcrafts)}</div>` : ''}
+
+              <div class="text-xs text-slate-300 bg-slate-950 p-2 rounded-lg border border-slate-800 flex flex-wrap gap-x-3 gap-y-1">
+                <span class="text-slate-500 font-semibold">Ingredients:</span>
+                ${(rec.ingredients || []).map(ing => `<span class="text-slate-300">• ${escapeHtml(ing)}</span>`).join('')}
+              </div>
+
+              <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                ${rec.slot ? `<span>Slot: <strong class="text-slate-400">${rec.slot}</strong></span>` : ''}
+                ${rec.jobs ? `<span>• Jobs: <strong class="text-slate-400">${rec.jobs.join(', ')}</strong></span>` : ''}
+                ${rec.yield ? `<span>• Yield: <strong class="text-amber-400">${rec.yield}x</strong></span>` : ''}
+              </div>
+            </div>
+
+            <!-- Cart Controls -->
+            <div class="flex items-center gap-2 self-end md:self-center shrink-0">
+              ${inCartQty > 0 ? `
+                <button type="button" class="btn-cart-dec px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700" data-recipe-id="${rec.id}">-</button>
+                <span class="font-mono text-sm font-bold text-amber-300 px-1">${inCartQty}x</span>
+                <button type="button" class="btn-cart-inc px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700" data-recipe-id="${rec.id}">+</button>
+              ` : `
+                <button type="button" class="btn-cart-add text-xs bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-lg transition shadow" data-recipe-id="${rec.id}">+ Add to Cart</button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCartView() {
+      const activeIds = Object.keys(appState.cart).filter(id => appState.cart[id] > 0);
+      const queuedContainer = document.getElementById('cart-queued-batches');
+      const crystalContainer = document.getElementById('cart-crystals-list');
+      const matContainer = document.getElementById('cart-materials-list');
+
+      if (activeIds.length === 0) {
+        queuedContainer.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-4">Your synthesis cart is currently empty. Add recipes from the Crafting tab!</p>`;
+        crystalContainer.innerHTML = `<p class="text-xs text-slate-500 italic">No crystals required.</p>`;
+        matContainer.innerHTML = `<p class="text-xs text-slate-500 italic">No ingredients required.</p>`;
+        return;
+      }
+
+      // 1. Queued batches list
+      queuedContainer.innerHTML = activeIds.map(id => {
+        const rec = appState.recipes.find(r => r.id === id);
+        if (!rec) return '';
+        const qty = appState.cart[id];
+        return `
+          <div class="flex items-center justify-between p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-xs">
+            <div>
+              <span class="font-bold text-amber-200">${escapeHtml(rec.name)}</span>
+              <span class="text-slate-500 ml-2">(${rec.guild} Lv.${rec.cap} • 🔮 ${rec.crystal})</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" class="btn-cart-dec px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold" data-recipe-id="${rec.id}">-</button>
+              <span class="font-mono font-bold text-amber-300">${qty} batch(es)</span>
+              <button type="button" class="btn-cart-inc px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold" data-recipe-id="${rec.id}">+</button>
+              <button type="button" class="btn-cart-remove text-rose-400 hover:text-rose-300 ml-1" data-recipe-id="${rec.id}">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 2. Aggregate crystals & materials
+      const crystalTally = {};
+      const matTally = {};
+
+      activeIds.forEach(id => {
+        const rec = appState.recipes.find(r => r.id === id);
+        if (!rec) return;
+        const multiplier = appState.cart[id];
+
+        if (rec.crystal) {
+          crystalTally[rec.crystal] = (crystalTally[rec.crystal] || 0) + multiplier;
+        }
+
+        (rec.ingredients || []).forEach(ing => {
+          // Parse quantity if format like "Beeswax x2"
+          let name = ing.trim();
+          let count = 1;
+          const match = name.match(/^(.*?)\s*[xX*]\s*(\d+)$/);
+          if (match) {
+            name = match[1].trim();
+            count = parseInt(match[2], 10) || 1;
+          }
+          matTally[name] = (matTally[name] || 0) + (count * multiplier);
+        });
+      });
+
+      // Render Crystals
+      crystalContainer.innerHTML = Object.keys(crystalTally).map(c => {
+        const count = crystalTally[c];
+        const stacks = Math.floor(count / 12);
+        const rem = count % 12;
+        const stackStr = stacks > 0 ? `(${stacks} stack${stacks > 1 ? 's' : ''}${rem > 0 ? ` + ${rem}` : ''})` : '';
+        const key = `crystal_${c}`;
+        const isChecked = !!appState.checkedMaterials[key];
+        return `
+          <div class="cart-check-item flex items-center justify-between p-2 rounded bg-slate-950 border border-slate-800 cursor-pointer ${isChecked ? 'opacity-50 line-through' : ''}" data-item-key="${key}">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="w-4 h-4 rounded border flex items-center justify-center font-mono ${isChecked ? 'bg-emerald-900 border-emerald-600 text-emerald-400' : 'border-slate-700 text-transparent'}">✓</span>
+              <span class="font-semibold text-slate-200">🔮 ${c} Crystal</span>
+            </div>
+            <div class="font-mono text-xs text-amber-300 font-bold">${count}x <span class="text-slate-500 font-normal">${stackStr}</span></div>
+          </div>
+        `;
+      }).join('');
+
+      // Render Materials
+      matContainer.innerHTML = Object.keys(matTally).map(m => {
+        const count = matTally[m];
+        const stacks = Math.floor(count / 12);
+        const rem = count % 12;
+        const stackStr = stacks > 0 ? `(${stacks} stack${stacks > 1 ? 's' : ''}${rem > 0 ? ` + ${rem}` : ''})` : '';
+        const key = `mat_${m}`;
+        const isChecked = !!appState.checkedMaterials[key];
+        return `
+          <div class="cart-check-item flex items-center justify-between p-2 rounded bg-slate-950 border border-slate-800 cursor-pointer ${isChecked ? 'opacity-50 line-through' : ''}" data-item-key="${key}">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="w-4 h-4 rounded border flex items-center justify-center font-mono ${isChecked ? 'bg-emerald-900 border-emerald-600 text-emerald-400' : 'border-slate-700 text-transparent'}">✓</span>
+              <span class="text-slate-200">${escapeHtml(m)}</span>
+            </div>
+            <div class="font-mono text-xs text-amber-300 font-bold">${count}x <span class="text-slate-500 font-normal">${stackStr}</span></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderScraperGuildButtons() {
+      const container = document.getElementById('scraper-guild-buttons-container');
+      container.innerHTML = GUILDS_LIST.map(g => `
+        <button type="button" class="btn-scrape-single-guild bg-slate-950 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold py-2 px-3 rounded-lg transition" data-guild="${g}">
+          Scan ${g}
+        </button>
+      `).join('');
+    }
+
+    function updateMasterCounters() {
+      const completed = appState.quests.filter(q => appState.userProgress[q.id]?.status === 'Completed').length;
+      document.getElementById('stat-quests-badge').textContent = `${completed} / ${appState.quests.length} Quests`;
+      document.getElementById('stat-recipes-badge').textContent = `${appState.recipes.length} Recipes`;
+
+      const cartCount = Object.values(appState.cart).reduce((a, b) => a + b, 0);
+      const counterEl = document.getElementById('cart-item-counter');
+      if (cartCount > 0) {
+        counterEl.textContent = cartCount;
+        counterEl.classList.remove('hidden');
+      } else {
+        counterEl.classList.add('hidden');
+      }
+    }
+
+    function populateSelects() {
+      // Quest Categories
+      const catSelect = document.getElementById('quest-filter-category');
+      const cats = Array.from(new Set(appState.quests.map(q => q.category))).sort();
+      catSelect.innerHTML = `<option value="All">All Categories</option>` +
+        cats.map(c => `<option value="${escapeHtml(c)}" ${appState.questCategory === c ? 'selected' : ''}>${escapeHtml(c)}</option>`).join('');
+
+      // Quest Zones
+      const allZones = new Set(Object.keys(ZONE_GRAPH));
+      appState.quests.forEach(q => {
+        if (q.start_zone) allZones.add(q.start_zone);
+        if (Array.isArray(q.zones_involved)) q.zones_involved.forEach(z => allZones.add(z));
+      });
+      const zoneSelect = document.getElementById('quest-filter-zone');
+      zoneSelect.innerHTML = `<option value="All">All Zones</option>` +
+        Array.from(allZones).sort().map(z => `<option value="${escapeHtml(z)}" ${appState.questZone === z ? 'selected' : ''}>${escapeHtml(z)}</option>`).join('');
+
+      // Route Zones
+      const routeSelect = document.getElementById('route-user-current-zone');
+      routeSelect.innerHTML = Object.keys(ZONE_GRAPH).sort().map(z => `<option value="${escapeHtml(z)}" ${appState.userCurrentZone === z ? 'selected' : ''}>${escapeHtml(z)}</option>`).join('');
+
+      // Crafting Guilds
+      const craftGuildSelect = document.getElementById('craft-filter-guild');
+      craftGuildSelect.innerHTML = `<option value="All">All Guilds</option>` +
+        GUILDS_LIST.map(g => `<option value="${g}" ${appState.craftGuild === g ? 'selected' : ''}>${g}</option>`).join('');
+
+      // Crafting Crystals
+      const craftCrystalSelect = document.getElementById('craft-filter-crystal');
+      craftCrystalSelect.innerHTML = `<option value="All">All Crystals</option>` +
+        CRYSTALS_LIST.map(c => `<option value="${c}" ${appState.craftCrystal === c ? 'selected' : ''}>${c}</option>`).join('');
+
+      // Crafting Jobs
+      const craftJobSelect = document.getElementById('craft-filter-job');
+      craftJobSelect.innerHTML = JOBS_LIST.map(j => `<option value="${j}" ${appState.craftJob === j ? 'selected' : ''}>${j}</option>`).join('');
+
+      // Crafting Slots
+      const craftSlotSelect = document.getElementById('craft-filter-slot');
+      craftSlotSelect.innerHTML = `<option value="All">All Slots</option>` +
+        SLOTS_LIST.map(s => `<option value="${s}" ${appState.craftSlot === s ? 'selected' : ''}>${s}</option>`).join('');
+    }
+
+    function renderGuideView() {
+      // 1. Update Trust Count Toggle Buttons
+      document.querySelectorAll('.guide-trust-btn').forEach(btn => {
+        const cnt = parseInt(btn.getAttribute('data-trust-count'), 10);
+        if (cnt === appState.guideTrustCount) {
+          btn.className = 'guide-trust-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-600 text-slate-950 shadow';
+        } else {
+          btn.className = 'guide-trust-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-slate-200';
+        }
+      });
+
+      // 2. Render Job Pills
+      const pillsEl = document.getElementById('guide-job-pills');
+      pillsEl.innerHTML = GUIDE_JOBS.map(j => {
+        const isSel = j.id === appState.guideSelectedJob;
+        return `
+          <button type="button" data-guide-job="${j.id}" class="guide-job-pill p-2.5 rounded-xl border text-left transition ${
+            isSel
+              ? 'bg-amber-950/60 border-amber-500 text-amber-100 shadow-md'
+              : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+          }">
+            <div class="text-xs font-serif font-bold truncate ${isSel ? 'text-amber-300' : 'text-slate-200'}">${escapeHtml(j.name)}</div>
+            <div class="text-[10px] truncate opacity-80 mt-0.5">${escapeHtml(j.subtitle)}</div>
+          </button>
+        `;
+      }).join('');
+
+      // 3. Render Selected Job Spotlight
+      const jobObj = GUIDE_JOBS.find(j => j.id === appState.guideSelectedJob) || GUIDE_JOBS[0];
+      const spotlightEl = document.getElementById('guide-job-spotlight');
+      spotlightEl.innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3 mb-3">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-slate-950">Step ${jobObj.stepNum} of 6</span>
+              <h3 class="text-base sm:text-lg font-serif font-bold text-amber-300">${escapeHtml(jobObj.name)} — ${escapeHtml(jobObj.subtitle)}</h3>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Recommended Subjob: <strong class="text-indigo-300">${escapeHtml(jobObj.subjobRec)}</strong></p>
+          </div>
+          <div class="text-xs bg-slate-950 px-3 py-2 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">Primary Supply Guilds</span>
+            <span class="text-amber-200 font-semibold">${escapeHtml(jobObj.craftFocus)}</span>
+          </div>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-3">${escapeHtml(jobObj.whyOrder)}</p>
+        <div class="flex flex-wrap gap-2">
+          ${jobObj.keyUnlocks.map((u, idx) => {
+            const mKey = `unlock_${jobObj.id}_${idx}`;
+            const done = !!appState.guideProgress[mKey];
+            return `
+              <button type="button" data-milestone="${mKey}" class="guide-milestone-check text-xs px-2.5 py-1 rounded-lg border flex items-center gap-1.5 transition ${
+                done ? 'bg-emerald-950/60 border-emerald-700 text-emerald-300 line-through opacity-75' : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-amber-600/50'
+              }">
+                <span class="font-mono font-bold">${done ? '✓' : '○'}</span>
+                <span>${escapeHtml(u)}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // 4. Render Dynamic Trust Setup Matrix
+      const trustGroupKey = (jobObj.id === 'THF' || jobObj.id === 'PLD' || jobObj.id === 'RDM') ? jobObj.id : 'DD';
+      const trustData = GUIDE_TRUST_SETUPS[trustGroupKey];
+      const activeTrustList = trustData.slots[appState.guideTrustCount] || trustData.slots[3];
+      const trustMatrixEl = document.getElementById('guide-trust-matrix');
+
+      trustMatrixEl.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="text-sm sm:text-base font-serif font-bold text-indigo-300 flex items-center gap-2">
+              🤝 Recommended ${appState.guideTrustCount}-Trust Party Setup for ${escapeHtml(jobObj.name)} (CatsEyeXI)
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">${escapeHtml(trustData.roleNote)}</p>
+          </div>
+          <span class="text-[11px] font-mono bg-indigo-950 text-indigo-300 border border-indigo-800 px-2.5 py-1 rounded-lg self-start sm:self-center shrink-0">
+            ${appState.guideTrustCount === 3 ? 'Unlocked at Lv.5 Starter Tutorial' : appState.guideTrustCount === 4 ? 'Unlocked via RoV 1-6 (Rank 3)' : 'Unlocked via RoV 2-13 (Crimson)'}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${appState.guideTrustCount} gap-3">
+          ${activeTrustList.map((t, idx) => {
+            const tKey = `trust_${trustGroupKey}_${appState.guideTrustCount}_${idx}`;
+            const hasTrust = !!appState.guideProgress[tKey];
+            return `
+              <div data-milestone="${tKey}" class="guide-milestone-check bg-slate-950/90 border rounded-xl p-3 cursor-pointer transition ${
+                hasTrust ? 'border-emerald-700/70 bg-emerald-950/20' : 'border-slate-800 hover:border-indigo-500/60'
+              }">
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-mono text-[10px] uppercase font-bold text-indigo-400">Slot ${idx + 1}</span>
+                  <span class="text-[10px] ${hasTrust ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${hasTrust ? '✓ Cipher Unlocked' : 'Tap when unlocked'}</span>
+                </div>
+                <div class="text-sm font-serif font-bold text-slate-100">${escapeHtml(t.name)}</div>
+                <div class="text-xs text-amber-300 mt-1">${escapeHtml(t.role)}</div>
+                <div class="text-[11px] text-slate-400 mt-1.5 pt-1.5 border-t border-slate-900">Source: ${escapeHtml(t.unlock)}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // 5. Render Bracket-by-Bracket Cards
+      const bracketsEl = document.getElementById('guide-brackets-container');
+      const jobsToRender = appState.guideSelectedJob === 'ALL'
+        ? ['THF', 'WAR', 'PLD', 'RDM', 'SAM', 'NIN']
+        : [appState.guideSelectedJob];
+
+      bracketsEl.innerHTML = GUIDE_BRACKETS.map(b => {
+        const bKey = `bracket_done_${b.id}`;
+        const isBracketDone = !!appState.guideProgress[bKey];
+
+        const craftItemsHtml = b.craftTargets.map((ct, cIdx) => {
+          const cKey = `craft_${b.id}_${cIdx}`;
+          const cDone = !!appState.guideProgress[cKey];
+          return `
+            <div data-milestone="${cKey}" class="guide-milestone-check flex items-start gap-2 p-2 rounded-lg bg-slate-950 border cursor-pointer transition text-xs ${
+              cDone ? 'border-emerald-800/60 text-emerald-400 line-through opacity-70' : 'border-slate-800 text-slate-300 hover:border-amber-600/50'
+            }">
+              <span class="font-mono font-bold">${cDone ? '✓' : '⚒️'}</span>
+              <span>${escapeHtml(ct)}</span>
+            </div>
+          `;
+        }).join('');
+
+        const gearRowsHtml = jobsToRender.map(jId => {
+          const items = b.jobGear[jId] || [];
+          return `
+            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 space-y-1.5">
+              <div class="text-xs font-bold text-amber-400 font-mono">${jId} Gear & Supply Targets:</div>
+              <div class="flex flex-wrap gap-1.5">
+                ${items.map((gItem, gIdx) => {
+                  const gKey = `gear_${b.id}_${jId}_${gIdx}`;
+                  const gDone = !!appState.guideProgress[gKey];
+                  return `
+                    <button type="button" data-milestone="${gKey}" class="guide-milestone-check text-xs px-2.5 py-1 rounded border flex items-center gap-1.5 transition text-left ${
+                      gDone ? 'bg-emerald-950/60 border-emerald-700 text-emerald-300 line-through opacity-70' : 'bg-slate-900 border-slate-700 text-slate-200 hover:border-amber-500'
+                    }">
+                      <span class="font-mono">${gDone ? '✓' : '🛡️'}</span>
+                      <span>${escapeHtml(gItem)}</span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="bg-slate-900/70 border rounded-xl p-4 sm:p-5 space-y-4 transition ${
+            isBracketDone ? 'border-emerald-800/60 bg-emerald-950/10' : 'border-slate-800'
+          }">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+              <div>
+                <div class="flex items-center gap-2.5 flex-wrap">
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-amber-600 text-slate-950">${escapeHtml(b.range)}</span>
+                  <h4 class="text-base sm:text-lg font-serif font-bold ${isBracketDone ? 'text-emerald-400' : 'text-slate-100'}">${escapeHtml(b.title)}</h4>
+                </div>
+                <div class="text-xs text-amber-300 mt-1">📍 <strong>Camps:</strong> ${escapeHtml(b.zones)}</div>
+              </div>
+
+              <div class="flex items-center gap-2 shrink-0 self-start md:self-center">
+                <button type="button" data-bracket-recipes="${(b.cartRecipes || []).join(',')}" class="guide-queue-cart-btn text-xs bg-amber-700 hover:bg-amber-600 text-amber-50 font-bold px-3 py-1.5 rounded-lg transition shadow">
+                  ➕ Queue Bracket Gear to Cart
+                </button>
+                <button type="button" data-milestone="${bKey}" class="guide-milestone-check text-xs px-3 py-1.5 rounded-lg border font-semibold transition ${
+                  isBracketDone ? 'bg-emerald-900 border-emerald-600 text-emerald-100' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                }">
+                  ${isBracketDone ? '✓ Bracket Complete' : 'Mark Bracket Done'}
+                </button>
+              </div>
+            </div>
+
+            <div class="text-xs text-slate-300 bg-indigo-950/30 border border-indigo-900/50 p-3 rounded-lg leading-relaxed">
+              <strong class="text-indigo-300">CatsEyeXI Progression Note:</strong> ${escapeHtml(b.cexiNotes)}
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-400">1. Guild Skill Targets (Funded by THF Drops)</div>
+                <div class="space-y-1.5">${craftItemsHtml}</div>
+              </div>
+              <div class="space-y-2">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-400">2. Self-Crafted Gear & Tool Checklist</div>
+                <div class="space-y-2">${gearRowsHtml}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 6. Update total milestone counter
+      const totalChecked = Object.values(appState.guideProgress).filter(Boolean).length;
+      document.getElementById('guide-progress-summary').textContent = `${totalChecked} Milestones Checked`;
+    }
+
+    function switchMasterTab(tabName) {
+      appState.activeTab = tabName;
+      const tabs = ['quests', 'guide', 'crafting', 'cart', 'scraper', 'backup'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`nav-btn-${t}`);
+        const panel = document.getElementById(`tab-panel-${t}`);
+        if (t === tabName) {
+          btn.className = 'tab-active text-xs sm:text-sm py-2 px-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 truncate';
+          panel.classList.remove('hidden');
+        } else {
+          btn.className = 'text-xs sm:text-sm py-2 px-2 rounded-lg font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5 truncate';
+          panel.classList.add('hidden');
+        }
+      });
+
+      if (tabName === 'quests') renderQuestsView();
+      else if (tabName === 'guide') renderGuideView();
+      else if (tabName === 'crafting') renderRecipesView();
+      else if (tabName === 'cart') renderCartView();
+      else if (tabName === 'backup') {
+        document.getElementById('raw-backup-json').value = JSON.stringify({
+          quests: appState.quests,
+          userProgress: appState.userProgress,
+          recipes: appState.recipes,
+          guildLevels: appState.guildLevels,
+          cart: appState.cart,
+          playerLevel: appState.playerLevel,
+          guideProgress: appState.guideProgress
+        }, null, 2);
+      }
+    }
+
+    // --- Scraper Implementation ---
+    function logScraper(msg) {
+      const term = document.getElementById('scraper-log-terminal');
+      const div = document.createElement('div');
+      div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      term.appendChild(div);
+      term.scrollTop = term.scrollHeight;
+      document.getElementById('scraper-status-label').textContent = msg;
+    }
+
+    async function scrapeMediaWikiCategory(category) {
+      logScraper(`Connecting to BG-Wiki MediaWiki API for ${category}...`);
+      const url = `https://www.bg-wiki.com/api.php?action=query&list=categorymembers&cmtitle=${encodeURIComponent(category)}&cmlimit=250&format=json&origin=*`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const pages = data.query?.categorymembers || [];
+        logScraper(`Retrieved ${pages.length} entries for ${category}. Parsing...`);
+
+        let added = 0;
+        for (const p of pages) {
+          if (p.title.startsWith('Category:') || p.title.startsWith('File:')) continue;
+          const id = 'wiki_' + p.title.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+          if (!appState.quests.some(q => q.id === id)) {
+            appState.quests.push({
+              id,
+              title: p.title,
+              category: category.replace('Category:', '').replace(/_/g, ' '),
+              min_level: 1,
+              start_zone: "Varies",
+              start_npc: "Wiki Guide",
+              steps: ["Check BG-Wiki for detailed walkthrough steps."],
+              rewards: ["Fame / Gil"]
+            });
+            added++;
+          }
+        }
+        saveMasterState();
+        populateSelects();
+        updateMasterCounters();
+        logScraper(`Added ${added} new quests! Total quest library is now ${appState.quests.length}.`);
+        showToast(`Imported ${added} quests from ${category}!`);
+      } catch (err) {
+        logScraper(`Error scraping ${category}: ${err.message}.`);
+      }
+    }
+
+    async function scrapeSynthesisGuild(guild) {
+      logScraper(`Scanning recipes for ${guild} Guild from BG-Wiki...`);
+      const pageTitle = `${guild}_Recipes`;
+      const url = `https://www.bg-wiki.com/api.php?action=parse&page=${encodeURIComponent(pageTitle)}&prop=wikitext&format=json&origin=*`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const text = data.parse?.wikitext?.['*'] || '';
+        if (!text) throw new Error("No wikitext returned");
+
+        // Parse synthesis rows like {{Recipe|crystal=...|item=...|cap=...}}
+        const regex = /{{\s*Recipe[\s\S]*?}}/gi;
+        const matches = text.match(regex) || [];
+        logScraper(`Found ${matches.length} recipe definitions in ${pageTitle}. Parsing items...`);
+
+        let count = 0;
+        matches.forEach(m => {
+          const itemM = m.match(/item\s*=\s*(.+?)[\|}]/i);
+          const capM = m.match(/cap\s*=\s*(\d+)/i);
+          const crystalM = m.match(/crystal\s*=\s*(.+?)[\|}]/i);
+          if (itemM) {
+            const name = itemM[1].trim();
+            const cap = capM ? parseInt(capM[1], 10) : 10;
+            const crystal = crystalM ? crystalM[1].trim() : 'Earth';
+            const id = 'rec_' + name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+            if (!appState.recipes.some(r => r.id === id)) {
+              appState.recipes.push({
+                id,
+                name,
+                guild,
+                cap,
+                crystal,
+                ingredients: ["Materials (Check Wiki)"],
+                yield: 1,
+                jobs: ["All Jobs"],
+                slot: "Material / Component",
+                type: "Synthesis"
+              });
+              count++;
+            }
+          }
+        });
+
+        saveMasterState();
+        populateSelects();
+        updateMasterCounters();
+        logScraper(`Successfully extracted ${count} recipes for ${guild}! Total recipes: ${appState.recipes.length}.`);
+        showToast(`Imported ${count} ${guild} recipes!`);
+      } catch (err) {
+        logScraper(`Fallback note for ${guild}: ${err.message}`);
+      }
+    }
+
+    // --- Master Initialization & Bindings ---
+    function init() {
+      loadMasterStorage();
+      renderGuildLevels();
+      populateSelects();
+      renderScraperGuildButtons();
+      updateMasterCounters();
+
+      // Set initial level values in UI
+      document.getElementById('header-lvl-input').value = appState.playerLevel;
+      document.getElementById('route-user-current-zone').value = appState.userCurrentZone;
+
+      // Master Tab Navigation
+      ['quests', 'guide', 'crafting', 'cart', 'scraper', 'backup'].forEach(t => {
+        document.getElementById(`nav-btn-${t}`).addEventListener('click', () => switchMasterTab(t));
+      });
+
+      document.getElementById('btn-quick-cart').addEventListener('click', () => switchMasterTab('cart'));
+
+      // Level Controls
+      document.getElementById('header-lvl-dec').addEventListener('click', () => {
+        appState.playerLevel = Math.max(1, appState.playerLevel - 1);
+        document.getElementById('header-lvl-input').value = appState.playerLevel;
+        saveMasterState();
+        renderQuestsView();
+      });
+      document.getElementById('header-lvl-inc').addEventListener('click', () => {
+        appState.playerLevel = Math.min(75, appState.playerLevel + 1);
+        document.getElementById('header-lvl-input').value = appState.playerLevel;
+        saveMasterState();
+        renderQuestsView();
+      });
+      document.getElementById('header-lvl-input').addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (!isNaN(val)) {
+          appState.playerLevel = Math.max(1, Math.min(75, val));
+          saveMasterState();
+          renderQuestsView();
+        }
+      });
+
+      // Quest Sub-Navigation
+      document.getElementById('btn-quest-sub-log').addEventListener('click', () => {
+        appState.questSubMode = 'log';
+        renderQuestsView();
+      });
+      document.getElementById('btn-quest-sub-route').addEventListener('click', () => {
+        appState.questSubMode = 'route';
+        renderQuestsView();
+      });
+
+      // Quest Filters
+      document.getElementById('quest-filter-search').addEventListener('input', (e) => {
+        appState.questSearch = e.target.value;
+        renderQuestsView();
+      });
+      document.getElementById('quest-btn-toggle-overlevel').addEventListener('click', () => {
+        appState.hideOverLevel = !appState.hideOverLevel;
+        document.getElementById('quest-btn-toggle-overlevel').textContent = appState.hideOverLevel ? `≤ Lv.${appState.playerLevel} Only` : 'Showing All Lv';
+        renderQuestsView();
+      });
+      document.getElementById('quest-btn-toggle-locked').addEventListener('click', () => {
+        appState.hideLocked = !appState.hideLocked;
+        document.getElementById('quest-btn-toggle-locked').className = appState.hideLocked ? 'px-3 py-2 rounded-lg border text-xs font-semibold flex items-center justify-center transition bg-rose-950 border-rose-700 text-rose-200' : 'px-3 py-2 rounded-lg border text-xs font-semibold flex items-center justify-center transition bg-slate-950 border-slate-700 text-slate-400';
+        renderQuestsView();
+      });
+      document.getElementById('quest-filter-category').addEventListener('change', (e) => {
+        appState.questCategory = e.target.value;
+        renderQuestsView();
+      });
+      document.getElementById('quest-filter-zone').addEventListener('change', (e) => {
+        appState.questZone = e.target.value;
+        renderQuestsView();
+      });
+      document.getElementById('quest-filter-status').addEventListener('change', (e) => {
+        appState.questStatus = e.target.value;
+        renderQuestsView();
+      });
+      document.getElementById('route-user-current-zone').addEventListener('change', (e) => {
+        appState.userCurrentZone = e.target.value;
+        renderRouteOptimizer();
+      });
+
+      // Delegated Quest Interactions
+      document.body.addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('.quest-toggle-guide');
+        if (toggleBtn) {
+          const qId = toggleBtn.getAttribute('data-quest-id');
+          appState.expandedQuests[qId] = !appState.expandedQuests[qId];
+          renderQuestsView();
+          return;
+        }
+
+        const stepRow = e.target.closest('.quest-step-row');
+        if (stepRow) {
+          const qId = stepRow.getAttribute('data-quest-id');
+          const idx = parseInt(stepRow.getAttribute('data-step-idx'), 10);
+          const prog = appState.userProgress[qId] || { status: 'Not Started', step: -1 };
+          if (prog.status === 'Not Started') appState.userProgress[qId] = { status: 'In Progress', step: idx };
+          else if (prog.step === idx) appState.userProgress[qId].step = idx - 1;
+          else appState.userProgress[qId].step = idx;
+          saveMasterState();
+          renderQuestsView();
+          updateMasterCounters();
+          return;
+        }
+
+        const resetBtn = e.target.closest('.quest-reset-steps');
+        if (resetBtn) {
+          const qId = resetBtn.getAttribute('data-quest-id');
+          if (appState.userProgress[qId]) appState.userProgress[qId].step = -1;
+          saveMasterState();
+          renderQuestsView();
+          return;
+        }
+
+        const routeAccept = e.target.closest('.route-accept-btn');
+        if (routeAccept) {
+          const qId = routeAccept.getAttribute('data-quest-id');
+          appState.userProgress[qId] = { status: 'In Progress', step: -1 };
+          saveMasterState();
+          renderRouteOptimizer();
+          updateMasterCounters();
+          showToast("Quest accepted!");
+          return;
+        }
+
+        const routeDone = e.target.closest('.route-step-done-btn');
+        if (routeDone) {
+          const qId = routeDone.getAttribute('data-quest-id');
+          const idx = parseInt(routeDone.getAttribute('data-step-idx'), 10);
+          if (!appState.userProgress[qId]) appState.userProgress[qId] = { status: 'In Progress', step: idx };
+          else appState.userProgress[qId].step = idx;
+          saveMasterState();
+          renderRouteOptimizer();
+          updateMasterCounters();
+          return;
+        }
+
+        const routeTurnin = e.target.closest('.route-turnin-btn');
+        if (routeTurnin) {
+          const qId = routeTurnin.getAttribute('data-quest-id');
+          appState.userProgress[qId] = { status: 'Completed', step: 99 };
+          saveMasterState();
+          renderRouteOptimizer();
+          updateMasterCounters();
+          showToast("Quest Completed!");
+          return;
+        }
+
+        // Cart Delegated Buttons
+        const cartAdd = e.target.closest('.btn-cart-add');
+        if (cartAdd) {
+          const rId = cartAdd.getAttribute('data-recipe-id');
+          appState.cart[rId] = 1;
+          saveMasterState();
+          renderRecipesView();
+          updateMasterCounters();
+          showToast("Added to Cart!");
+          return;
+        }
+
+        const cartInc = e.target.closest('.btn-cart-inc');
+        if (cartInc) {
+          const rId = cartInc.getAttribute('data-recipe-id');
+          appState.cart[rId] = (appState.cart[rId] || 0) + 1;
+          saveMasterState();
+          if (appState.activeTab === 'crafting') renderRecipesView();
+          if (appState.activeTab === 'cart') renderCartView();
+          updateMasterCounters();
+          return;
+        }
+
+        const cartDec = e.target.closest('.btn-cart-dec');
+        if (cartDec) {
+          const rId = cartDec.getAttribute('data-recipe-id');
+          if (appState.cart[rId] > 1) appState.cart[rId]--;
+          else delete appState.cart[rId];
+          saveMasterState();
+          if (appState.activeTab === 'crafting') renderRecipesView();
+          if (appState.activeTab === 'cart') renderCartView();
+          updateMasterCounters();
+          return;
+        }
+
+        const cartRemove = e.target.closest('.btn-cart-remove');
+        if (cartRemove) {
+          const rId = cartRemove.getAttribute('data-recipe-id');
+          delete appState.cart[rId];
+          saveMasterState();
+          renderCartView();
+          updateMasterCounters();
+          return;
+        }
+
+        const cartCheck = e.target.closest('.cart-check-item');
+        if (cartCheck) {
+          const key = cartCheck.getAttribute('data-item-key');
+          appState.checkedMaterials[key] = !appState.checkedMaterials[key];
+          renderCartView();
+          return;
+        }
+
+        // Guide Interactive Delegated Handlers
+        const trustBtn = e.target.closest('.guide-trust-btn');
+        if (trustBtn) {
+          appState.guideTrustCount = parseInt(trustBtn.getAttribute('data-trust-count'), 10) || 3;
+          renderGuideView();
+          return;
+        }
+
+        const jobPill = e.target.closest('.guide-job-pill');
+        if (jobPill) {
+          appState.guideSelectedJob = jobPill.getAttribute('data-guide-job') || 'THF';
+          renderGuideView();
+          return;
+        }
+
+        const milestoneBtn = e.target.closest('.guide-milestone-check');
+        if (milestoneBtn) {
+          const mKey = milestoneBtn.getAttribute('data-milestone');
+          if (mKey) {
+            appState.guideProgress[mKey] = !appState.guideProgress[mKey];
+            saveMasterState();
+            renderGuideView();
+          }
+          return;
+        }
+
+        const queueBracketBtn = e.target.closest('.guide-queue-cart-btn');
+        if (queueBracketBtn) {
+          const recList = (queueBracketBtn.getAttribute('data-bracket-recipes') || '').split(',').filter(Boolean);
+          let addedCount = 0;
+          recList.forEach(rId => {
+            if (appState.recipes.some(r => r.id === rId)) {
+              appState.cart[rId] = (appState.cart[rId] || 0) + 1;
+              addedCount++;
+            }
+          });
+          saveMasterState();
+          updateMasterCounters();
+          showToast(`Queued ${addedCount} bracket recipe(s) to Material Cart!`);
+          return;
+        }
+      });
+
+      document.body.addEventListener('change', (e) => {
+        const select = e.target.closest('.quest-status-select');
+        if (select) {
+          const qId = select.getAttribute('data-quest-id');
+          const val = select.value;
+          const q = appState.quests.find(item => item.id === qId);
+          const maxStep = q && q.steps ? q.steps.length - 1 : 0;
+          appState.userProgress[qId] = { status: val, step: val === 'Completed' ? maxStep : -1 };
+          saveMasterState();
+          renderQuestsView();
+          updateMasterCounters();
+        }
+
+        const guildInput = e.target.closest('.guild-lvl-input');
+        if (guildInput) {
+          const g = guildInput.getAttribute('data-guild');
+          const val = Math.max(0, Math.min(110, parseInt(guildInput.value, 10) || 0));
+          appState.guildLevels[g] = val;
+          saveMasterState();
+          if (appState.activeTab === 'crafting') renderRecipesView();
+        }
+      });
+
+      // Crafting Filters
+      document.getElementById('craft-filter-search').addEventListener('input', (e) => {
+        appState.craftSearch = e.target.value;
+        renderRecipesView();
+      });
+      document.getElementById('craft-filter-guild').addEventListener('change', (e) => {
+        appState.craftGuild = e.target.value;
+        renderRecipesView();
+      });
+      document.getElementById('craft-filter-crystal').addEventListener('change', (e) => {
+        appState.craftCrystal = e.target.value;
+        renderRecipesView();
+      });
+      document.getElementById('craft-filter-job').addEventListener('change', (e) => {
+        appState.craftJob = e.target.value;
+        renderRecipesView();
+      });
+      document.getElementById('craft-filter-slot').addEventListener('change', (e) => {
+        appState.craftSlot = e.target.value;
+        renderRecipesView();
+      });
+
+      // Cart Clear
+      document.getElementById('btn-clear-cart').addEventListener('click', () => {
+        appState.cart = {};
+        appState.checkedMaterials = {};
+        saveMasterState();
+        renderCartView();
+        updateMasterCounters();
+        showToast("Cart Cleared!");
+      });
+
+      // Scraper Sub-Modes
+      document.getElementById('btn-scraper-mode-quest').addEventListener('click', () => {
+        appState.scraperMode = 'quest';
+        document.getElementById('scraper-subview-quest').classList.remove('hidden');
+        document.getElementById('scraper-subview-craft').classList.add('hidden');
+        document.getElementById('btn-scraper-mode-quest').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-slate-950';
+        document.getElementById('btn-scraper-mode-craft').className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200';
+      });
+      document.getElementById('btn-scraper-mode-craft').addEventListener('click', () => {
+        appState.scraperMode = 'craft';
+        document.getElementById('scraper-subview-quest').classList.add('hidden');
+        document.getElementById('scraper-subview-craft').classList.remove('hidden');
+        document.getElementById('btn-scraper-mode-craft').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-slate-950';
+        document.getElementById('btn-scraper-mode-quest').className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200';
+      });
+
+      document.getElementById('btn-scrape-category').addEventListener('click', () => {
+        const cat = document.getElementById('scraper-quest-region').value;
+        scrapeMediaWikiCategory(cat);
+      });
+      document.getElementById('btn-scrape-all-regions').addEventListener('click', async () => {
+        const cats = [
+          "Category:San_d'Oria_Quests", "Category:Bastok_Quests", "Category:Windurst_Quests",
+          "Category:Jeuno_Quests", "Category:Other_Areas_Quests", "Category:Aht_Urhgan_Quests", "Category:Artifact_Armor_Quests"
+        ];
+        for (const c of cats) {
+          await scrapeMediaWikiCategory(c);
+        }
+      });
+      document.getElementById('btn-scrape-single-quest').addEventListener('click', () => {
+        const name = document.getElementById('scraper-single-quest-name').value.trim();
+        if (name) scrapeMediaWikiCategory(`Category:${name.replace(/ /g, '_')}`);
+      });
+
+      document.body.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-scrape-single-guild');
+        if (btn) {
+          const g = btn.getAttribute('data-guild');
+          scrapeSynthesisGuild(g);
+        }
+      });
+
+      document.getElementById('btn-scrape-all-guilds').addEventListener('click', async () => {
+        for (const g of GUILDS_LIST) {
+          await scrapeSynthesisGuild(g);
+        }
+      });
+
+      // Backup & Sync Actions
+      document.getElementById('btn-download-json-file').addEventListener('click', () => {
+        const payload = {
+          quests: appState.quests,
+          userProgress: appState.userProgress,
+          recipes: appState.recipes,
+          guildLevels: appState.guildLevels,
+          cart: appState.cart,
+          playerLevel: appState.playerLevel,
+          guideProgress: appState.guideProgress,
+          exportedAt: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `catseyexi_master_backup_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Backup JSON file downloaded!");
+      });
+
+      document.getElementById('input-upload-json-file').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+            if (Array.isArray(data.quests)) appState.quests = data.quests;
+            if (data.userProgress) appState.userProgress = data.userProgress;
+            if (Array.isArray(data.recipes)) appState.recipes = data.recipes;
+            if (data.guildLevels) appState.guildLevels = data.guildLevels;
+            if (data.cart) appState.cart = data.cart;
+            if (data.playerLevel) appState.playerLevel = data.playerLevel;
+            if (data.guideProgress) appState.guideProgress = data.guideProgress;
+            saveMasterState();
+            populateSelects();
+            renderGuildLevels();
+            updateMasterCounters();
+            switchMasterTab(appState.activeTab);
+            showToast("Backup file imported successfully!");
+          } catch (err) {
+            alert("Invalid JSON file.");
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById('btn-copy-raw-json').addEventListener('click', () => {
+        const text = document.getElementById('raw-backup-json');
+        text.select();
+        document.execCommand('copy');
+        showToast("JSON copied to clipboard!");
+      });
+
+      document.getElementById('btn-apply-pasted-json').addEventListener('click', () => {
+        try {
+          const data = JSON.parse(document.getElementById('raw-backup-json').value);
+          if (Array.isArray(data.quests)) appState.quests = data.quests;
+          if (data.userProgress) appState.userProgress = data.userProgress;
+          if (Array.isArray(data.recipes)) appState.recipes = data.recipes;
+          if (data.guildLevels) appState.guildLevels = data.guildLevels;
+          if (data.cart) appState.cart = data.cart;
+          if (data.playerLevel) appState.playerLevel = data.playerLevel;
+          if (data.guideProgress) appState.guideProgress = data.guideProgress;
+          saveMasterState();
+          populateSelects();
+          renderGuildLevels();
+          updateMasterCounters();
+          showToast("Pasted JSON applied!");
+        } catch (err) {
+          alert("Invalid JSON syntax.");
+        }
+      });
+
+      document.getElementById('btn-restore-defaults').addEventListener('click', () => {
+        if (confirm("Restore default verified CatsEyeXI quest & recipe databases?")) {
+          appState.quests = [...DEFAULT_QUESTS];
+          appState.recipes = [...DEFAULT_RECIPES];
+          saveMasterState();
+          populateSelects();
+          updateMasterCounters();
+          switchMasterTab(appState.activeTab);
+          showToast("Restored verified defaults!");
+        }
+      });
+
+      // Modals: Add Quest
+      const modal = document.getElementById('modal-add-quest');
+      document.getElementById('btn-open-add-quest').addEventListener('click', () => modal.classList.remove('hidden'));
+      document.getElementById('btn-close-quest-modal').addEventListener('click', () => modal.classList.add('hidden'));
+      document.getElementById('btn-cancel-quest-modal').addEventListener('click', () => modal.classList.add('hidden'));
+
+      document.getElementById('form-create-quest').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('add-quest-title').value.trim();
+        if (!title) return;
+        const minLvl = parseInt(document.getElementById('add-quest-minlvl').value, 10) || 1;
+        const category = document.getElementById('add-quest-category').value.trim() || 'Custom Quests';
+        const start_zone = document.getElementById('add-quest-zone').value.trim() || "Southern San d'Oria";
+        const start_npc = document.getElementById('add-quest-npc').value.trim() || 'NPC';
+        const steps = document.getElementById('add-quest-steps').value.split('\n').map(s => s.trim()).filter(Boolean);
+        const rewards = document.getElementById('add-quest-rewards').value.split(',').map(s => s.trim()).filter(Boolean);
+
+        const newQuest = {
+          id: 'custom_' + Date.now(),
+          title,
+          category,
+          min_level: minLvl,
+          start_zone,
+          start_npc,
+          zones_involved: [start_zone],
+          repeatable: false,
+          prerequisites: minLvl > 1 ? [`Level ${minLvl}`] : [],
+          steps: steps.length > 0 ? steps : ["Complete quest."],
+          rewards
+        };
+
+        appState.quests.unshift(newQuest);
+        saveMasterState();
+        populateSelects();
+        renderQuestsView();
+        updateMasterCounters();
+        modal.classList.add('hidden');
+        e.target.reset();
+        showToast(`Added "${title}"!`);
+      });
+
+      // Initial Render
+      renderQuestsView();
+    }
+
+    // Run on startup
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
